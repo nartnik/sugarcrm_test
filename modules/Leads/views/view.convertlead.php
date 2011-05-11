@@ -36,6 +36,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  ********************************************************************************/
 
 require_once("include/EditView/EditView2.php");
+require_once("include/upload_file.php");
 
 class ViewConvertLead extends SugarView
 {
@@ -359,7 +360,12 @@ class ViewConvertLead extends SugarView
 		$this->handleActivities($lead, $beans);
 		// Bug 39268 - Add the lead's activities to the selected beans
 		$this->handleActivities($lead, $selectedBeans);
-		
+
+		//link selected account to lead if it exists
+        if(!empty($selectedBeans['Accounts'])){
+            $lead->account_id = $selectedBeans['Accounts']->id;
+        }
+
         //Handle non-contacts relationships
 	    foreach($beans as $bean)
         {
@@ -522,7 +528,11 @@ class ViewConvertLead extends SugarView
             $newActivity->$rel->add($bean->id);
             $newActivity->parent_id = $bean->id;
 	        $newActivity->parent_type = $bean->module_dir;
+	        $newActivity->update_date_modified = false; //bug 41747 
 	        $newActivity->save();
+	        if ($newActivity->module_dir == "Notes" && $newActivity->filename) {
+	        	UploadFile::duplicate_file($activity->id, $newActivity->id,  $newActivity->filename);
+	        }
          }
 	}
     

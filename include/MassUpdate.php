@@ -97,8 +97,9 @@ class MassUpdate
 		global $sugar_config;
 		global $current_user;
 
-		unset($_REQUEST['current_query_by_page']);
-		$query = base64_encode(serialize($_REQUEST));
+		$temp = array_merge($_GET, $_POST);
+        unset($temp['current_query_by_page']);
+		$query = base64_encode(serialize($temp));
 
         $bean = loadBean($_REQUEST['module']);
        $order_by_name = $bean->module_dir.'2_'.strtoupper($bean->object_name).'_ORDER_BY' ;
@@ -290,7 +291,7 @@ eoq;
 						if(!empty($_POST['reports_to_id']) && $newbean->reports_to_id != $_POST['reports_to_id']) {
 						   $old_reports_to_id = empty($newbean->reports_to_id) ? 'null' : $newbean->reports_to_id;
 						}
-						
+
 						$check_notify = FALSE;
 
 						if (isset( $this->sugarbean->assigned_user_id)) {
@@ -301,15 +302,15 @@ eoq;
 								$check_notify = TRUE;
 							}
 						}
-	                    
+
 						//Call include/formbase.php, but do not call retrieve again
 						populateFromPost('', $newbean, true);
 						$newbean->save_from_post = false;
-						
+
 						if (!isset($_POST['parent_id'])) {
 							$newbean->parent_type = null;
 						}
-						
+
 						$email_address_id = '';
 	                    if (!empty($_POST['optout_primary'])) {
 	                    	$optout_flag_value = 0;
@@ -1192,13 +1193,13 @@ EOQ;
         else{
             $this->use_old_search = false;
             require_once('include/SearchForm/SearchForm2.php');
-            
+
             if(file_exists('custom/modules/'.$module.'/metadata/metafiles.php')){
-                require('custom/modules/'.$module.'/metadata/metafiles.php');	
+                require('custom/modules/'.$module.'/metadata/metafiles.php');
             }elseif(file_exists('modules/'.$module.'/metadata/metafiles.php')){
                 require('modules/'.$module.'/metadata/metafiles.php');
             }
-            
+
             if (file_exists('custom/modules/'.$module.'/metadata/searchdefs.php'))
             {
                 require_once('custom/modules/'.$module.'/metadata/searchdefs.php');

@@ -32,7 +32,29 @@ class SugarTestImportUtilities
         return $filename;
     }
 	
-	public static function createFileWithWhiteSpace() 
+    public static function createFileWithEOL(
+        $lines = 2000,
+        $columns = 3
+        ) 
+    {
+        $filename = $GLOBALS['sugar_config']['import_dir'].'test'.date("YmdHis");
+        $fp = fopen($filename,"w");
+        for ($i = 0; $i < $lines; $i++) {
+            $line = array();
+            for ($j = 0; $j < $columns; $j++) {
+            	// test both end of lines: \r\n (windows) and \n (unix)
+                $line[] = "start{$i}\r\n{$j}\nend";
+            }
+            fputcsv($fp,$line);
+        }
+        fclose($fp);
+        
+        self::$_createdFiles[] = $filename;
+        
+        return $filename;
+    }
+	
+    public static function createFileWithWhiteSpace() 
     {
         $filename = $GLOBALS['sugar_config']['import_dir'].'testWhiteSpace'.date("YmdHis");
         $contents = <<<EOTEXT

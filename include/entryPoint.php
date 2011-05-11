@@ -61,7 +61,6 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  * leadCapture.php
  * maintenance.php
  * metagen.php
- * oc_convert.php
  * pdf.php
  * phprint.php
  * process_queue.php

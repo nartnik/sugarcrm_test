@@ -40,14 +40,14 @@
 		<input type="hidden" id="mail_id" name="mail_id">
 		<input type="hidden" id="type" name="type" value="user">
 		<input type="hidden" id="mail_sendtype" name="mail_sendtype" value="SMTP">
-	
+
 		<table width="100%" border="0" cellspacing="1" cellpadding="0" class="edit view">
 		    <tr>
 				<td scope="row" width="15%" NOWRAP>
 					{$app_strings.LBL_EMAIL_ACCOUNTS_NAME}:
 					<span class="required">
 						{$app_strings.LBL_REQUIRED_SYMBOL}
-					</span>					
+					</span>
 				</td>
 				<td  width="35%">
 					<input type="text" class="input" id="mail_name" name="mail_name" size="25" maxlength="64">
@@ -119,7 +119,10 @@
                             </tr>
                             <tr id="smtp_auth2">
                                 <td width="20%" scope="row" nowrap="nowrap"><span id="mail_smtppass_label">{sugar_translate module='Emails' label='LBL_MAIL_SMTPPASS'}</span> <span class="required">{$app_strings.LBL_REQUIRED_SYMBOL}</span></td>
-                                <td width="30%" ><slot><input type="password" id="mail_smtppass" name="mail_smtppass" size="25" maxlength="64" abindex='1'></slot></td>
+                                <td width="30%" ><slot>
+                                <input type="password" id="mail_smtppass" name="mail_smtppass" size="25" maxlength="64" abindex='1'>
+                                <a href="javascript:void(0)" id='mail_smtppass_link' onClick="SUGAR.util.setEmailPasswordEdit('mail_smtppass')" style="display: none">{$app_strings.LBL_CHANGE_PASSWORD}</a>
+                                </slot></td>
                                 <td >&nbsp;</td>
                                 <td >&nbsp;</td>
                             </tr>

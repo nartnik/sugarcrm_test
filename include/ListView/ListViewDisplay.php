@@ -55,6 +55,7 @@ class ListViewDisplay {
 	var $multiSelect = true;
 	var $mailMerge = true;
 	var $should_process = true;
+	var $show_plus = false;
 	/*
 	 * Used in view.popup.php. Sometimes there are fields on the search form that are not referenced in the listviewdefs. If this
 	 * is the case, then the filterFields will be set and the related fields will not be referenced when calling create_new_list_query.
@@ -122,15 +123,15 @@ class ListViewDisplay {
         // create filter fields based off of display columns
         if(empty($filter_fields) || $this->mergeDisplayColumns) {
             foreach($this->displayColumns as $columnName => $def) {
-			
+
                $filter_fields[strtolower($columnName)] = true;
-            
+
             if(isset($this->seed->field_defs[strtolower($columnName)]['type']) &&
                strtolower($this->seed->field_defs[strtolower($columnName)]['type']) == 'currency' &&
                isset($this->seed->field_defs['currency_id'])) {
                		$filter_fields['currency_id'] = true;
-            }               
-               
+            }
+
                if(!empty($def['related_fields'])) {
                     foreach($def['related_fields'] as $field) {
                         //id column is added by query construction function. This addition creates duplicates
@@ -157,14 +158,14 @@ class ListViewDisplay {
 
 
         $data = $this->lvd->getListViewData($seed, $where, $offset, $limit, $filter_fields, $params, $id_field);
-		
+
 		foreach($this->displayColumns as $columnName => $def)
 		{
 			$seedName =  strtolower($columnName);
             if(!empty($this->lvd->seed->field_defs[$seedName])){
                 $seedDef = $this->lvd->seed->field_defs[$seedName];
             }
-			
+
 			if(empty($this->displayColumns[$columnName]['type'])){
 				if(!empty($seedDef['type'])){
 		            $this->displayColumns[$columnName]['type'] = (!empty($seedDef['custom_type']))?$seedDef['custom_type']:$seedDef['type'];
@@ -172,7 +173,7 @@ class ListViewDisplay {
 		        	$this->displayColumns[$columnName]['type'] = '';
 		        }
 			}//fi empty(...)
-			
+
 			if(!empty($seedDef['options'])){
 					$this->displayColumns[$columnName]['options'] = $seedDef['options'];
 			}
@@ -209,11 +210,11 @@ class ListViewDisplay {
                 // Merge the two arrays together, making sure the seedDef doesn't override anything explicitly set in the displayColumns array.
                 $this->displayColumns[$columnName] = $this->displayColumns[$columnName] + $seedDef;
             }
-            
+
 		    //C.L. Bug 38388 - ensure that ['id'] is set for related fields
             if(!isset($this->displayColumns[$columnName]['id']) && isset($this->displayColumns[$columnName]['id_name'])) {
                $this->displayColumns[$columnName]['id'] = strtoupper($this->displayColumns[$columnName]['id_name']);
-            }            
+            }
 		}
 
 		$this->process($file, $data, $seed->object_name);
@@ -252,10 +253,15 @@ class ListViewDisplay {
 		global $app_strings;
 		if ($pageTotal < 0)
 			$pageTotal = $total;
+		$plus = '';
+		if (!empty($GLOBALS['sugar_config']['disable_count_query']) && $total > $pageTotal) {
+			$plus = '+';
+			$this->show_plus = true;
+		}
 		$script = "<script>
 			function select_overlib() {
 				return overlib('<a style=\'width: 150px\' class=\'menuItem\' onmouseover=\'hiliteItem(this,\"yes\");\' onmouseout=\'unhiliteItem(this);\' onclick=\'if (document.MassUpdate.select_entire_list.value==1){document.MassUpdate.select_entire_list.value=0;sListView.check_all(document.MassUpdate, \"mass[]\", true, $pageTotal)}else {sListView.check_all(document.MassUpdate, \"mass[]\", true)};\' href=\'#\'>{$app_strings['LBL_LISTVIEW_OPTION_CURRENT']}&nbsp;({$pageTotal})</a>"
-			. "<a style=\'width: 150px\' class=\'menuItem\' onmouseover=\'hiliteItem(this,\"yes\");\' onmouseout=\'unhiliteItem(this);\' onclick=\'sListView.check_entire_list(document.MassUpdate, \"mass[]\",true,{$total});\' href=\'#\'>{$app_strings['LBL_LISTVIEW_OPTION_ENTIRE']}&nbsp;({$total})</a>"
+			. "<a style=\'width: 150px\' class=\'menuItem\' onmouseover=\'hiliteItem(this,\"yes\");\' onmouseout=\'unhiliteItem(this);\' onclick=\'sListView.check_entire_list(document.MassUpdate, \"mass[]\",true,{$total});\' href=\'#\'>{$app_strings['LBL_LISTVIEW_OPTION_ENTIRE']}&nbsp;({$total}{$plus})</a>"
 			. "<a style=\'width: 150px\' class=\'menuItem\' onmouseover=\'hiliteItem(this,\"yes\");\' onmouseout=\'unhiliteItem(this);\' onclick=\'sListView.clear_all(document.MassUpdate, \"mass[]\", false);\' href=\'#\'>{$app_strings['LBL_LISTVIEW_NONE']}</a>"
 			. "', CENTER, '"
 			. "', STICKY, MOUSEOFF, 3000, CLOSETEXT, '<img border=0 src=" . SugarThemeRegistry::current()->getImageURL('close_inline.gif')
@@ -267,7 +273,7 @@ class ListViewDisplay {
 
 		return $script;
 	}
-	
+
 	/**
 	 * Display the actions link
 	 *
@@ -282,13 +288,13 @@ class ListViewDisplay {
 		$closeText = "<img border=0 src=" . SugarThemeRegistry::current()->getImageURL('close_inline.gif') . " />";
 		$moreDetailImage = SugarThemeRegistry::current()->getImageURL('MoreDetail.png');
 		$menuItems = '';
-		
+
 		// delete
 		if ( ACLController::checkAccess($this->seed->module_dir,'delete',true) && $this->delete )
 			$menuItems .= $this->buildDeleteLink();
 		// compose email
         if ( isset($_REQUEST['module']) && $_REQUEST['module'] != 'Users' && $_REQUEST['module'] != 'Employees' &&
-            ( SugarModule::get($_REQUEST['module'])->moduleImplements('Company') 
+            ( SugarModule::get($_REQUEST['module'])->moduleImplements('Company')
                 || SugarModule::get($_REQUEST['module'])->moduleImplements('Person') ) )
 			$menuItems .= $this->buildComposeEmailLink($this->data['pageData']['offsets']['total']);
 		// mass update
@@ -299,7 +305,7 @@ class ListViewDisplay {
 		// merge
 		if ( $this->mailMerge )
 		    $menuItems .= $this->buildMergeLink();
-		if ( $this->mergeduplicates ) 
+		if ( $this->mergeduplicates )
 		    $menuItems .= $this->buildMergeDuplicatesLink();
 		// add to target list
 		if ( isset($_REQUEST['module']) && in_array($_REQUEST['module'],array('Contacts','Prospects','Leads','Accounts')))
@@ -307,24 +313,24 @@ class ListViewDisplay {
 		// export
 		if ( ACLController::checkAccess($this->seed->module_dir,'export',true) && $this->export )
 			$menuItems .= $this->buildExportLink();
-        
+
 		foreach ( $this->actionsMenuExtraItems as $item )
 		    $menuItems .= $item;
-		
+
 		$menuItems = str_replace('"','\"',$menuItems);
-		
+
 		if ( empty($menuItems) )
 		    return '';
-		
+
 		return <<<EOHTML
 <script type="text/javascript">
 <!--
-function actions_overlib() 
+function actions_overlib()
 {
-    return overlib("{$menuItems}", CENTER, '', STICKY, MOUSEOFF, 3000, CLOSETEXT, "{$closeText}", WIDTH, 150, 
-        CLOSETITLE, "{$app_strings['LBL_ADDITIONAL_DETAILS_CLOSE_TITLE']}", CLOSECLICK, 
-        FGCLASS, 'olOptionsFgClass', CGCLASS, 'olOptionsCgClass', BGCLASS, 'olBgClass', 
-        TEXTFONTCLASS, 'olFontClass', CAPTIONFONTCLASS, 'olOptionsCapFontClass', 
+    return overlib("{$menuItems}", CENTER, '', STICKY, MOUSEOFF, 3000, CLOSETEXT, "{$closeText}", WIDTH, 150,
+        CLOSETITLE, "{$app_strings['LBL_ADDITIONAL_DETAILS_CLOSE_TITLE']}", CLOSECLICK,
+        FGCLASS, 'olOptionsFgClass', CGCLASS, 'olOptionsCgClass', BGCLASS, 'olBgClass',
+        TEXTFONTCLASS, 'olFontClass', CAPTIONFONTCLASS, 'olOptionsCapFontClass',
         CLOSEFONTCLASS, 'olOptionsCloseFontClass');
 }
 -->
@@ -334,7 +340,7 @@ function actions_overlib()
 </a>
 EOHTML;
 	}
-	
+
 	/**
 	 * Builds the export link
 	 *
@@ -343,10 +349,10 @@ EOHTML;
 	protected function buildExportLink()
 	{
 		global $app_strings;
-		
+
 		return "<a href='#' style='width: 150px' class='menuItem' onmouseover='hiliteItem(this,\"yes\");' onmouseout='unhiliteItem(this);' onclick=\"return sListView.send_form(true, '{$_REQUEST['module']}', 'index.php?entryPoint=export','{$app_strings['LBL_LISTVIEW_NO_SELECTED']}')\">{$app_strings['LBL_EXPORT']}</a>";
 	}
-	
+
 	/**
 	 * Builds the massupdate link
 	 *
@@ -355,7 +361,7 @@ EOHTML;
 	protected function buildMassUpdateLink()
 	{
 		global $app_strings;
-		
+
 		return "<a href='#massupdate_form' style='width: 150px' class='menuItem' onmouseover='hiliteItem(this,\"yes\");' onmouseout='unhiliteItem(this);' onclick=\"document.getElementById('massupdate_form').style.display = '';\">{$app_strings['LBL_MASS_UPDATE']}</a>";
 	}
 
@@ -366,10 +372,10 @@ EOHTML;
 	 */
 	protected function buildComposeEmailLink(
 	    $totalCount
-	    ) 
+	    )
 	{
 		global $app_strings,$dictionary;
-        
+
         if (!is_array($this->seed->field_defs)) {
             return '';
         }
@@ -387,23 +393,23 @@ EOHTML;
             return '';
         }
 
-		
+
 		$userPref = $GLOBALS['current_user']->getPreference('email_link_type');
 		$defaultPref = $GLOBALS['sugar_config']['email_default_client'];
 		if($userPref != '')
 			$client = $userPref;
 		else
 			$client = $defaultPref;
-		
+
 		if($client == 'sugar')
 			$script = "<a href='#' style='width: 150px' class='menuItem' onmouseover='hiliteItem(this,\"yes\");' onmouseout='unhiliteItem(this);' " .
 					'onclick="return sListView.send_form_for_emails(true, \''."Emails".'\', \'index.php?module=Emails&action=Compose&ListView=true\',\''.$app_strings['LBL_LISTVIEW_NO_SELECTED'].'\', \''.$_REQUEST['module'].'\', \''.$totalCount.'\', \''.$app_strings['LBL_LISTVIEW_LESS_THAN_TEN_SELECT'].'\')">' .
-					$app_strings['LBL_EMAIL_COMPOSE'] . '</a>';				
+					$app_strings['LBL_EMAIL_COMPOSE'] . '</a>';
 		else
 			$script = "<a href='#' style='width: 150px' class='menuItem' onmouseover='hiliteItem(this,\"yes\");' onmouseout='unhiliteItem(this);' " .
-					'onclick="return sListView.use_external_mail_client(\''.$app_strings['LBL_LISTVIEW_NO_SELECTED'].'\');">' .
-					$app_strings['LBL_EMAIL_COMPOSE'] . '</a>';			
-		
+					"onclick=\"return sListView.use_external_mail_client('{$app_strings['LBL_LISTVIEW_NO_SELECTED']}', '{$_REQUEST['module']}');\">" .
+					$app_strings['LBL_EMAIL_COMPOSE'] . '</a>';
+
 		return $script;
 	} // fn
 	/**
@@ -411,10 +417,10 @@ EOHTML;
 	 *
 	 * @return string HTML
 	 */
-	protected function buildDeleteLink() 
+	protected function buildDeleteLink()
 	{
 		global $app_strings;
-		
+
 		return "<a href='#' style='width: 150px' class='menuItem' onmouseover='hiliteItem(this,\"yes\");' onmouseout='unhiliteItem(this);' onclick=\"return sListView.send_mass_update('selected', '{$app_strings['LBL_LISTVIEW_NO_SELECTED']}', 1)\">{$app_strings['LBL_DELETE_BUTTON_LABEL']}</a>";
 	}
 	/**
@@ -436,10 +442,10 @@ EOHTML;
 	 *
 	 * @return string HTML
 	 */
-	protected function buildMergeDuplicatesLink() 
+	protected function buildMergeDuplicatesLink()
 	{
         global $app_strings, $dictionary;
-        
+
         $return_string='';
         $return_string.= isset($_REQUEST['module']) ? "&return_module={$_REQUEST['module']}" : "";
         $return_string.= isset($_REQUEST['action']) ? "&return_action={$_REQUEST['action']}" : "";
@@ -448,13 +454,13 @@ EOHTML;
 		if (!(ACLController::checkAccess( $_REQUEST['module'], 'edit', true)) or !(ACLController::checkAccess( $_REQUEST['module'], 'delete', true))) {
 			return '';
 		}
-		
+
         if (isset($dictionary[$this->seed->object_name]['duplicate_merge']) && $dictionary[$this->seed->object_name]['duplicate_merge']==true ) {
             return "<a href='#' style='width: 150px' class='menuItem' onmouseover='hiliteItem(this,\"yes\");' onmouseout='unhiliteItem(this);' ".
                 "onclick='if (sugarListView.get_checks_count()> 1) {sListView.send_form(true, \"MergeRecords\", \"index.php\", \"{$app_strings['LBL_LISTVIEW_NO_SELECTED']}\", \"{$this->seed->module_dir}\",\"$return_string\");} else {alert(\"{$app_strings['LBL_LISTVIEW_TWO_REQUIRED']}\");return false;}'>".
                 $app_strings['LBL_MERGE_DUPLICATES'].'</a>';
         }
-        
+
         return '';
      }
     /**
@@ -462,7 +468,7 @@ EOHTML;
 	 *
 	 * @return string HTML
 	 */
-	protected function buildMergeLink() 
+	protected function buildMergeLink()
 	{
         require_once('modules/MailMerge/modules_array.php');
         global $current_user, $app_strings;
@@ -480,17 +486,19 @@ EOHTML;
         }
         return $str;
 	}
-	
+
 	/**
 	 * Builds the add to target list link
 	 *
      * @return string HTML
 	 */
-	protected function buildTargetList() 
+	protected function buildTargetList()
 	{
         global $app_strings;
-        $current_query_by_page = base64_encode(serialize($_REQUEST));
-        
+        $temp = array_merge($_GET, $_POST);
+        unset($temp['current_query_by_page']);
+		$current_query_by_page = base64_encode(serialize($temp));
+
 		$js = <<<EOF
             if(sugarListView.get_checks_count() < 1) {
                 alert('{$app_strings['LBL_LISTVIEW_NO_SELECTED']}');
@@ -587,7 +595,8 @@ EOF;
 
 		$str .= "<textarea style='display: none' name='uid'>{$uids}</textarea>\n" .
 				"<input type='hidden' name='select_entire_list' value='{$select_entire_list}'>\n".
-				"<input type='hidden' name='{$this->moduleString}' value='0'>\n";
+				"<input type='hidden' name='{$this->moduleString}' value='0'>\n".
+		        "<input type='hidden' name='show_plus' value='{$this->show_plus}'>\n";
 		return $str;
 	}
 

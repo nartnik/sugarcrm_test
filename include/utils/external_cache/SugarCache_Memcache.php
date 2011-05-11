@@ -43,6 +43,11 @@ class SugarCache_Memcache extends SugarCache_ExternalAbstract
         'host' => 'localhost',
         'port' => 11211,
     );
+    /**
+     * Minimal data size to be compressed
+     * @var int
+     */
+    protected $min_compress = 512;
 
     function SugarCache_Memcache()
     {
@@ -67,7 +72,13 @@ class SugarCache_Memcache extends SugarCache_ExternalAbstract
             }
             $this->initialized = false;
             return;
-        } 
+        }
+        $config = SugarConfig::getInstance();
+        if($config->get('external_cache.memcache.disable_compression', false)) {
+                $this->_memcache->setCompressThreshold($config->get('external_cache.memcache.min_compression', $this->min_compress));
+            } else {
+                $this->_memcache->setCompressThreshold(0);
+            }
         parent::init();
     }
 
@@ -102,7 +113,7 @@ class SugarCache_Memcache extends SugarCache_ExternalAbstract
             SugarCache::log("Step 3: Converting key ($key) to external key ($external_key)");
         }
 
-        $this->_memcache->set($external_key, $value, $this->timeout);
+        $this->_memcache->set($external_key, $value, 0, $this->timeout);
 
         if (EXTERNAL_CACHE_DEBUG) {
             SugarCache::log("Step 4: Added key to memcache cache {$external_key} with value ($value) to be stored for ".EXTERNAL_CACHE_INTERVAL_SECONDS." seconds");

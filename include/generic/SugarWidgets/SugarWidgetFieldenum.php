@@ -182,7 +182,11 @@ class SugarWidgetFieldEnum extends SugarWidgetReportField {
 			}
 
 			foreach ($list as $key => $value) {
-				array_push($order_by_arr, $order_by."='".$key."' $order_dir\n");
+				if ($key == '') {
+					array_push($order_by_arr, "(".$order_by."='".$key."' OR ".$order_by." IS NULL)" . " $order_dir\n");
+				} else {
+				    array_push($order_by_arr, $order_by."='".$key."' $order_dir\n");
+				}
 			}
 			$thisarr = implode(',', $order_by_arr);
 			return $thisarr;

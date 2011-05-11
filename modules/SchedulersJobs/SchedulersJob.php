@@ -136,9 +136,10 @@ class SchedulersJob extends SugarBean {
 	 * handles some date/time foramtting
 	 * @param string time Time (usually "now")
 	 * @param object user User, usually admin (id = '1')
+	 * @param boolean to_local, convert to user's time format
 	 * @return string formatted time.
 	 */
-	function handleDateFormat($time, $user=null) {
+	function handleDateFormat($time, $user=null, $to_local=true) {
 		global $timedate;
 		
 		if(!isset($timedate) || empty($timedate)) {
@@ -149,8 +150,12 @@ class SchedulersJob extends SugarBean {
 		$user = (empty($user)) ? $this->user : $user;
 		$dbTime = gmdate($GLOBALS['timedate']->get_db_date_time_format(), strtotime($time));
 
-		$ret = $timedate->to_display_date_time($dbTime, true, true, $user);
-		return $ret;
+		if ($to_local) {
+		    $ret = $timedate->to_display_date_time($dbTime, true, true, $user);
+		    return $ret;
+		}
+		
+		return $dbTime;
 	}
 	
 	function setJobFlag($flag) {
@@ -180,7 +185,7 @@ class SchedulersJob extends SugarBean {
 		$trackerManager->pause();		
 		$GLOBALS['log']->debug('----->SchedulersJob updating Job Status and finishing Job execution.');
 		$this->scheduler->retrieve($this->scheduler->id);
-		$this->scheduler->last_run = $this->handleDateFormat('now');
+		$this->scheduler->last_run = gmdate($GLOBALS['timedate']->get_db_date_time_format());
 		if($this->scheduler->last_run == gmdate($GLOBALS['timedate']->get_db_date_time_format(), strtotime('Jan 01 2000 00:00:00'))) {
 			$this->scheduler->last_run = $this->handleDateFormat('now');
 			$GLOBALS['log']->fatal('Scheduler applying bogus date for "Last Run": '.$this->scheduler->last_run);

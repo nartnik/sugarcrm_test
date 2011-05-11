@@ -340,6 +340,9 @@ $xtpl->assign('MONTHS', $exInterval[3]);
 $xtpl->assign('DAY_OF_WEEK', $exInterval[4]);
 $xtpl->assign('ROLLOVER', $email->rolloverStyle);
 
+$xtpl->assign('SERVER_TIMEZONE', date("T"));
+$xtpl->assign('SERVER_OFFSET', date("O"));
+
 $xtpl->parse("main");
 $xtpl->out("main");
 

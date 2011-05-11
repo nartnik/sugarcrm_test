@@ -578,6 +578,8 @@ require_once('include/EditView/EditView2.php');
 	                                   $field_value .= ' or ';
 	                               }
 	                               $field_value .= "$db_field like '%^$qVal^%'";
+	                        } else {
+	                        	$field_value .= '('.$db_field . ' IS NULL or '.$db_field."='^^' or ".$db_field."='')";
 	                        }
 	                    }
 
@@ -836,8 +838,9 @@ require_once('include/EditView/EditView2.php');
                                 $this->seed->listview_inner_join[] = $parms['innerjoin'] . " '" . $parms['value'] . "%')";
                                 break;
                             case 'isnull':
-                                $where .= $db_field . ' IS NULL'; 
-                                if ($field_value != '')
+                            	// OOTB fields are NULL, custom fields are blank
+                                $where .= '('.$db_field . ' IS NULL or ' . $db_field . "='')"; 
+                            	if ($field_value != '')
                                     $where .=  ' OR ' . $db_field . " in (".$field_value.')';
                                 break;
                         }

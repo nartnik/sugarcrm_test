@@ -44,30 +44,41 @@ class iFrameDashlet extends Dashlet {
     var $configureTpl = 'modules/Home/Dashlets/iFrameDashlet/configure.tpl';
     var $defaultURL = 'http://apps.sugarcrm.com/dashlet/sugarcrm-news-dashlet.html?lang=@@LANG@@&edition=@@EDITION@@&ver=@@VER@@';
     var $url;
+    protected $allowed_schemes = array("http", "https");
 
     function iFrameDashlet($id, $options = null) {
         parent::Dashlet($id);
         $this->isConfigurable = true;
-        
-        if(empty($options['title'])) { 
+
+        if(empty($options['title'])) {
             $this->title = translate('LBL_DASHLET_TITLE', 'Home');
             $this->title = translate('LBL_DASHLET_DISCOVER_SUGAR_PRO', 'Home');
         } else {
             $this->title = $options['title'];
         }
-        if(empty($options['url'])) { 
+        if(empty($options['url'])) {
             $this->url = $this->defaultURL;
             $this->url = 'http://apps.sugarcrm.com/dashlet/go-pro.html?lang=@@LANG@@&edition=@@EDITION@@&ver=@@VER@@';
         } else {
             $this->url = $options['url'];
         }
 
-        if(empty($options['height']) || (int)$options['height'] < 1 ) { 
-            $this->height = 315; 
+        $this->checkURL();
+
+        if(empty($options['height']) || (int)$options['height'] < 1 ) {
+            $this->height = 315;
         } else {
             $this->height = (int)$options['height'];
         }
 
+    }
+
+    protected function checkURL()
+    {
+        $scheme = parse_url($this->url, PHP_URL_SCHEME);
+        if(!in_array($scheme, $this->allowed_schemes)) {
+            $this->url = 'about:blank';
+        }
     }
 
     function displayOptions() {
@@ -81,13 +92,13 @@ class iFrameDashlet extends Dashlet {
         $ss->assign('id', $this->id);
         $ss->assign('height', $this->height);
         $ss->assign('saveLBL', $app_strings['LBL_SAVE_BUTTON_LABEL']);
-        
-        return  $ss->fetch('modules/Home/Dashlets/iFrameDashlet/configure.tpl');        
+
+        return  $ss->fetch('modules/Home/Dashlets/iFrameDashlet/configure.tpl');
     }
 
     function saveOptions($req) {
         $options = array();
-        
+
         if ( isset($req['title']) ) {
             $options['title'] = $req['title'];
         }

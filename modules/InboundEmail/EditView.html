@@ -120,7 +120,10 @@
 				<slot>{MOD.LBL_PASSWORD}:
 				<span class="required">{APP.LBL_REQUIRED_SYMBOL}&nbsp;</slot></td>
 			<td valign="top"  width="35%">
-				<slot><input name='email_password' tabindex='80' size='30' maxlength='100' type="password" value="{PASSWORD}" autocomplete="off" {IE_DISABLED}></slot></td>
+				<slot>
+				<input name='email_password' id="email_password" tabindex='80' size='30' maxlength='100' type="password" autocomplete="off" {IE_DISABLED}>
+				<a href="javascript:void(0)" id='email_password_link' onClick="SUGAR.util.setEmailPasswordEdit('email_password')" style="display: none">{APP.LBL_CHANGE_PASSWORD}</a>
+				</slot></td>
 		</tr>
 		<tr>
 			<td valign="top" scope="row" width="15%" NOWRAP>
@@ -304,10 +307,10 @@ function checkformdata() {
 
 function prefillGmailDefaults(){
 
-        document.getElementById('server_url').value = "imap.gmail.com"; 
+        document.getElementById('server_url').value = "imap.gmail.com";
         document.getElementById('ssl').checked = true;
         document.getElementById('protocol').value = "imap";
-        
+
         toggle_monitored_folder(document.getElementById('protocol'));
         setPortDefault();
 }
@@ -352,7 +355,7 @@ function showCreateCaseRow() {
 	var createCaseRow1 = document.getElementById('createCaseRow1');
 	var isCreateCase = document.getElementById('is_create_case').checked;
 	var autoImportEl = document.getElementById('is_auto_import');
-	
+
 	if (isCreateCase) {
 		createCaseRow.style.display = '';
 		createCaseRow1.style.display = '';
@@ -549,9 +552,9 @@ function showHideLeaveMessagesOnMailServer() {
 } // fn
 
 function showWarningsIfChaningAutoImport() {
-    
+
     var isAutoImportOn = document.getElementById('is_auto_import').checked;
-    var isCreateCase = document.getElementById('is_create_case').checked 
+    var isCreateCase = document.getElementById('is_create_case').checked
     var record = document.forms['EditView'].record.value;
     //Alert if changing for an existing record only.
     if(record != '')
@@ -569,6 +572,11 @@ possibleActionChange();
 
 var warningForAutoChange = '{MOD.LBL_WARNING_CHANGING_AUTO_IMPORT}';
 var warningForAutoChangeWithCreateCase = '{MOD.LBL_WARNING_CHANGING_AUTO_IMPORT_WITH_CREATE_CASE}';
+if(window.addEventListener){
+    window.addEventListener("load", function() { SUGAR.util.setEmailPasswordDisplay('email_password', {HAS_PASSWORD}); }, false);
+}else{
+    window.attachEvent("onload", function() { SUGAR.util.setEmailPasswordDisplay('email_password', {HAS_PASSWORD}); });
+}
 </script>
 {JAVASCRIPT}
 <!-- END: main -->

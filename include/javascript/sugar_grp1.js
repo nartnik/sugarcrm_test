@@ -110,9 +110,9 @@ function isValidEmail(emailStr){if(emailStr.length==0){return true;}
 var lastChar=emailStr.charAt(emailStr.length-1);if(!lastChar.match(/[^\.]/i)){return false;}
 var firstLocalChar=emailStr.charAt(0);if(firstLocalChar.match(/\./)){return false;}
 var pos=emailStr.lastIndexOf("@");var localPart=emailStr.substr(0,pos);var lastLocalChar=localPart.charAt(localPart.length-1);if(lastLocalChar.match(/\./)){return false;}
-var reg=/@.*?;/g;while((results=reg.exec(emailStr))!=null){orignial=results[0];parsedResult=results[0].replace(';','::;::');emailStr=emailStr.replace(orignial,parsedResult);}
-reg=/@.*?,/g;while((results=reg.exec(emailStr))!=null){orignial=results[0];var check=results[0].substr(1);if(check.indexOf('@')!=-1){parsedResult=results[0].replace(',','::;::');emailStr=emailStr.replace(orignial,parsedResult);}}
-var emailArr=emailStr.split(/::;::/);for(var i=0;i<emailArr.length;i++){emailAddress=emailArr[i];if(trim(emailAddress)!=''){if(!/^\s*[\w.%+\-&'#!\$\*=\?\^_`\{\}~\/]+@([A-Z0-9-]+\.)*[A-Z0-9-]+\.[\w-]{2,}\s*$/i.test(emailAddress)&&!/^.*<[A-Z0-9._%+\-&'#!\$\*=\?\^_`\{\}~]+?@([A-Z0-9-]+\.)*[A-Z0-9-]+\.[\w-]{2,}>\s*$/i.test(emailAddress)){return false;}}}
+var reg=/@.*?;/g;var results;while((results=reg.exec(emailStr))!=null){var original=results[0];parsedResult=results[0].replace(';','::;::');emailStr=emailStr.replace(original,parsedResult);}
+reg=/.@.*?,/g;while((results=reg.exec(emailStr))!=null){var original=results[0];if(original.indexOf("::;::")==-1){var parsedResult=results[0].replace(',','::;::');emailStr=emailStr.replace(original,parsedResult);}}
+var emailArr=emailStr.split(/::;::/);for(var i=0;i<emailArr.length;i++){var emailAddress=emailArr[i];if(trim(emailAddress)!=''){if(!/^\s*[\w.%+\-&'#!\$\*=\?\^_`\{\}~\/]+@([A-Z0-9-]+\.)*[A-Z0-9-]+\.[\w-]{2,}\s*$/i.test(emailAddress)&&!/^.*<[A-Z0-9._%+\-&'#!\$\*=\?\^_`\{\}~]+?@([A-Z0-9-]+\.)*[A-Z0-9-]+\.[\w-]{2,}>\s*$/i.test(emailAddress)){return false;}}}
 return true;}
 function isValidPhone(phoneStr){if(phoneStr.length==0){return true;}
 if(!/^[0-9\-\(\)\s]+$/.test(phoneStr))
@@ -312,10 +312,19 @@ sugarListView.prototype.confirm_action=function(del){if(del==1){return confirm(S
 else{return confirm(SUGAR.language.get('app_strings','NTC_UPDATE_CONFIRMATION_NUM')+sugarListView.get_num_selected()+SUGAR.language.get('app_strings','NTC_DELETE_SELECTED_RECORDS'));}}
 sugarListView.get_num_selected=function(){if(typeof document.MassUpdate!='undefined'){the_form=document.MassUpdate;for(wp=0;wp<the_form.elements.length;wp++){if(typeof the_form.elements[wp].name!='undefined'&&the_form.elements[wp].name=='selectCount[]'){return the_form.elements[wp].value;}}}
 return 0;}
-sugarListView.update_count=function(count,add){if(typeof document.MassUpdate!='undefined'){the_form=document.MassUpdate;for(wp=0;wp<the_form.elements.length;wp++){if(typeof the_form.elements[wp].name!='undefined'&&the_form.elements[wp].name=='selectCount[]'){if(add){the_form.elements[wp].value=parseInt(the_form.elements[wp].value,10)+count;}
-else the_form.elements[wp].value=count;}}}}
-sugarListView.prototype.use_external_mail_client=function(no_record_txt){selected_records=sugarListView.get_checks_count();if(selected_records<1){alert(no_record_txt);}else{location.href='mailto:';}
-return false;}
+sugarListView.update_count=function(count,add){if(typeof document.MassUpdate!='undefined'){the_form=document.MassUpdate;for(wp=0;wp<the_form.elements.length;wp++){if(typeof the_form.elements[wp].name!='undefined'&&the_form.elements[wp].name=='selectCount[]'){if(add){the_form.elements[wp].value=parseInt(the_form.elements[wp].value,10)+count;if(the_form.select_entire_list.value==1&&the_form.show_plus.value){the_form.elements[wp].value+='+';}}else{if(the_form.select_entire_list.value==1&&the_form.show_plus.value){the_form.elements[wp].value=count+'+';}else{the_form.elements[wp].value=count;}}}}}}
+sugarListView.prototype.use_external_mail_client=function(no_record_txt,module){selected_records=sugarListView.get_checks_count();if(selected_records<1){alert(no_record_txt);return false;}
+if(document.MassUpdate.select_entire_list.value==1){if(totalCount>10){alert(totalCountError);return;}
+select=false;}
+else if(document.MassUpdate.massall.checked==true)
+select=false;else
+select=true;sugarListView.get_checks();var ids="";if(select){ids=document.MassUpdate.uid.value;}
+else{inputs=document.MassUpdate.elements;ar=new Array();for(i=0;i<inputs.length;i++){if(inputs[i].name=='mass[]'&&inputs[i].checked&&typeof(inputs[i].value)!='function'){ar.push(inputs[i].value);}}
+ids=ar.join(',');}
+YAHOO.util.Connect.asyncRequest("POST","index.php?",{success:this.use_external_mail_client_callback},SUGAR.util.paramsToUrl({module:"Emails",action:"Compose",listViewExternalClient:1,action_module:module,uid:ids,to_pdf:1}));return false;}
+sugarListView.prototype.use_external_mail_client_callback=function(o)
+{if(o.responseText)
+location.href='mailto:'+o.responseText;}
 sugarListView.prototype.send_form_for_emails=function(select,currentModule,action,no_record_txt,action_module,totalCount,totalCountError){if(document.MassUpdate.select_entire_list.value==1){if(totalCount>10){alert(totalCountError);return;}
 select=false;}
 else if(document.MassUpdate.massall.checked==true)
@@ -437,7 +446,8 @@ success=function(data){eval(data.responseText);SUGAR.util.additionalDetailsCache
 if(typeof SUGAR.util.additionalDetailsCache[spanId]!='undefined')
 return oReturn(SUGAR.util.additionalDetailsCache[spanId]['body'],SUGAR.util.additionalDetailsCache[spanId]['caption'],SUGAR.util.additionalDetailsCache[spanId]['width'],SUGAR.util.additionalDetailsCache[spanId]['theme']);if(typeof SUGAR.util.additionalDetailsCalls[spanId]!='undefined')
 return;ajaxStatus.showStatus(SUGAR.language.get('app_strings','LBL_LOADING'));url='index.php?to_pdf=1&module=Home&action=AdditionalDetailsRetrieve&bean='+bean+'&id='+id;SUGAR.util.additionalDetailsCalls[spanId]=YAHOO.util.Connect.asyncRequest('GET',url,{success:success,failure:success});return false;}
-SUGAR.util.additionalDetailsRpcCall=window.setTimeout('go()',250);},clearAdditionalDetailsCall:function(){if(typeof SUGAR.util.additionalDetailsRpcCall=='number')window.clearTimeout(SUGAR.util.additionalDetailsRpcCall);},extend:function(subc,superc,overrides){subc.prototype=new superc;if(overrides){for(var i in overrides)subc.prototype[i]=overrides[i];}}};}();SUGAR.util.additionalDetailsCache=new Array();SUGAR.util.additionalDetailsCalls=new Array();if(typeof YAHOO!='undefined')YAHOO.util.Event.addListener(window,'load',SUGAR.util.setMaxLength);SUGAR.savedViews=function(){var selectedOrderBy;var selectedSortOrder;var displayColumns;var hideTabs;var columnsMeta;return{setChooser:function(){var displayColumnsDef=new Array();var hideTabsDef=new Array();var left_td=document.getElementById('display_tabs_td');if(typeof left_td=='undefined'||left_td==null)return;var right_td=document.getElementById('hide_tabs_td');var displayTabs=left_td.getElementsByTagName('select')[0];var hideTabs=right_td.getElementsByTagName('select')[0];for(i=0;i<displayTabs.options.length;i++){displayColumnsDef.push(displayTabs.options[i].value);}
+SUGAR.util.additionalDetailsRpcCall=window.setTimeout('go()',250);},clearAdditionalDetailsCall:function(){if(typeof SUGAR.util.additionalDetailsRpcCall=='number')window.clearTimeout(SUGAR.util.additionalDetailsRpcCall);},extend:function(subc,superc,overrides){subc.prototype=new superc;if(overrides){for(var i in overrides)subc.prototype[i]=overrides[i];}},hrefURL:function(url){if(SUGAR.isIE){var trampoline=document.createElement('a');trampoline.href=url;document.body.appendChild(trampoline);trampoline.click();document.body.removeChild(trampoline);}else{document.location.href=url;}},openWindow:function(URL,windowName,windowFeatures){if(SUGAR.isIE){win=window.open('',windowName,windowFeatures);var trampoline=document.createElement('a');trampoline.href=URL;trampoline.target=windowName;document.body.appendChild(trampoline);trampoline.click();document.body.removeChild(trampoline);}else{win=window.open(URL,windowName,windowFeatures);}
+return win;}};}();SUGAR.util.additionalDetailsCache=new Array();SUGAR.util.additionalDetailsCalls=new Array();if(typeof YAHOO!='undefined')YAHOO.util.Event.addListener(window,'load',SUGAR.util.setMaxLength);SUGAR.savedViews=function(){var selectedOrderBy;var selectedSortOrder;var displayColumns;var hideTabs;var columnsMeta;return{setChooser:function(){var displayColumnsDef=new Array();var hideTabsDef=new Array();var left_td=document.getElementById('display_tabs_td');if(typeof left_td=='undefined'||left_td==null)return;var right_td=document.getElementById('hide_tabs_td');var displayTabs=left_td.getElementsByTagName('select')[0];var hideTabs=right_td.getElementsByTagName('select')[0];for(i=0;i<displayTabs.options.length;i++){displayColumnsDef.push(displayTabs.options[i].value);}
 if(typeof hideTabs!='undefined'){for(i=0;i<hideTabs.options.length;i++){hideTabsDef.push(hideTabs.options[i].value);}}
 if(!SUGAR.savedViews.clearColumns)
 document.getElementById('displayColumnsDef').value=displayColumnsDef.join('|');document.getElementById('hideTabsDef').value=hideTabsDef.join('|');},select:function(saved_search_select){for(var wp=0;wp<document.search_form.saved_search_select.options.length;wp++){if(typeof document.search_form.saved_search_select.options[wp].value!='undefined'&&document.search_form.saved_search_select.options[wp].value==saved_search_select){document.search_form.saved_search_select.selectedIndex=wp;document.search_form.ss_delete.style.display='';document.search_form.ss_update.style.display='';}}},saved_search_action:function(action,delete_lang){if(action=='delete'){if(!confirm(delete_lang))return;}
@@ -466,7 +476,7 @@ else{handleDisplay();}},copyElement:function(inputName,copyFromElement){switch(c
 elemType=elem.type.toLowerCase();if(elemType=='text'||elemType=='textarea'||elemType=='password'){elem.value='';}
 else if(elemType=='select'||elemType=='select-one'||elemType=='select-multiple'){var optionList=elem.options;for(var ii=0;ii<optionList.length;ii++){optionList[ii].selected=false;}}
 else if(elemType=='radio'||elemType=='checkbox'){elem.checked=false;elem.selected=false;}
-else if(elemType=='hidden'){if((elem.name.length>3&&elem.name.substring(elem.name.length-3)=='_id')||(elem.name.length>12&&elem.name.substring(elem.name.length-12)=='_id_advanced')){elem.value='';}}}
+else if(elemType=='hidden'){if((elem.name.length>3&&elem.name.substring(elem.name.length-3)=='_id')||((elem.name.length>9)&&(elem.name.substring(elem.name.length-9)=='_id_basic'))||(elem.name.length>12&&elem.name.substring(elem.name.length-12)=='_id_advanced')){elem.value='';}}}
 SUGAR.savedViews.clearColumns=true;}};}();SUGAR.tabChooser=function(){var object_refs=new Array();return{frozenOptions:[],movementCallback:function(left_side,right_side){},orderCallback:function(left_side,right_side){},freezeOptions:function(left_name,right_name,target){if(!SUGAR.tabChooser.frozenOptions){SUGAR.tabChooser.frozenOptions=[];}
 if(!SUGAR.tabChooser.frozenOptions[left_name]){SUGAR.tabChooser.frozenOptions[left_name]=[];}
 if(!SUGAR.tabChooser.frozenOptions[left_name][right_name]){SUGAR.tabChooser.frozenOptions[left_name][right_name]=[];}
@@ -528,16 +538,14 @@ function open_popup(module_name,width,height,initial_filter,close_popup,hide_cle
 {if(typeof(popupCount)=="undefined"||popupCount==0)
 popupCount=1;window.document.popup_request_data=popup_request_data;window.document.close_popup=close_popup;URL='index.php?'
 +'module='+module_name
-+'&action=Popup';if(initial_filter!='')
-{URL+='&query=true'+initial_filter;}
-if(hide_clear_button)
-{URL+='&hide_clear_button=true';}
-windowName=module_name+'_popup_window'+popupCount;popupCount++;windowFeatures='width='+width
++'&action=Popup';if(initial_filter!=''){URL+='&query=true'+initial_filter;popupName=initial_filter.replace(/[^a-z_\-0-9]+/ig,'_');windowName=module_name+'_popup_window'+popupName;}else{windowName=module_name+'_popup_window'+popupCount;}
+popupCount++;if(hide_clear_button){URL+='&hide_clear_button=true';}
+windowFeatures='width='+width
 +',height='+height
 +',resizable=1,scrollbars=1';if(popup_mode==''&&popup_mode=='undefined'){popup_mode='single';}
 URL+='&mode='+popup_mode;if(create==''&&create=='undefined'){create='false';}
 URL+='&create='+create;if(metadata!=''&&metadata!='undefined'){URL+='&metadata='+metadata;}
-win=window.open(URL,windowName,windowFeatures);if(window.focus)
+win=SUGAR.util.openWindow(URL,windowName,windowFeatures);if(window.focus)
 {win.focus();}
 win.popupCount=popupCount;return win;}
 var from_popup_return=false;function set_return_basic(popup_reply_data,filter)
@@ -583,8 +591,10 @@ SUGAR.util.isPackageManager=function(){if(typeof(document.the_form)!='undefined'
 SUGAR.util.ajaxCallInProgress=function(){return SUGAR_callsInProgress!=0;}
 SUGAR.util.closeActivityPanel={show:function(module,id,new_status,viewType,parentContainerId){if(SUGAR.util.closeActivityPanel.panel)
 SUGAR.util.closeActivityPanel.panel.destroy();var singleModule=SUGAR.language.get("app_list_strings","moduleListSingular")[module];singleModule=typeof(singleModule!='undefined')?singleModule.toLowerCase():'';var closeText=SUGAR.language.get("app_strings","LBL_CLOSE_ACTIVITY_CONFIRM").replace("#module#",singleModule);SUGAR.util.closeActivityPanel.panel=new YAHOO.widget.SimpleDialog("closeActivityDialog",{width:"300px",fixedcenter:true,visible:false,draggable:false,close:true,text:closeText,constraintoviewport:true,buttons:[{text:SUGAR.language.get("app_strings","LBL_EMAIL_OK"),handler:function(){if(SUGAR.util.closeActivityPanel.panel)
-SUGAR.util.closeActivityPanel.panel.hide();ajaxStatus.showStatus(SUGAR.language.get('app_strings','LBL_SAVING'));var args="action=save&id="+id+"&status="+new_status+"&module="+module;var callback={success:function(o)
-{window.location.reload(true);},argument:{'parentContainerId':parentContainerId}};YAHOO.util.Connect.asyncRequest('POST','index.php',callback,args);},isDefault:true},{text:SUGAR.language.get("app_strings","LBL_EMAIL_CANCEL"),handler:function(){SUGAR.util.closeActivityPanel.panel.hide();}}]});SUGAR.util.closeActivityPanel.panel.setHeader(SUGAR.language.get("app_strings","LBL_CLOSE_ACTIVITY_HEADER"));SUGAR.util.closeActivityPanel.panel.render(document.body);SUGAR.util.closeActivityPanel.panel.show();}}// End of File include/javascript/sugar_3.js
+SUGAR.util.closeActivityPanel.panel.hide();ajaxStatus.showStatus(SUGAR.language.get('app_strings','LBL_SAVING'));var args="action=save&id="+id+"&record="+id+"&status="+new_status+"&module="+module;var callback={success:function(o)
+{window.location.reload(true);},argument:{'parentContainerId':parentContainerId}};YAHOO.util.Connect.asyncRequest('POST','index.php',callback,args);},isDefault:true},{text:SUGAR.language.get("app_strings","LBL_EMAIL_CANCEL"),handler:function(){SUGAR.util.closeActivityPanel.panel.hide();}}]});SUGAR.util.closeActivityPanel.panel.setHeader(SUGAR.language.get("app_strings","LBL_CLOSE_ACTIVITY_HEADER"));SUGAR.util.closeActivityPanel.panel.render(document.body);SUGAR.util.closeActivityPanel.panel.show();}}
+SUGAR.util.setEmailPasswordDisplay=function(id,exists){link=document.getElementById(id+'_link');pwd=document.getElementById(id);if(!pwd||!link)return;if(exists){pwd.style.display='none';link.style.display='';}else{pwd.style.display='';link.style.display='none';}}
+SUGAR.util.setEmailPasswordEdit=function(id){link=document.getElementById(id+'_link');pwd=document.getElementById(id);if(!pwd||!link)return;pwd.style.display='';link.style.display='none';}// End of File include/javascript/sugar_3.js
                                 
 /*********************************************************************************
  * SugarCRM is a customer relationship management program developed by

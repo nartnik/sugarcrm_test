@@ -90,7 +90,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 'uploadfile' =>
   array (
      'name'=>'uploadfile',
-     'vname' => 'LBL_FILENAME',
+     'vname' => 'LBL_FILE_UPLOAD',
      'type' => 'file',
      'source' => 'non-db',
   ),

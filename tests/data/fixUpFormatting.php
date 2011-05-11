@@ -108,4 +108,27 @@ class fixUpFormattingTest extends Sugar_PHPUnit_Framework_TestCase
         $bean->fixUpFormatting();
         $this->assertEquals($to,$bean->bool_field,'fixUpFormatting did not adjust from ('.gettype($from).') "'.$from.'"');
     }
+
+    /**
+     * @group bug43321
+     */
+	public function testStringNULLFixups()
+	{
+        $bean = new SugarBean();
+
+        $bean->field_defs = array('date_field'=>array('type'=>'date'),
+                                 'datetime_field'=>array('type'=>'datetime'),
+                                 'time_field'=>array('type'=>'time'),
+                                 'datetimecombo_field'=>array('type'=>'datetimecombo')
+        );
+        $bean->date_field = 'NULL';
+        $bean->datetime_field = 'NULL';
+        $bean->time_field = 'NULL';
+        $bean->datetimecombo_field = 'NULL';
+        $bean->fixUpFormatting();
+        $this->assertEquals('', $bean->date_field,'fixUpFormatting did not reset string NULL for date');
+        $this->assertEquals('', $bean->datetime_field,'fixUpFormatting did not reset string NULL for time');
+        $this->assertEquals('', $bean->time_field,'fixUpFormatting did not reset string NULL for datetime');
+        $this->assertEquals('', $bean->datetimecombo_field,'fixUpFormatting did not reset string NULL for datetimecombo');
+	}
 }

@@ -39,7 +39,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 
 if(!is_admin($current_user)){
-    sugar_die($GLOBALS['app_strings']['ERR_NOT_ADMIN']); 
+    sugar_die($GLOBALS['app_strings']['ERR_NOT_ADMIN']);
 }
 
 require_once("modules/Configurator/metadata/SugarpdfSettingsdefs.php");
@@ -70,7 +70,7 @@ if(!empty($_POST['save'])){
 }
 
 if(!empty($_POST['restore'])){
-    $focus = new Administration();    
+    $focus = new Administration();
     foreach($_POST as $key => $val) {
         $prefix = $focus->get_config_prefix($key);
         if(in_array($prefix[0], $focus->config_categories)) {
@@ -85,11 +85,11 @@ if(!empty($_POST['restore'])){
 }
 
 echo getClassicModuleTitle(
-        "Administration", 
+        "Administration",
         array(
             "<a href='index.php?module=Administration&action=index'>".translate('LBL_MODULE_NAME','Administration')."</a>",
            $mod_strings['LBL_PDFMODULE_NAME'],
-           ), 
+           ),
         true
         );
 
@@ -149,17 +149,13 @@ function checkUploadImage(){
                 if (!move_uploaded_file($v['tmp_name'], $file_name))
                     die("Possible file upload attack!\n");
                 if(file_exists($file_name) && is_file($file_name)){
-                    $img_size = getimagesize($file_name);
-                    $filetype = $img_size['mime'];
-                    if($filetype != 'image/jpeg' && !empty($_REQUEST['sugarpdf_pdf_class']) && $_REQUEST['sugarpdf_pdf_class'] == "EZPDF"){
-                        $error='LBL_ALERT_TYPE_IMAGE_EZPDF';
-                    }
-                    else if($filetype != 'image/jpeg' && $filetype != 'image/png'){
-                        $error='LBL_ALERT_TYPE_IMAGE';
-                    }else{
-                        $test=$img_size[0]/$img_size[1];
-                        if (($test>10 || $test<1)){
-                            //$error='LBL_ALERT_SIZE_RATIO_QUOTES';
+                    if(!empty($_REQUEST['sugarpdf_pdf_class']) && $_REQUEST['sugarpdf_pdf_class'] == "EZPDF") {
+                        if(!verify_uploaded_image($file_name, true)) {
+                            $error='LBL_ALERT_TYPE_IMAGE_EZPDF';
+                        }
+                    } else {
+                        if(!verify_uploaded_image($file_name)) {
+                            $error='LBL_ALERT_TYPE_IMAGE';
                         }
                     }
                     if(!empty($error)){

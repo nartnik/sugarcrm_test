@@ -112,9 +112,10 @@ if( isset( $_REQUEST['run'] ) && ($_REQUEST['run'] != "") ){
             echo $mod_strings['ERR_UW_NO_UPLOAD_FILE'];
         }
         else{
-        	if(!move_uploaded_file($_FILES['upgrade_zip']['tmp_name'], getAbsolutePath($sugar_config['upload_dir'].$_FILES['upgrade_zip']['name'],true))) {
+        	$ext = end(explode(".", $_FILES['upgrade_zip']['name']));
+        	if($ext === $_FILES['upgrade_zip']['name'] || $ext != 'zip' || !move_uploaded_file($_FILES['upgrade_zip']['tmp_name'], getAbsolutePath($sugar_config['upload_dir'].$_FILES['upgrade_zip']['name'],true))) {
 			unlinkTempFiles();
-        		die($mod_strings['ERR_NOT_VALID_UPLOAD']);
+        		sugar_die("Invalid Package");
         	} else {
 			     $tempFile = getAbsolutePath($sugar_config['upload_dir'].$_FILES['upgrade_zip']['name'],true);
                  $perform = true;

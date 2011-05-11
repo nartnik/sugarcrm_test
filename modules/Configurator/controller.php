@@ -43,6 +43,10 @@ class ConfiguratorController extends SugarController
      * Go to the font manager view
      */
     function action_FontManager(){
+    	global $current_user;
+        if(!is_admin($current_user)){
+            sugar_die($GLOBALS['app_strings']['ERR_NOT_ADMIN']); 
+        }
         $this->view = 'fontmanager';
     }
     
@@ -67,12 +71,20 @@ class ConfiguratorController extends SugarController
     }
     
     function action_listview(){
+    	global $current_user;
+        if(!is_admin($current_user)){
+            sugar_die($GLOBALS['app_strings']['ERR_NOT_ADMIN']); 
+        }
     	$this->view = 'edit';
     }
     /**
      * Show the addFont view
      */
     function action_addFontView(){
+    	global $current_user;
+        if(!is_admin($current_user)){
+            sugar_die($GLOBALS['app_strings']['ERR_NOT_ADMIN']); 
+        }
         $this->view = 'addFontView';
     }
     /**
@@ -122,6 +134,10 @@ class ConfiguratorController extends SugarController
     }
     function action_saveadminwizard()
     {
+    	global $current_user;
+        if(!is_admin($current_user)){
+            sugar_die($GLOBALS['app_strings']['ERR_NOT_ADMIN']); 
+        }
         $focus = new Administration();
         $focus->retrieveSettings();
         $focus->saveConfig();
@@ -137,6 +153,10 @@ class ConfiguratorController extends SugarController
     
     function action_saveconfig()
     {
+    	global $current_user;
+        if(!is_admin($current_user)){
+            sugar_die($GLOBALS['app_strings']['ERR_NOT_ADMIN']); 
+        }
         $configurator = new Configurator();
         $configurator->saveConfig();
         
@@ -152,6 +172,10 @@ class ConfiguratorController extends SugarController
 	
 	function action_detail()
     {
+    	global $current_user;
+        if(!is_admin($current_user)){
+            sugar_die($GLOBALS['app_strings']['ERR_NOT_ADMIN']); 
+        }
         $this->view = 'edit';
     }
 }

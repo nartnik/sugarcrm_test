@@ -500,12 +500,12 @@ switch($the_file) {
 
 					<p>{$mod_strings['LBL_DISABLED_HELP_1']} <a href="{$mod_strings['LBL_DISABLED_HELP_LNK']}" target="_blank">{$mod_strings['LBL_DISABLED_HELP_2']}</a>.</p>
 EOQ;
-				                //if this is an offline client installation but the conversion did not succeed,
-                //then try to convert again
-                if(isset($sugar_config['disc_client']) && $sugar_config['disc_client'] == true && isset($sugar_config['oc_converted']) && $sugar_config['oc_converted'] == false) {
-					 header('Location: index.php?entryPoint=oc_convert&first_time=true');
-					exit ();
-                }
+		             //if this is an offline client installation but the conversion did not succeed,
+		            //then try to convert again
+					if(isset($sugar_config['disc_client']) && $sugar_config['disc_client'] == true && isset($sugar_config['oc_converted']) && $sugar_config['oc_converted'] == false) {
+			          header('Location: index.php?entryPoint=oc_convert&first_time=true');
+						exit ();
+		            }
             }
         }
         break;

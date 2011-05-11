@@ -1111,6 +1111,7 @@ RedirectMatch 403 {$ignoreCase}/+not_imported_.*\.txt
 RedirectMatch 403 {$ignoreCase}/+(soap|cache|xtemplate|data|examples|include|log4php|metadata|modules)/+.*\.(php|tpl)
 RedirectMatch 403 {$ignoreCase}/+emailmandelivery\.php
 RedirectMatch 403 {$ignoreCase}/+cache/+upload
+RedirectMatch 403 {$ignoreCase}/+cache/+diagnostic
 RedirectMatch 403 {$ignoreCase}/+files\.md5$
 # END SUGARCRM RESTRICTIONS
 EOQ;

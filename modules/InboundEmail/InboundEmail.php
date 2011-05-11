@@ -219,7 +219,9 @@ class InboundEmail extends SugarBean {
 		//_ppd($raw);
 		$raw = $this->filterMailBoxFromRaw(explode(",", $this->mailbox), $raw);
 		$this->mailbox = implode(",", $raw);
-		$this->email_password = blowfishEncode(blowfishGetKey('InboundEmail'), $this->email_password);
+		if(!empty($this->email_password)) {
+		    $this->email_password = blowfishEncode(blowfishGetKey('InboundEmail'), $this->email_password);
+		}
 		$ret = parent::save($check_notify);
 		return $ret;
 	}
@@ -2159,7 +2161,9 @@ class InboundEmail extends SugarBean {
 		$this->status = $_REQUEST['ie_status'];
 		$this->server_url = trim($_REQUEST['server_url']);
 		$this->email_user = trim($_REQUEST['email_user']);
-		$this->email_password = $_REQUEST['email_password'];
+		if(!empty($_REQUEST['email_password'])) {
+		    $this->email_password = $_REQUEST['email_password'];
+		}
 		$this->port = trim($_REQUEST['port']);
 		$this->protocol = $_REQUEST['protocol'];
 		if ($this->protocol == "pop3") {
@@ -3354,7 +3358,7 @@ class InboundEmail extends SugarBean {
 		} else {
 			return "other/$subtype";
 		}
-		
+
 	}
 
 	/**
@@ -3664,6 +3668,40 @@ class InboundEmail extends SugarBean {
 		return $ret;
 	}
 
+   /**
+	* URL cleanup function
+	* Until we have comprehensive CSRF protection, we need to sanitize URLs in emails
+	* to avoid CSRF attacks
+	*/
+	public function urlCleaner($attr, $value)
+	{
+	// hrefs are ok
+	    if(strtolower($attr) == "href") return true;
+	    $items = parse_url($value);
+	    if(empty($items)) return false;
+	// don't allow relative URLs
+		if(empty($items['host'])) return false;
+	// allow URLs with no query
+		if(empty($items['query'])) return true;
+	// allow URLs that don't start with /? or /index.php?
+		if(!empty($items['path']) && $items['path'] != '/' && strtolower(substr($items['path'], -10)) != '/index.php') {
+			return true;
+		}
+	// now we have blah-blah/index.php?query - let's see if query looks dangerous
+		$query_items = array();
+		parse_str(from_html($items['query']), $query_items);
+	// weird query, probably harmless
+		if(empty($query_items)) return true;
+	// suspiciously like SugarCRM query, reject
+		if(!empty($query_items['module']) && !empty($query_items['action'])) return false;
+	// looks like non-download entry point - allow only specific entry points
+		if(!empty($query_items['entryPoint']) && !in_array($query_items['entryPoint'], array('download', 'image', 'getImage'))) {
+			return false;
+		}
+
+		return true;
+	}
+
 	/**
 	 * Cleans content for XSS and other types of attack vectors
 	 * @param string str String to clean
@@ -3672,6 +3710,7 @@ class InboundEmail extends SugarBean {
 	function cleanContent($str) {
 		// Safe_HTML
 		$this->safe->clear();
+		$this->safe->setUrlCallback(array($this, "urlCleaner"));
 		$str = $this->safe->parse($str);
 		return $this->cleanXssContent($str);
 	}
@@ -5991,7 +6030,7 @@ eoq;
 			$temp = array();
 			$temp['flagged'] = $flagged;
 			$temp['status'] = $status;
-			$temp['from']	= $from;
+			$temp['from']	= to_html($from);
 			$temp['subject'] = $subject;
 			$temp['date']	= $date;
 			$temp['uid'] = $msg->uid; // either from an imap_search() or massaged cache value
@@ -6000,7 +6039,7 @@ eoq;
 			$temp['site_url'] = $sugar_config['site_url'];
 			$temp['seen'] = $msg->seen;
 			$temp['type'] = (isset($msg->type)) ? $msg->type: 'remote';
-			$temp['to_addrs'] = $msg->to;
+			$temp['to_addrs'] = to_html($msg->to);
 			$temp['hasAttach'] = '0';
 
 			$return[] = $temp;

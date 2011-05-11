@@ -87,7 +87,8 @@ $mod_strings = array (
 	//document edit and detail view
 	'LBL_DOC_NAME' => 'Document Name:',
 	'LBL_FILENAME' => 'File Name:',
-	'LBL_DOC_VERSION' => 'Revision:',
+	'LBL_FILE_UPLOAD' => 'File:',
+    'LBL_DOC_VERSION' => 'Revision:',
 	'LBL_CATEGORY_VALUE' => 'Category:',
 	'LBL_SUBCATEGORY_VALUE'=> 'Sub Category:',
 	'LBL_DOC_STATUS'=> 'Status:',

@@ -261,7 +261,7 @@ function hideOverlay() {
  ********************************************************************************/
 
 
-if (typeof console == "undefined") 
+if (typeof console == "undefined")
 	console = { log: function(o) {alert(o)} };
 
 var AjaxObject = {
@@ -300,8 +300,8 @@ var AjaxObject = {
 		SUGAR.email2.composeLayout.fromAccounts = ret.fromAccounts;
 
 		SUGAR.email2.composeLayout.setComposeOptions(idx);
-		
-		//Set the error array so we can notify the user when they try to hit send if any errors 
+
+		//Set the error array so we can notify the user when they try to hit send if any errors
 		//are present.  We will also notify them now (after hitting compose button).
 		SUGAR.email2.composeLayout.outboundAccountErrors = ret.errorArray;
 
@@ -316,7 +316,7 @@ var AjaxObject = {
 			for(i in ret.errorArray)
 				overlay(app_strings.LBL_EMAIL_ERROR_DESC, ret.errorArray[i], 'alert');
 		}
-		
+
 		//YUI bug with IE6 - Wont restore visibility property for nested select elements.
 		if(SUGAR.isIE) {
 			var overlayPanel = YAHOO.SUGAR.MessageBox.panel;
@@ -340,7 +340,7 @@ var AjaxObject = {
 		}
 		setSigEditButtonVisibility();
 	},
-	
+
 	/**
 	 */
 	handleDeleteReturn : function(o) {
@@ -404,18 +404,18 @@ var AjaxObject = {
 			SUGAR.email2.composeLayout.showHiddenAddress('bcc',idx);
 		}
 
-		
+
 		if(a.type) {
 			document.getElementById('type' + idx).value = a.type;
 		}
 
-		
+
 		// apply attachment values
 		SUGAR.email2.composeLayout.loadAttachments(a.attachments);
 
 		setTimeout("callbackReplyForward.finish(globalA);", 500);
 	},
-		
+
 	/**
 	 */
 	handleSuccess : function(o) {
@@ -433,7 +433,7 @@ var AjaxObject = {
 		SUGAR.email2.accounts.refreshInboundAccountTable();
 		alert(app_strings.LBL_EMAIL_IE_DELETE_SUCCESSFUL);
 		SUGAR.email2.accounts.rebuildFolderList();
-		
+
 	},
 
 	/**
@@ -454,9 +454,9 @@ var AjaxObject = {
 			}
 		} else {
 		     hideOverlay();
-		     overlay(app_strings.LBL_EMAIL_ERROR_DESC, app_strings.LBL_EMAIL_ERROR_SAVE_ACCOUNT, 'alert'); 
+		     overlay(app_strings.LBL_EMAIL_ERROR_DESC, app_strings.LBL_EMAIL_ERROR_SAVE_ACCOUNT, 'alert');
 		}
-		
+
 	},
 
 	/**
@@ -482,7 +482,7 @@ var AjaxObject = {
 		var ret = JSON.parse(o.responseText);
 		if (!ret['status']) {
         	hideOverlay();
-			overlay(app_strings.LBL_EMAIL_ERROR_DESC, ret['message'], 'alert');			
+			overlay(app_strings.LBL_EMAIL_ERROR_DESC, ret['message'], 'alert');
 		} else {
 			SUGAR.email2.contextMenus.markEmailCleanup();
 		} // else
@@ -535,29 +535,29 @@ var AjaxObject = {
 		} else if (o.responseText) {
 		  overlay(mod_strings.LBL_SEND_EMAIL_FAIL_TITLE, o.responseText, 'alert');
 		}
-		
+
 		if (typeof(SE.grid) != 'undefined')
 			SE.listView.refreshGrid();
 		//Disabled while address book is disabled
-		
+
 		//If this call back was initiated by quick compose from a Detail View page, refresh the
 		//history subpanel.  If it was initiated by quickcreate from shortcut bar, then
 		//close the shortcut bar menu
 		if ( (typeof(action_sugar_grp1) != 'undefined')) {
 			if(action_sugar_grp1 == 'DetailView') {
-				showSubPanel('history',null,true);  
+				showSubPanel('history',null,true);
 		  	} else if(action_sugar_grp1 == 'quickcreate') {
 		  		closeEmailOverlay();
 		  	}
 		}
-		
+
 	},
 
 	ieSendSuccess : function(o) {
 		hideOverlay();
 		overlay(app_strings.LBL_EMAIL_TEST_OUTBOUND_SETTINGS_SENT, app_strings.LBL_EMAIL_TEST_NOTIFICATION_SENT, 'plain');
 	},
-	
+
 	/**
 	 */
 	settingsFolderRefresh : function(o) {
@@ -588,7 +588,7 @@ var AjaxObject = {
 		this.currentRequestObject = YAHOO.util.Connect.asyncRequest('POST', "./index.php", callback, args);
 		this._reset();
 	},
-	
+
 	requestInProgress : function() {
 		return (YAHOO.util.Connect.isCallInProgress(this.currentRequestObject));
 	},
@@ -624,11 +624,11 @@ var AjaxObject = {
 		var idx = SUGAR.email2.composeLayout.currentInstanceId;
 		var overall = document.getElementById('addedFiles' + idx);
 		var index = overall.childNodes.length;
-		var out = 
+		var out =
 			"<div id='email_attachment_bucket" + idx + index + "'>" +
-				// remove button	
+				// remove button
 				"<img src='index.php?entryPoint=getImage&themeName=" + SUGAR.themes.theme_name + "&imageName=minus.gif' " +
-					"style='cursor:pointer' align='absmiddle' onclick='SUGAR.email2.composeLayout.deleteUploadAttachment(\"" + 
+					"style='cursor:pointer' align='absmiddle' onclick='SUGAR.email2.composeLayout.deleteUploadAttachment(\"" +
 					idx + index + "\",\"" + ret.guid + ret.name + "\");'/>" +
 				// file icon
 				"<img src='index.php?entryPoint=getImage&themeName=" + SUGAR.themes.theme_name + "&imageName=attachment.gif' " +
@@ -636,7 +636,7 @@ var AjaxObject = {
 				// hidden id field
 				"<input type='hidden' value='" + ret.guid + ret.name + "' name='email_attachment" + index + "' id='email_attachment" + idx + index + "' />" +
 				// file name
-				((ret.nameForDisplay != null) ? ret.nameForDisplay + "&nbsp;" : ret.name + "&nbsp;") + 
+				((ret.nameForDisplay != null) ? ret.nameForDisplay + "&nbsp;" : ret.name + "&nbsp;") +
 				"<br/>" +
 			"</div>";
 		overall.innerHTML += out;
@@ -662,10 +662,10 @@ AjaxObject.accounts = {
 		SUGAR.email2.accounts.newAddedOutboundId = id;
 		},
 	saveDefaultOutboundCleanup: function(o){
-		
+
 	},
 	callbackEditOutbound : {
-		success	: function(o) 
+		success	: function(o)
 		{
 			var ret = JSON.parse(o.responseText);
 			// show overlay
@@ -680,11 +680,10 @@ AjaxObject.accounts = {
 			document.getElementById("outboundEmailForm").mail_smtptype.value = ret.mail_smtptype;
 			document.getElementById("mail_smtpport").value = ret.mail_smtpport;
 			document.getElementById("mail_smtpuser").value = ret.mail_smtpuser;
-			document.getElementById("mail_smtppass").value = ret.mail_smtppass;
 			document.getElementById("mail_smtpauth_req").checked = (ret.mail_smtpauth_req == 1) ? true : false;
 			SUGAR.email2.accounts.smtp_authenticate_field_display();
 			document.getElementById("mail_smtpssl").options[ret.mail_smtpssl].selected = true;
-			
+
             if(ret.type == 'system-override') {
 			     SUGAR.email2.accounts.toggleOutboundAccountDisabledFields(true);
 			     SUGAR.email2.accounts.changeEmailScreenDisplay(ret.mail_smtptype,true);
@@ -693,8 +692,8 @@ AjaxObject.accounts = {
 			     SUGAR.email2.accounts.toggleOutboundAccountDisabledFields(false);
 			     SUGAR.email2.accounts.changeEmailScreenDisplay(ret.mail_smtptype,false);
             }
-            
-			
+            SUGAR.util.setEmailPasswordDisplay('mail_smtppass', ret.has_password);
+
 		},
 		failure	: AjaxObject.handleFailure,
 		timeout	: AjaxObject.timeout,
@@ -705,13 +704,13 @@ AjaxObject.accounts = {
 		    var ret = JSON.parse(o.responseText);
 		    if(ret.is_error)
 		    {
-		        if(confirm(ret.error_message)) 
+		        if(confirm(ret.error_message))
                 {
                     overlay(app_strings.LBL_EMAIL_IE_DELETE, app_strings.LBL_EMAIL_ONE_MOMENT);
                     AjaxObject.startRequest(AjaxObject.accounts.callbackDeleteOutbound, urlStandard + "&emailUIAction=deleteOutbound&confirm=true&outbound_email=" + ret.outbound_email);
                 }
                 else
-                    hideOverlay();  
+                    hideOverlay();
 		    }
 		    else
 		    {
@@ -719,35 +718,35 @@ AjaxObject.accounts = {
 			     SUGAR.email2.accounts.refreshOuboundAccountTable();
 		    }
 		},
-		
+
 		failure	: AjaxObject.handleFailure,
 		timeout	: AjaxObject.timeout,
 		scope	: AjaxObject
 	},
-		
+
 	callbackCheckMailProgress : {
 	   success : function(o) {
 	       if (typeof(SUGAR.email2.accounts.totalMsgCount) == "undefined") {
 	           SUGAR.email2.accounts.totalMsgCount = -1;
 	       }
-	       
+
 	       //Check for server timeout / errors
 	       var ret = JSON.parse(o.responseText);
 	       var done = false;
-		   
+
 	       if (typeof(o.responseText) == 'undefined' || o.responseText == "" || ret == false) {
 	           hideOverlay();
 	           overlay(app_strings.LBL_EMAIL_ERROR_DESC, app_strings.LBL_EMAIL_ERROR_TIMEOUT, 'alert');
 	           SUGAR.email2.accounts.totalMsgCount = -1;
                //SUGAR.email2.folders.rebuildFolders();
                done = true;
-	       } 
-	       
+	       }
+
 	       var currIeId = ret['ieid'];
-	       
-	      
+
+
 	       var serverCount = ret.count;
-	       
+
 	       if (ret['status'] == 'done') {
 	           for(i=0; i < SUGAR.email2.accounts.ieIds.length; i++) {
 	               if (i == SUGAR.email2.accounts.ieIds.length - 1) {
@@ -762,7 +761,7 @@ AjaxObject.accounts = {
 	                   break;
 	               }
 	           }
-	       } 
+	       }
 	       else if (ret.mbox && ret.totalcount && ret.count) {
 	           SUGAR.email2.accounts.totalMsgCount = ret.totalcount;
 	           if (ret.count >= ret.totalcount) {
@@ -776,7 +775,7 @@ AjaxObject.accounts = {
                SUGAR.email2.accounts.totalMsgCount = -1;
                done = true;
 		   }
-	       
+
 	       if (done) {
 	           SUGAR.email2.accounts.totalMsgCount = -1;
 	           hideOverlay();
@@ -784,13 +783,13 @@ AjaxObject.accounts = {
 	           SE.listView.refreshGrid();
 	       } else if (SUGAR.email2.accounts.totalMsgCount < 0) {
                YAHOO.SUGAR.MessageBox.updateProgress(0, mod_strings.LBL_CHECKING_ACCOUNT + ' '+ (i + 2) + ' '+ mod_strings.LBL_OF + ' ' + SUGAR.email2.accounts.ieIds.length);
-               AjaxObject.startRequest(AjaxObject.accounts.callbackCheckMailProgress, urlStandard + 
+               AjaxObject.startRequest(AjaxObject.accounts.callbackCheckMailProgress, urlStandard +
                                 '&emailUIAction=checkEmailProgress&ieId=' + currIeId + "&currentCount=0&synch=" + ret.synch);
            } else {
                YAHOO.SUGAR.MessageBox.updateProgress((ret.count / SUGAR.email2.accounts.totalMsgCount) * 100,
                    app_strings.LBL_EMAIL_DOWNLOAD_STATUS.replace(/\[\[count\]\]/, ret.count).replace(/\[\[total\]\]/, SUGAR.email2.accounts.totalMsgCount));
-	           AjaxObject.startRequest(AjaxObject.accounts.callbackCheckMailProgress, urlStandard + 
-                   '&emailUIAction=checkEmailProgress&ieId=' + currIeId + "&currentCount=" + serverCount + 
+	           AjaxObject.startRequest(AjaxObject.accounts.callbackCheckMailProgress, urlStandard +
+                   '&emailUIAction=checkEmailProgress&ieId=' + currIeId + "&currentCount=" + serverCount +
                    '&mbox=' + ret.mbox + '&synch=' + ret.synch + '&totalcount=' + SUGAR.email2.accounts.totalMsgCount);
 	       }
 	   },
@@ -811,7 +810,7 @@ AjaxObject.composeLayout = {
 		var ret = JSON.parse(o.responseText);
 		if(ret)
 		  SUGAR.email2.composeLayout.forceCloseCompose(ret.composeLayoutId);
-		else if (o.responseText) 
+		else if (o.responseText)
 		  overlay(mod_strings.LBL_ERROR_SAVING_DRAFT, o.responseText, 'alert');
 	}
 };
@@ -839,7 +838,7 @@ AjaxObject.detailView = {
 		if (typeof(email.cc) == 'undefined') {
 		  email.cc = "";
 		}
-		
+
 		var out = displayTemplate.exec({
 			'app_strings'	: app_strings,
 			'theme'			: theme,
@@ -849,7 +848,7 @@ AjaxObject.detailView = {
 		});
 
 		// open popup window
-		var popup = window.open('modules/Emails/templates/_blank.html', 'printwin' , 
+		var popup = window.open('modules/Emails/templates/_blank.html', 'printwin' ,
 		    'scrollbars=yes,menubar=no,height=600,width=800,resizable=yes,toolbar=no,location=no,status=no');
 
 		popup.document.write(out);
@@ -884,7 +883,7 @@ AjaxObject.detailView = {
 		SED.viewDialog.setHeader(ret.title);
 		SED.viewDialog.setBody(ret.html);
 		SED.viewDialog.render();
-		SED.viewDialog.show();	
+		SED.viewDialog.show();
 	},
 
 	/**
@@ -902,7 +901,7 @@ AjaxObject.detailView = {
             	constraintoviewport: true,
 				shadow	: true
 			});
-			
+
             SED.quickCreateDialog.renderEvent.subscribe(function() {
             	var viewH = YAHOO.util.Dom.getViewportHeight();
             	var contH = 0;
@@ -917,7 +916,7 @@ AjaxObject.detailView = {
         		this.body.style.height = (viewH - 75 > contH ? (contH + 10) : (viewH - 75)) + "px";
         		this.body.style.overflow = "auto";
             }, SED.quickCreateDialog);
-            
+
             SED.quickCreateDialog.hideEvent.subscribe(function(){
 				var qsFields = YAHOO.util.Dom.getElementsByClassName('.sqsEnabled', null, this.body);
 				/*for(var qsField in qsFields){
@@ -933,29 +932,29 @@ AjaxObject.detailView = {
 		SED.quickCreateDialog.setBody(ret.html ? ret.html : "&nbsp;");
 		SED.quickCreateDialog.render();
 		SUGAR.util.evalScript(ret.html + '<script language="javascript">enableQS(true);</script>');
-		
+
 		SED.quickCreateDialog.ieId = ret.ieId;
 		SED.quickCreateDialog.uid = ret.uid;
         SED.quickCreateDialog.mbox = ret.mbox;
         SED.quickCreateDialog.qcmodule = ret.module;
-        
+
         SED.quickCreateDialog.show();
 
 		var editForm = document.getElementById('form_EmailQCView_' + ret.module);
 		if (editForm) {
 		  editForm.module.value = 'Emails';
-		  var count = SUGAR.EmailAddressWidget.count[ret.module] ? SUGAR.EmailAddressWidget.count[ret.module] : 0; 
+		  var count = SUGAR.EmailAddressWidget.count[ret.module] ? SUGAR.EmailAddressWidget.count[ret.module] : 0;
 		  var tableId = YAHOO.util.Dom.getElementsByClassName('emailaddresses', 'table', editForm)[0].id;
 		  var instId = ret.module + count;
 		  SED.quickCreateEmailsToAdd = ret.emailAddress;
 		  SED.quickCreateEmailCallback = function(instId, tableId) {
 			  var eaw = SUGAR.EmailAddressWidget.instances[instId];
 			  if (typeof(eaw) == "undefined")
-				  window.setTimeout("SUGAR.email2.detailView.quickCreateEmailCallback('" 
+				  window.setTimeout("SUGAR.email2.detailView.quickCreateEmailCallback('"
 					  	+ instId + "','" + tableId + "');", 100);
 			  eaw.prefillEmailAddresses(tableId, SUGAR.email2.detailView.quickCreateEmailsToAdd);
 		  }
-		  window.setTimeout("SUGAR.email2.detailView.quickCreateEmailCallback('" 
+		  window.setTimeout("SUGAR.email2.detailView.quickCreateEmailCallback('"
 				  	+ instId + "','" + tableId + "');", 100);
 		}
 	},
@@ -988,7 +987,7 @@ AjaxObject.detailView = {
 		SUGAR.email2.complexLayout.findPanel('contactsTab').show();
 		validate['EditView'] = [ ];
 	},
-	
+
 	handleAssignmentDialogAssignAction : function() {
 
 
@@ -1005,7 +1004,7 @@ AjaxObject.detailView = {
 	        alert(warning_message);
 	        return;
 	    }
-	    
+
 	    var emailUids = SUGAR.email2.listView.getUidsFromSelection();
 	    var uids = "";
 	    for(i=0; i<emailUids.length; i++) {
@@ -1022,9 +1021,9 @@ AjaxObject.detailView = {
 	    AjaxObject.startRequest(callbackAssignmentAction, urlStandard + '&emailUIAction=' + "doAssignmentAssign&uids=" + uids + "&ieId=" + ieid + "&folder=" + mbox + "&distribute_method=" + dist + "&users=" +assign_user_id + get);
 	    SUGAR.email2.contextMenus.assignToDialogue.hide();
 	    overlay('Assignment', app_strings.LBL_EMAIL_ONE_MOMENT);
-		
+
 	},
-	
+
 	handleAssignmentDialogDeleteAction : function() {
 		// TO pass list of UIDS/emailIds
 		var uids = SUGAR.email2.listView.getUidsFromSelection();
@@ -1036,9 +1035,9 @@ AjaxObject.detailView = {
 		overlay(app_strings.LBL_EMAIL_PERFORMING_TASK, app_strings.LBL_EMAIL_ONE_MOMENT);
 
 		// AJAX Call
-		
+
 	},
-	
+
 	showEmailDetailView : function(o) {
         hideOverlay();
         var SED = SUGAR.email2.detailView;
@@ -1070,10 +1069,10 @@ AjaxObject.detailView = {
 		SED.quickCreateDialog.setHeader(app_strings.LBL_EMAIL_RECORD);
 		SED.quickCreateDialog.setBody(ret.html);
 		SED.quickCreateDialog.render();
-        SUGAR.util.evalScript(ret.html);      
-        SED.quickCreateDialog.show();		
+        SUGAR.util.evalScript(ret.html);
+        SED.quickCreateDialog.show();
 	},
-	
+
 	showAssignmentDialogWithData : function(o) {
         var SEC = SUGAR.email2.contextMenus;
 		hideOverlay();
@@ -1101,11 +1100,11 @@ AjaxObject.detailView = {
         SEC.assignmentDialog.show();
         SUGAR.util.evalScript(ret);
 	},
-	
+
 	showImportForm : function(o) {
 		var SED = SUGAR.email2.detailView;
 		var ret = JSON.parse(o.responseText);
-        
+
         document.getElementById('quickCreateContent').innerHTML = "";
         hideOverlay();
         if (!ret) {
@@ -1136,7 +1135,7 @@ AjaxObject.detailView = {
             			QSProcessedFieldsArray[i] = false;
             		} // if
 				}
-            }); 
+            });
             SED.importDialog.renderEvent.subscribe(function() {
             	var iev = YAHOO.util.Dom.get("ImportEditView");
             	if (iev) {
@@ -1171,8 +1170,8 @@ AjaxObject.detailView = {
         var row = SUGAR.email2.grid.getSelectedRows()[0];
         row = SUGAR.email2.grid.getRecord(row);
         var data = row.getData();
-        var ieId = data.ieId; 
-        var mbox = data.mbox; 
+        var ieId = data.ieId;
+        var mbox = data.mbox;
         var serverDelete = editView.serverDelete.checked;
         var emailUids = SUGAR.email2.listView.getUidsFromSelection();
         var uids = "";
@@ -1182,7 +1181,7 @@ AjaxObject.detailView = {
             }
             uids += emailUids[i];
         }
-        
+
         var action = 'importEmail&uid=';
         if (ret.move) {
             action = 'moveEmails';
@@ -1191,18 +1190,18 @@ AjaxObject.detailView = {
             action = action + '&destinationFolder=' + ret['dstFolder'];
             action = action + '&destinationIeId=' + ret['dstIeId'];
             action = action + '&emailUids=';
-        } 
+        }
         if (action.search(/importEmail/) != -1) {
             overlay(app_strings.LBL_EMAIL_IMPORTING_EMAIL, app_strings.LBL_EMAIL_ONE_MOMENT);
         } else {
             overlay("Moving Email(s)", app_strings.LBL_EMAIL_ONE_MOMENT);
         }
-        
-        AjaxObject.startRequest(callbackStatusForImport, urlStandard + '&emailUIAction=' + action + uids + "&ieId=" + ieId + "&mbox=" + mbox + 
+
+        AjaxObject.startRequest(callbackStatusForImport, urlStandard + '&emailUIAction=' + action + uids + "&ieId=" + ieId + "&mbox=" + mbox +
         get + "&parent_id=" + parent_id + "&parent_type=" + parent_type + '&delete=' + serverDelete);
         SUGAR.email2.detailView.importDialog.hide();
         document.getElementById('importDialogContent').innerHTML = "";
-        
+
     },
     showRelateForm : function(o) {
         var SED = SUGAR.email2.detailView;
@@ -1230,8 +1229,8 @@ AjaxObject.detailView = {
     	                var parent_type = editView.parent_type.value;
     	                var row = SUGAR.email2.grid.getSelectedRows()[0];
     	                row  = SUGAR.email2.grid.getRecord(row);
-    	                var ieId = row.getData().ieId; 
-    	                var mbox = row.getData().mbox; 
+    	                var ieId = row.getData().ieId;
+    	                var mbox = row.getData().mbox;
     	                var emailUids = SUGAR.email2.listView.getUidsFromSelection();
     	                var uids = "";
     	                for(i=0; i<emailUids.length; i++) {
@@ -1241,14 +1240,14 @@ AjaxObject.detailView = {
     	                    uids += emailUids[i];
     	                }
     	                overlay(app_strings.LBL_EMAIL_PERFORMING_TASK, app_strings.LBL_EMAIL_ONE_MOMENT);
-    	                AjaxObject.startRequest(callbackStatusForImport, urlStandard + '&emailUIAction=relateEmails&uid=' + uids 
+    	                AjaxObject.startRequest(callbackStatusForImport, urlStandard + '&emailUIAction=relateEmails&uid=' + uids
     	                    + "&ieId=" + ieId + "&mbox=" + mbox + "&parent_id=" + parent_id + "&parent_type=" + parent_type);
     	                SED.relateDialog.hide();
     	                document.getElementById('relateDialogContent').innerHTML = "";
 	                }
                 }]
 			});
-			
+
             SED.relateDialog.hideEvent.subscribe(function(){
             	if (QSFieldsArray['ImportEditView_parent_name'] != null) {
             		QSFieldsArray['ImportEditView_parent_name'].destroy();
@@ -1257,8 +1256,8 @@ AjaxObject.detailView = {
 				if (QSProcessedFieldsArray['ImportEditView_parent_name']) {
 					QSProcessedFieldsArray['ImportEditView_parent_name'] = false;
 				} // if
-            }); 
-			
+            });
+
             SED.relateDialog.renderEvent.subscribe(function() {
             	var viewPortHeight = YAHOO.util.Dom.getViewportHeight();
             	var contH = 0;
@@ -1269,7 +1268,7 @@ AjaxObject.detailView = {
             }, SED.relateDialog);
             SED.relateDialog.setHeader(app_strings.LBL_EMAIL_RELATE_EMAIL);
 		} // end lazy load
-		
+
         SED.relateDialog.setBody(ret.html);
         SED.relateDialog.render();
         SUGAR.util.evalScript(ret.html);
@@ -1399,7 +1398,7 @@ success : function (o) {
 failure	: AjaxObject.handleFailure,
 timeout	: AjaxObject.timeout,
 scope	: AjaxObject
-	
+
 };
 
 var callbackStatusForImport = {
@@ -1414,12 +1413,12 @@ success : function (o) {
 		overlay(SUGAR.language.get('Emails','LBL_IMPORT_STATUS_TITLE'), statusString, 'alert');
 	}
 	SE.listView.refreshGrid();
-	
+
 },
 failure	: AjaxObject.handleFailure,
 timeout	: AjaxObject.timeout,
 scope	: AjaxObject
-	
+
 };
 var callbackComposeCache = {
 	success	: AjaxObject.composeCache,
@@ -1584,7 +1583,7 @@ var callbackAssignmentDialog = {
 	success :  AjaxObject.detailView.showAssignmentDialogWithData,
 	failure	: AjaxObject.handleFailure,
 	timeout	: AjaxObject.timeout,
-	scope	: AjaxObject	
+	scope	: AjaxObject
 };
 var callbackAssignmentAction = {
 	success :  function(o) {
@@ -1743,7 +1742,7 @@ var callbackReplyForward = {
 				}
 			}
 		}
-		
+
 		//SUGAR.email2.innerLayout.regions.center.getPanel('composeLayout' + idx).setTitle(a.name);
 		if (a.parent_name != null && a.parent_name != "") {
 			document.getElementById('data_parent_name' + idx).value = a.parent_name;
@@ -1766,7 +1765,7 @@ var callbackReplyForward = {
 	              	opt.selected = true;
 	              }
 	              addressFrom.options.add(opt);
-	        }			
+	        }
 		} // if
 		hideOverlay();
 
@@ -2624,12 +2623,12 @@ SE.addressBook = {
             	rows[i] = SE.contactView.getRecord(ids[i]);
             }
             removeHiddenNodes(rows, SE.contactView);
-        } 
+        }
 		else { return; }
 
         if(rows.length > 0) {
             SE.composeLayout.handleDrop(
-                (type == 'contacts') ? SE.contactView : SE.emailListsView, 
+                (type == 'contacts') ? SE.contactView : SE.emailListsView,
                 null, rows, 'addressTO' + idx );
         } else {
             alert(app_strings.LBL_EMAIL_MENU_MAKE_SELECTION);
@@ -2646,7 +2645,7 @@ SE.addressBook = {
             elementId = element.id.substring(2);
         }
     },
-    
+
 
     /**
      * Filters contact entries based on user input
@@ -2690,14 +2689,14 @@ SE.addressBook = {
 
         return ret;
     },
-    
+
     /**
      * Sets up async call to query for matching contacts, users, etc.
      */
     searchContacts : function() {
         var fn = document.getElementById('input_searchField').value;
         var pe = document.getElementById('input_searchPerson').value;
-        
+
         var rb = document.getElementById('hasRelatedBean').checked;
         if (rb) {
 			var idx = this.idx;
@@ -2708,14 +2707,14 @@ SE.addressBook = {
         } else {
         	this.addressBookDataModel.params['related_bean_id'] = '';
         }
-        
+
         this.addressBookDataModel.params['search_field'] = fn;
         this.addressBookDataModel.params['person'] = pe;
         this.addressBookDataModel.params['emailUIAction'] = 'getAddressSearchResults';
         this.grid._oDataSource = this.addressBookDataModel;
         this.grid.getDataSource().sendRequest(SUGAR.util.paramsToUrl(this.addressBookDataModel.params),  this.grid.onDataReturnInitializeTable, this.grid);
     },
-    
+
     /**
      * Clear Search Crieteria For Addressbook
      */
@@ -2723,7 +2722,7 @@ SE.addressBook = {
         document.getElementById('input_searchField').value = "";
         document.getElementById('input_searchPerson').selectedIndex = 0;
     },
-    
+
     /**
      * Opens modal select window to add contacts to addressbook
      */
@@ -2739,7 +2738,7 @@ SE.addressBook = {
                            {text: app_strings.LBL_EMAIL_ADDRESS_BOOK_CLEAR, isDefault: true, handler: this.clearAllEmailAddressFieldsFromResultTable} ]
             });
         	dlg.setHeader(app_strings.LBL_EMAIL_ADDRESS_BOOK_SELECT_TITLE);
-        	
+
         	var body = SUGAR.util.getAndRemove("contactsDialogueHTML");
         	dlg.setBody(body.innerHTML);
         	dlg.renderEvent.subscribe(function() {
@@ -2748,19 +2747,19 @@ SE.addressBook = {
             		this.body.style.width = "950px";
             	}
             }, dlg);
-            	     
-            
-        	dlg.beforeRenderEvent.subscribe(function() { 
-        		var dd = new YAHOO.util.DDProxy(dlg.element); 
-        		dd.setHandleElId(dlg.header); 
-        		dd.on('endDragEvent', function() { 
-        			dlg.show(); 
-        		}); 
-        	}, dlg, true); 
+
+
+        	dlg.beforeRenderEvent.subscribe(function() {
+        		var dd = new YAHOO.util.DDProxy(dlg.element);
+        		dd.setHandleElId(dlg.header);
+        		dd.on('endDragEvent', function() {
+        			dlg.show();
+        		});
+        	}, dlg, true);
         	dlg.render();
-        	
+
         	var tp = new YAHOO.widget.TabView("contactsSearchTabs");
-			
+
         	var tabContent = SUGAR.util.getAndRemove("searchForm");
         	tp.addTab(new YAHOO.widget.Tab({
 				label: app_strings.LBL_EMAIL_ADDRESS_BOOK_TITLE,
@@ -2769,7 +2768,7 @@ SE.addressBook = {
 				id : "addressSearchTab",
 				active : true
 			}));
-			
+
         	var addListenerFields = ['input_searchPerson','input_searchField' ]
         	YAHOO.util.Event.addListener(addListenerFields,"keydown", function(e){
         		if (e.keyCode == 13) {
@@ -2790,7 +2789,7 @@ SE.addressBook = {
             var idx = activePanel.substring(10);
         }
         SE.addressBook.idx = idx;
-        
+
 		var relatedBeanId;
         if ((hasRelatedBeanId = document.getElementById('data_parent_id' + idx).value) != '') {
         	document.getElementById('relatedBeanColumn').style.display = '';
@@ -2803,15 +2802,15 @@ SE.addressBook = {
 	    	document.getElementById('relatedBeanColumn').style.display = 'none';
 	    	document.getElementById('hasRelatedBean').checked = false;
 	    }
-	    
-	    if (!SE.addressBook.grid) 
+
+	    if (!SE.addressBook.grid)
 	    {
 	    	if (hasRelatedBeanId) {
 	    		document.getElementById('hasRelatedBean').checked = true;
 	    	}
 	        AddressSearchGridInit();
 			SE.addressBook.relatedBeanId = relatedBeanId;
-	    } 
+	    }
 	    else
 	    {
 	    	if (typeof(relatedBeanId) != 'undefined' && relatedBeanId != SE.addressBook.relatedBeanId)
@@ -2831,12 +2830,12 @@ SE.addressBook = {
 			SE.addressBook.addressBookDataModel.params['person'] = document.getElementById('input_searchPerson').value;
     		SE.addressBook.grid.getDataSource().sendRequest(SUGAR.util.paramsToUrl(SE.addressBook.addressBookDataModel.params),  SE.addressBook.grid.onDataReturnInitializeTable, SE.addressBook.grid);
 	    }
-	    
+
 	    //Remove any lingering rows in the result set table if the module was closed.
 	    SE.addressBook.gridResults.deleteRows(0, SUGAR.email2.addressBook.gridResults.getRecordSet().getLength());
 	    //Repopulate
 	    SE.addressBook.populateResulstTableEmailAddresses();
-	    
+
         this.contactsDialogue.show();
     },
     /**
@@ -2850,23 +2849,23 @@ SE.addressBook = {
         SUGAR.email2.addressBook.grid.reSelectRowsOnRender();
     },
     /**
-    *  Take all email address listed in the compose tab To|Cc|Bcc fields and re-populates the 
+    *  Take all email address listed in the compose tab To|Cc|Bcc fields and re-populates the
     *  results table.  This function is called when the address book is displayed.
     */
     populateResulstTableEmailAddresses: function () {
-      
+
         var idx = SE.addressBook.idx;
         var emailFields = ['to','cc','bcc'];
-        
+
         for(var k=0;k<emailFields.length;k++)
         {
             var elKey = 'address' + emailFields[k].toUpperCase() + idx;
             var allEmails = document.getElementById(elKey).value;
             if(allEmails == '')
                 continue;
-            
+
             var formatedEmails = SE.composeLayout._getEmailArrayFromString(allEmails);
-            
+
     		for (var i=0; i<formatedEmails.length; i++)
     		{
     		    var t_name = formatedEmails[i].name;
@@ -2874,14 +2873,14 @@ SE.addressBook = {
     		    var displayEmail = t_name + ' <' + t_emailAddr + '>';
     		    if(t_name == '')
     		        t_name = displayEmail = t_emailAddr;
-                
+
     		    var addressType = SE.addressBook.translateAddresType(emailFields[k],true);
                 SUGAR.email2.addressBook.gridResults.addRow({'type':addressType,'name':t_name,'email_address': t_emailAddr,
                     'display_email_address': displayEmail,'bean_id': -1,'idx' : SE.addressBook.idx});
     		}
-        }  
+        }
     },
- 
+
     /**
     * Checks all entries in the result table against a particular email address, returning true
     * if the email address is found, false otherwise.
@@ -2889,57 +2888,57 @@ SE.addressBook = {
     doesEmailAdddressExistInResultTable: function(emailAddress)
     {
         if(trim(emailAddress) == '')
-            return false;   
-            
+            return false;
+
         var emailAddressFound = false;
         var contacts = SE.addressBook.gridResults.getRecordSet().getRecords();
-        for (var i=0; i < contacts.length; i++) 
+        for (var i=0; i < contacts.length; i++)
         {
             var data = SE.addressBook.gridResults.getRecord(contacts[i]).getData();
             //If we are adding to cc or bcc fields, make them visible.
-            if(data.email_address == emailAddress)    
+            if(data.email_address == emailAddress)
             {
                 emailAddressFound = true;
                 break;
             }
         }
-        
+
         return emailAddressFound;
     },
     /**
-    *  Takes all email addresses that the users wishes to add from the address book and populates the To 
-    *  fields on the compose tab. 
+    *  Takes all email addresses that the users wishes to add from the address book and populates the To
+    *  fields on the compose tab.
     */
     populateEmailAddressFieldsFromResultTable: function()
     {
         //Clear the fields first, all email addresses are stored in the address book
         var idx = SE.addressBook.idx;
-        var emailFields = ['to','cc','bcc'];    
+        var emailFields = ['to','cc','bcc'];
         for(var k=0;k<emailFields.length;k++)
         {
             var elKey = 'address' + emailFields[k].toUpperCase() + idx;
             document.getElementById(elKey).value = "";
         }
-        
+
         var contacts = SE.addressBook.gridResults.getRecordSet().getRecords();
-        for (var i=0; i < contacts.length; i++) 
+        for (var i=0; i < contacts.length; i++)
         {
             var data = SE.addressBook.gridResults.getRecord(contacts[i]).getData();
-            
+
             var addressTypeKey = SE.addressBook.translateAddresType(data.type,false);
             //If we are adding to cc or bcc fields, make them visible.
-            if(addressTypeKey =='cc' || addressTypeKey =='bcc')    
+            if(addressTypeKey =='cc' || addressTypeKey =='bcc')
                 SE.composeLayout.showHiddenAddress(addressTypeKey,data.idx);
             //Construct the target id
             var target_id = 'address' + addressTypeKey.toUpperCase() + data.idx
-           
+
             var target = document.getElementById(target_id);
             target.value = SE.addressBook.smartAddEmailAddressToComposeField(target.value, data.display_email_address);
         }
-        
+
         //Delete all rows from the result set table
         SUGAR.email2.addressBook.gridResults.deleteRows(0, SUGAR.email2.addressBook.gridResults.getRecordSet().getLength());
-        
+
         //Hide the dialogue
         SE.addressBook.contactsDialogue.hide()
     },
@@ -2947,12 +2946,12 @@ SE.addressBook = {
     *  Insert contacts into the result table.
     */
     insertContactToResultTable : function(event,address_type) {
-    
+
         var contactsDialogue = SE.addressBook.contactsDialogue;
         var contacts = SE.addressBook.grid.getSelectedRows();
-        
+
         var rows = SUGAR.email2.addressBook.grid.getRecordSet().getRecords();
-        for (var i = 0; i < rows.length; i++) 
+        for (var i = 0; i < rows.length; i++)
         {
 			if (typeof(rows[i]) != "undefined" && rows[i].getData().checked )
 			{
@@ -2986,7 +2985,7 @@ SE.addressBook = {
     removeRowFromGridResults : function(rowId,emailAddress)
     {
         var contacts = SE.addressBook.gridResults.getRecordSet().getRecords();
-        for (var i=0; i < contacts.length; i++) 
+        for (var i=0; i < contacts.length; i++)
         {
             var rec = SE.addressBook.gridResults.getRecord(contacts[i]);
             var data = rec.getData();
@@ -2996,19 +2995,19 @@ SE.addressBook = {
                 break;
             }
         }
-        
+
        SUGAR.email2.addressBook.toggleSearchRowIcon(rowId,true);
     },
     /**
-    * Translates between the addressType To|Cc|Bcc labels/keys.  
+    * Translates between the addressType To|Cc|Bcc labels/keys.
     */
     translateAddresType: function(addressType,fromKey)
     {
         var displayTo = app_strings.LBL_EMAIL_ADDRESS_BOOK_ADD_TO.replace(/:$/,'');
         var displayCc = app_strings.LBL_EMAIL_ADDRESS_BOOK_ADD_CC.replace(/:$/,'');
-        var displayBcc = app_strings.LBL_EMAIL_ADDRESS_BOOK_ADD_BCC.replace(/:$/,''); 
+        var displayBcc = app_strings.LBL_EMAIL_ADDRESS_BOOK_ADD_BCC.replace(/:$/,'');
         var mappingObject = {};
-        
+
         if(fromKey)
             mappingObject = {'to':displayTo, 'cc':displayCc, 'bcc':displayBcc};
         else
@@ -3017,14 +3016,14 @@ SE.addressBook = {
             mappingObject[displayCc] = 'cc';
             mappingObject[displayBcc] = 'bcc';
         }
-            
+
         return typeof(mappingObject[addressType]) != 'undefined' ? mappingObject[addressType] : '';
-          
+
     },
     /**
     *
     */
-    toggleSearchRowIcon : function(rowId,show) 
+    toggleSearchRowIcon : function(rowId,show)
     {
         if(show)
         {
@@ -3046,10 +3045,10 @@ SE.addressBook = {
     */
     doesGridResultsEntryExist: function(emailAddrs)
     {
-        
+
         var contactExists = false;
         var contacts = SE.addressBook.gridResults.getRecordSet().getRecords();
-        for (var i=0; i < contacts.length; i++) 
+        for (var i=0; i < contacts.length; i++)
         {
             var data = SE.addressBook.gridResults.getRecord(contacts[i]).getData();
             if(data.email_address == emailAddrs)
@@ -3060,7 +3059,7 @@ SE.addressBook = {
         }
         return contactExists;
     },
-    
+
     /**
      * adds an email address to a string, but first checks if it exists
      * @param string concat The string we are appending email addresses to
@@ -3118,7 +3117,7 @@ SE.autoComplete = {
         }
         return address;
     },
-    
+
 
     /**
      * initializes autocomplete widgets for a given compose view
@@ -3136,7 +3135,7 @@ SE.autoComplete = {
             bcc : null
         };
 
-   
+
         // instantiate the autoComplete widgets
         this.instances[idx]['to'] = new YAHOO.widget.AutoComplete('addressTO'+idx, "addressToAC"+idx, ds, this.config);
         this.instances[idx]['cc'] = new YAHOO.widget.AutoComplete('addressCC'+idx, "addressCcAC"+idx, ds, this.config);
@@ -3182,10 +3181,10 @@ SE.autoComplete = {
         for(var id in contacts) {
             if (contacts[id].name) {
 	            var primary = this.getPrimaryAddress(contacts[id]);
-	
+
 	            ret[ret.length] = contacts[id].name.replace(/<[\/]*b>/gi, '') + " <" + primary + ">";
 	            //ret[ret.length] = contacts[id].name + " <" + primary + ">";
-	
+
 	            for(var emailIndex in contacts[id].email) {
 	                ret[ret.length] = contacts[id].email[emailIndex].email_address;
 	            }
@@ -3267,7 +3266,7 @@ SE.composeLayout = {
     	var linkElement = document.getElementById("More"+e.id);
     	var spanElement = document.getElementById("Detail"+e.id);
     	var emailAddressList = e.value;
-    	if(e.value.length > 96) 
+    	if(e.value.length > 96)
     	{
         	var resultArray = SE.composeLayout._getEmailArrayFromString(emailAddressList);
             var displayArray = [];
@@ -3278,19 +3277,19 @@ SE.composeLayout = {
     		    if(t_name == '')
     		       displayArray.push('<br/>&lt;' + t_emailAddr + '&gt;');
     		    else
-    		       displayArray.push(t_name + '<br/>&lt;' + t_emailAddr + '&gt;');     
+    		       displayArray.push(t_name + '<br/>&lt;' + t_emailAddr + '&gt;');
     		}
-        		
+
             var result = displayArray.join('<br/>');
         	// Display
             linkElement.style.display = "inline";
             linkElement.style.height="10px";
             linkElement.style.overflow="visible";
             spanElement.innerHTML = result;
-    	} 
-    	else 
+    	}
+    	else
     		linkElement.style.display = "none";
-    	
+
 	},
 
    /**
@@ -3298,9 +3297,9 @@ SE.composeLayout = {
     *  and email portion.
     */
     _getEmailArrayFromString : function (emailAddressList){
-      
+
         var reg = /@.*?;/g;
-        while ((results = reg.exec(emailAddressList)) != null) 
+        while ((results = reg.exec(emailAddressList)) != null)
         {
             orignial = results[0];
             parsedResult = results[0].replace(';', ':::::');
@@ -3308,7 +3307,7 @@ SE.composeLayout = {
         }
 
         reg = /@.*?,/g;
-        while ((results = reg.exec(emailAddressList)) != null) 
+        while ((results = reg.exec(emailAddressList)) != null)
         {
             orignial = results[0];
             parsedResult = results[0].replace(',', ':::::');
@@ -3318,7 +3317,7 @@ SE.composeLayout = {
         var emailArr = emailAddressList.split(":::::");
         var resultsArray = [];
         var newArr = [];
-        for (var i=0; i<emailArr.length; i++) 
+        for (var i=0; i<emailArr.length; i++)
         {
             var rposition = emailArr[i].indexOf('<');
             var lposition = emailArr[i].indexOf('>');
@@ -3337,7 +3336,7 @@ SE.composeLayout = {
                 }
             }
         }
-        return resultsArray;  
+        return resultsArray;
     },
     ///////////////////////////////////////////////////////////////////////////
     ////    COMPOSE FLOW
@@ -3356,17 +3355,17 @@ SE.composeLayout = {
 				active : true
         }, SE.innerLayout);
         SE.innerLayout.addTab(composeTab);
-        
+
         // get template engine with template
         if (!SE.composeLayout.composeTemplate) {
         	SE.composeLayout.composeTemplate = new YAHOO.SUGAR.Template(SE.templates['compose']);
         }
-        
+
         // create Tab inner layout
         var composePanel =  this.getComposeLayout();
         composePanel.getUnitByPosition("right").collapse();
         composePanel.autoSize();
-       
+
     },
 	/**
      * Generate the quick compose layout
@@ -3380,7 +3379,7 @@ SE.composeLayout = {
 
     	 //Before rendering the parent pannel we need to initalize the grid layout
     	 parentPanel.beforeRenderEvent.subscribe(function() {
-    	 	
+
     	 	YAHOO.util.Event.onAvailable('htmleditordiv' + idx, function() {
     	 		SE.composeLayout._createComposeLayout(idx);
     	 		SE.composeLayout[idx].set('height', 350);
@@ -3388,10 +3387,10 @@ SE.composeLayout = {
            });
         });
 
-     	 //Wait until the Compose Layout has rendered, then add the 
+     	 //Wait until the Compose Layout has rendered, then add the
      	 //options tab and perform the tiny initialization.
          parentPanel.renderEvent.subscribe(function() {
-    	 	
+
     	 	YAHOO.util.Event.onAvailable('htmleditordiv' + idx, function() {
      		SE.composeLayout._initComposeOptionTabs(idx);
      		SE.composeLayout[idx].getUnitByPosition("right").collapse();
@@ -3401,18 +3400,18 @@ SE.composeLayout = {
      		//Init templates and address book
      		SE.composeLayout._2_final();
 
-            SE.composeLayout.quickCreateComposePackage(o);	
+            SE.composeLayout.quickCreateComposePackage(o);
 
     	 	});
     	 });
-    	   	
+
 	    //Check if we have the div override for the shortcut bar
         if(typeof o.menu_id != 'undefined') {
-		   parentPanel.render(o.menu_id);    
+		   parentPanel.render(o.menu_id);
 	    } else {
-		   parentPanel.render(document.body); 
+		   parentPanel.render(document.body);
 	    }
-        
+
         return SE.composeLayout[idx];
     },
     /**
@@ -3434,14 +3433,14 @@ SE.composeLayout = {
     },
     getComposeLayout : function() {
         var idx = SE.composeLayout.currentInstanceId;
-      
-       	this._createComposeLayout(idx); 
+
+       	this._createComposeLayout(idx);
         SE.composeLayout[idx].render();
         this._initComposeOptionTabs(idx);
-        
+
         return SE.composeLayout[idx];
         },
-        
+
         /**
         *	Create the layout manager for the compose window.
         */
@@ -3457,7 +3456,7 @@ SE.composeLayout = {
 	                animate: false,
 	                scroll: false,
 	                split:true,
-	                body: 	
+	                body:
 	                	SE.composeLayout.composeTemplate.exec({
 	                        'app_strings':app_strings,
 	                        'mod_strings':mod_strings,
@@ -3481,24 +3480,24 @@ SE.composeLayout = {
 	            }]
 	        });
         },
-        
+
         /**
         *  Create compose tab which will populate the 'right' container in the compose window.
         */
-        _initComposeOptionTabs : function(idx) 
+        _initComposeOptionTabs : function(idx)
         {
 	        var cTabs = new YAHOO.widget.TabView("composeRightTabs" + idx);
-	        var tab = new YAHOO.widget.Tab({ 
+	        var tab = new YAHOO.widget.Tab({
 				label: app_strings.LBL_EMAIL_ATTACHMENT,
 				scroll : true,
 				content : SUGAR.util.getAndRemove("divAttachments" + idx).innerHTML,
 				id : "divAttachments" + idx,
 				active : true
 			});
-	
+
 	        tab.layout = SE.composeLayout[idx];
 
-     	   tab.on("activeChange", function(o){ 
+     	   tab.on("activeChange", function(o){
         		if (o.newValue) {
         			this.layout.getUnitByPosition("right").set("header", app_strings.LBL_EMAIL_ATTACHMENT);
         		}
@@ -3506,28 +3505,28 @@ SE.composeLayout = {
 
         	cTabs.addTab(tab);
 
-	        tab = new YAHOO.widget.Tab({ 
+	        tab = new YAHOO.widget.Tab({
 				label: app_strings.LBL_EMAIL_OPTIONS,
 				scroll : true,
 				content : SUGAR.util.getAndRemove("divOptions" + idx).innerHTML,
 				id : "divOptions" + idx,
 				active : false
 			});
-		
+
 	        tab.layout = SE.composeLayout[idx];
-	        tab.on("activeChange", function(o){ 
+	        tab.on("activeChange", function(o){
 	        	if (o.newValue) {
 	        		this.layout.getUnitByPosition("right").set("header", app_strings.LBL_EMAIL_OPTIONS);
 	        	}
 	        });
         	cTabs.addTab(tab);
-        
+
 	        SE.composeLayout[idx].autoSize = function() {
 	        	var pEl = this.get("element").parentNode.parentNode.parentNode;
 	        	this.set("height", pEl.clientHeight-30);
 	        	this.render();
 	        }
-        
+
         	SE.composeLayout[idx].rightTabs = cTabs;
     },
     isParentTypeValid : function(idx) {
@@ -3539,12 +3538,12 @@ SE.composeLayout = {
 		} // if
 		return true;
     },
-    
+
     isParentTypeAndNameValid : function(idx) {
 		var parentTypeValue = document.getElementById('data_parent_type' + idx).value;
 		var parentNameValue = document.getElementById('data_parent_name' + idx).value;
 		var parentIdValue = document.getElementById('data_parent_id' + idx).value;
-		if ((trim(parentTypeValue) != "" && trim(parentNameValue) == "") || 
+		if ((trim(parentTypeValue) != "" && trim(parentNameValue) == "") ||
 			(trim(parentTypeValue) != "" && trim(parentNameValue) != "" && parentIdValue == "")){
 				alert(mod_strings.LBL_ERROR_SELECT_MODULE_SELECT);
 			return false;
@@ -3553,12 +3552,12 @@ SE.composeLayout = {
     },
 
     callopenpopupForEmail2 : function(idx,options) {
-        
+
         var formName = 'emailCompose' + idx;
-        
+
         if(typeof(options) != 'undefined' && typeof(options.form_name) != 'undefined')
-            formName = options.form_name;   
-            
+            formName = options.form_name;
+
 		var parentTypeValue = document.getElementById('data_parent_type' + idx).value;
 		var parentNameValue = document.getElementById('data_parent_name' + idx).value;
 		if (!SE.composeLayout.isParentTypeValid(idx)) {
@@ -3572,14 +3571,14 @@ SE.composeLayout = {
 				id:'data_parent_id' + idx,
 				name:'data_parent_name' + idx,
 				email1:'email1'}
-		}); 	
-	},    
-	
+		});
+	},
+
 	popupAddEmail : function(o)
 	{
 		var nameKey = "data_parent_name" + SE.composeLayout.currentInstanceId;
 		var data = o.name_to_value_array;
-		if (typeof (data[nameKey]) != "undefined" && data[nameKey] != "" 
+		if (typeof (data[nameKey]) != "undefined" && data[nameKey] != ""
 			&& typeof (data["email1"]) != "undefined" && data["email1"] != "" && data["email1"] != "undefined")
         {
         	var target = Dom.get("addressTO" + SE.composeLayout.currentInstanceId);
@@ -3605,14 +3604,14 @@ SE.composeLayout = {
             }, this);
         }
     },
-    
+
     resizeEditor : function(idx)
     {
     	var cof = Dom.get('composeOverFrame' + idx);
         var head = Dom.get('composeHeaderTable' + idx);
         var targetHeight = cof.clientHeight - head.clientHeight;
-    	var instance =  tinyMCE.get(SE.tinyInstances.currentHtmleditor);                
-    	
+    	var instance =  tinyMCE.get(SE.tinyInstances.currentHtmleditor);
+
     	var parentEl = Dom.get(instance.editorId + '_parent');
     	var toolbar = Dom.getElementsByClassName("mceFirst", "tr", parentEl)[0];
     	var contentEl  = instance.contentAreaContainer;
@@ -3668,7 +3667,7 @@ SE.composeLayout = {
         } else {
 	        this._1_tiny();
 	        this._2_final();
-	
+
 	        if(isReplyForward) {
 	            this.replyForwardEmailStage2();
 	        }
@@ -3746,7 +3745,7 @@ SE.composeLayout = {
             target = document.getElementById(target);
             nodes = data;
         }
-        
+
         if (target.id.indexOf('address') > -1) {
             // dropped onto email to/cc/bcc field
             for(var i in nodes) {
@@ -3767,7 +3766,7 @@ SE.composeLayout = {
                     var finalName = name.replace(/(<([^>]+)>)/ig, "");
                     email = finalName + email;
                 }
-                target.value = SE.addressBook.smartAddEmailAddressToComposeField(target.value, email);              
+                target.value = SE.addressBook.smartAddEmailAddressToComposeField(target.value, email);
             }
         }
     },
@@ -3777,12 +3776,12 @@ SE.composeLayout = {
     ///    EMAIL TEMPLATE CODE
      */
     applyEmailTemplate : function (idx, id) {
-    	        
+
         //bug #20680
         var box_title = mod_strings.LBL_EMAILTEMPLATE_MESSAGE_SHOW_TITLE;
 		var box_msg = mod_strings.LBL_EMAILTEMPLATE_MESSAGE_SHOW_MSG;
 		var box_none_msg = mod_strings.LBL_EMAILTEMPLATE_MESSAGE_CLEAR_MSG;
-		
+
 		// id is selected index of email template drop-down
 		if(id == '' || id == "0") {
 			YAHOO.SUGAR.MessageBox.show({
@@ -3790,14 +3789,14 @@ SE.composeLayout = {
 	           msg: box_none_msg,
 	           type: 'confirm',
 	           fn: function(btn){
-	           		if(btn=='no'){return;};	           		
+	           		if(btn=='no'){return;};
 	           		SUGAR.email2.composeLayout.processNoneResult(idx, id);},
 	           modal:true,
 	           scope:this
 	       });
 	       return;
-		} 
-	
+		}
+
 		YAHOO.SUGAR.MessageBox.show({
            title:box_title,
            msg: box_msg,
@@ -3809,7 +3808,7 @@ SE.composeLayout = {
            scope:this
        });
     },
-    
+
     processNoneResult : function(idx, id) {
         var tiny = SE.util.getTiny('htmleditor' + idx);
         var tinyHTML = tiny.getContent();
@@ -3821,9 +3820,9 @@ SE.composeLayout = {
 	        tiny.setContent(tinyHTML);
 		} else {
         	tiny.setContent('');
-		}    	
+		}
     },
-	
+
 	processResult : function(idx , id){
         call_json_method('EmailTemplates','retrieve','record='+id,'email_template_object', this.appendEmailTemplateJSON);
 
@@ -3876,20 +3875,20 @@ SE.composeLayout = {
             setTimeout("SE.composeLayout.setSignature(" + idx + ");", 1000);
 			return;
         }
-            
+
         if(idx) {
             var sel = document.getElementById('signatures' + idx);
         } else {
             var sel = document.getElementById('signature_id');
             idx = SE.tinyInstances.currentHtmleditor;
         }
-        
+
         //Ensure that the tinyMCE html has been rendered.
         if(typeof(SE.composeLayout.loadedTinyInstances[idx]) != 'undefined' && SE.composeLayout.loadedTinyInstances[idx] == false) {
             setTimeout("SE.composeLayout.setSignature(" + idx + ");",1000);
 		    return;
 		}
-            
+
         var signature = '';
 
         try {
@@ -3909,7 +3908,7 @@ SE.composeLayout = {
         }
         else
             var html = '';
-            
+
         var htmllow = html.toLowerCase();
         var start = htmllow.indexOf(openTag);
         var end = htmllow.indexOf(closeTag) + closeTag.length;
@@ -3919,7 +3918,7 @@ SE.composeLayout = {
             if (start > -1) {
                 var htmlPart1 = html.substr(0, start);
                 var htmlPart2 = html.substr(end, html.length);
-    
+
                 html = htmlPart1 + htmlPart2;
                 t.setContent(html);
             }
@@ -3948,7 +3947,7 @@ SE.composeLayout = {
 
                 html = htmlPart1 + htmlPart2;
             }
-            
+
             // [pre|ap]pend
 			start = html.indexOf('<div><hr></div>');
             if(SE.userPrefs.signatures.signature_prepend == 'true' && start > -1) {
@@ -4018,7 +4017,7 @@ SE.composeLayout = {
             index++;
             test = document.getElementById('documentId' + idx + index);
         }
-        
+
         var documentCup = document.createElement("div");
         documentCup.id = 'documentCup' + idx + index;
         documentCup.innerHTML = "<input type='hidden' name='document" + idx + index + "' id='document" + idx + index + "' />" +
@@ -4027,15 +4026,15 @@ SE.composeLayout = {
                 // document name field
                 "<input value='' size='15' disabled='true' type='text' name='documentName" + idx + index + "' id='documentName" + idx + index + "' />" +
                 // select button
-                "<button class='button firstChild' type='button' name='documentSelect" + idx + index + "' id='documentSelect" + idx + index + "'" + 
+                "<button class='button firstChild' type='button' name='documentSelect" + idx + index + "' id='documentSelect" + idx + index + "'" +
                     "onclick='SE.composeLayout.selectDocument(\"" + index + "\");' value='" + app_strings.LBL_EMAIL_SELECT + "'>" +
                 "<img src='index.php?entryPoint=getImage&themeName=" + SUGAR.themes.theme_name + "&imageName=id-ff-select.png' ></button>" +
                 // remove button
-                "<button class='button lastChild' type='button' name='documentRemove" + idx + index + "' id='documentRemove" + idx + index + "'" + 
-                    "onclick='SE.composeLayout.deleteDocumentField(\"documentCup" + idx + index + "\");' value='" + app_strings.LBL_EMAIL_REMOVE + "'>" + 
-                 "<img src='index.php?entryPoint=getImage&themeName=" + SUGAR.themes.theme_name + "&imageName=id-ff-clear.png' ></button>" +   
+                "<button class='button lastChild' type='button' name='documentRemove" + idx + index + "' id='documentRemove" + idx + index + "'" +
+                    "onclick='SE.composeLayout.deleteDocumentField(\"documentCup" + idx + index + "\");' value='" + app_strings.LBL_EMAIL_REMOVE + "'>" +
+                 "<img src='index.php?entryPoint=getImage&themeName=" + SUGAR.themes.theme_name + "&imageName=id-ff-clear.png' ></button>" +
                 "<br/>";
-        
+
         basket.appendChild(documentCup);
         //basket.innerHTML += out;
         return index;
@@ -4054,7 +4053,7 @@ SE.composeLayout = {
         windowName = 'selectDocument';
         windowFeatures = 'width=800' + ',height=600' + ',resizable=1,scrollbars=1';
 
-        win = window.open(URL, windowName, windowFeatures);
+        win = SUGAR.util.openWindow(URL, windowName, windowFeatures);
         if(window.focus) {
             // put the focus on the popup if the browser supports the focus() method
             win.focus();
@@ -4072,7 +4071,7 @@ SE.composeLayout = {
             	fixedcenter:true,
             	constraintoviewport: true,
                 scroll: true,
-                keylisteners : new YAHOO.util.KeyListener(document, { keys:27 }, { 
+                keylisteners : new YAHOO.util.KeyListener(document, { keys:27 }, {
                 	fn:function(){SE.addFileDialog.hide();}
                 })
             });
@@ -4081,7 +4080,7 @@ SE.composeLayout = {
            // SE.addFileDialog.addKeyListener(27, , SE.addFileDialog);
         }
     	Dom.removeClass("addFileDialog", "yui-hidden");
-        
+
         SE.addFileDialog.show();
     },
 
@@ -4175,9 +4174,9 @@ SE.composeLayout = {
         }
 
         var out = "<div id='templateAttachmentCup" + idx + index + "'>" +
-				// remove button	
+				// remove button
 				"<img src='index.php?entryPoint=getImage&themeName=" + SUGAR.themes.theme_name + "&imageName=minus.gif' " +
-					"style='cursor:pointer' align='absmiddle' onclick='SUGAR.email2.composeLayout.deleteTemplateAttachmentField(\"" + 
+					"style='cursor:pointer' align='absmiddle' onclick='SUGAR.email2.composeLayout.deleteTemplateAttachmentField(\"" +
 					idx + "\",\"" + index + "\");'/>" +
 				// file icon
 				"<img src='index.php?entryPoint=getImage&themeName=" + SUGAR.themes.theme_name + "&imageName=attachment.gif' " + "align='absmiddle' />" +
@@ -4186,12 +4185,12 @@ SE.composeLayout = {
 				// docId field
 				"<input type='hidden' value='" + "' name='templateAttachmentId" + idx + index + "' id='templateAttachmentId" + idx + index + "' />" +
 				// file name
-				"<span id='templateAttachmentName"  + idx + index + "'" + ">&nbsp;</span>" + 
-				"<br id='br" + index + "></br>" + 
-				"<br id='brdoc" + index + "></br>" + 
+				"<span id='templateAttachmentName"  + idx + index + "'" + ">&nbsp;</span>" +
+				"<br id='br" + index + "></br>" +
+				"<br id='brdoc" + index + "></br>" +
 			"</div>";
 		basket.innerHTML = basket.innerHTML + out;
-     
+
         return index;
     },
 
@@ -4201,17 +4200,17 @@ SE.composeLayout = {
      * @param bool isDraft
      */
     sendEmail : function(idx, isDraft) {
-        
+
         //If the outbound account has an error message associate with it, alert the user and refuse to continue.
         var obAccountID = document.getElementById('addressFrom' + idx).value;
-        
+
         if( typeof(SUGAR.email2.composeLayout.outboundAccountErrors[obAccountID]) != 'undefined' )
         {
             overlay(app_strings.LBL_EMAIL_ERROR_DESC, SUGAR.email2.composeLayout.outboundAccountErrors[obAccountID], 'alert');
             return false;
         }
-        
-        
+
+
         var form = document.getElementById('emailCompose' + idx);
         var composeOptionsFormName = "composeOptionsForm" + idx;
         var t = SE.util.getTiny(SE.tinyInstances.currentHtmleditor);
@@ -4224,16 +4223,16 @@ SE.composeLayout = {
         var composeType = document.getElementById('composeType').value;
         var parent_type = document.getElementById("parent_type").value;
         var parent_id = document.getElementById("parent_id").value;
-        
+
         var el_uid = document.getElementById("uid");
         var uid = (el_uid == null) ? '' : el_uid.value;
-        
+
       	var el_ieId = document.getElementById("ieId");
         var ieId = (el_ieId == null) ? '' : el_ieId.value;
-        
+
         var el_mbox = document.getElementById("mbox");
         var mbox = (el_mbox == null) ? '' : el_mbox.value;
-        
+
         if (!isValidEmail(to) || !isValidEmail(cc) || !isValidEmail(bcc)) {
 			alert(app_strings.LBL_EMAIL_COMPOSE_INVALID_ADDRESS);
         	return false;
@@ -4261,7 +4260,7 @@ SE.composeLayout = {
             }
         } else if(html == '' && !isDraft) {
             if(!confirm(app_strings.LBL_EMAIL_COMPOSE_NO_BODY)) {
-                return false; 
+                return false;
             }
         }
 
@@ -4269,9 +4268,9 @@ SE.composeLayout = {
 		document.getElementById('data_parent_id' + idx).value = parentIdValue;
 		var title = (isDraft) ? app_strings.LBL_EMAIL_SAVE_DRAFT : app_strings.LBL_EMAIL_SENDING_EMAIL;
         overlay(title, app_strings.LBL_EMAIL_ONE_MOMENT);
-        html = html.replace(/&lt;/ig, "sugarLessThan");       
+        html = html.replace(/&lt;/ig, "sugarLessThan");
         html = html.replace(/&gt;/ig, "sugarGreaterThan");
-        
+
         form.sendDescription.value = html;
         form.sendSubject.value = subj;
         form.sendTo.value = to;
@@ -4370,15 +4369,15 @@ SE.composeLayout = {
     composePackage : function() {
         if(composePackage != null) {
             SE.composeLayout.c0_composeNewEmail();
-            
-            
+
+
             if(composePackage.to_email_addrs) {
                 document.getElementById("addressTO" + SE.composeLayout.currentInstanceId).value = composePackage.to_email_addrs;
             } // if
             if (composePackage.subject != null && composePackage.subject.length > 0) {
             	document.getElementById("emailSubject" + SE.composeLayout.currentInstanceId).value = composePackage.subject;
             }
-            
+
             //If no parent fields are set in the composePackage, ensure they are cleared.
             var parentFields = ['parent_type','parent_name','parent_id'];
             for(var i=0;i<parentFields.length;i++)
@@ -4386,13 +4385,13 @@ SE.composeLayout = {
                 if ( typeof(composePackage[parentFields[i]]) == 'undefined' )
                     composePackage[parentFields[i]] = "";
             }
-                 
+
             document.getElementById("parent_type").value = composePackage.parent_type;
             document.getElementById('data_parent_type' + SE.composeLayout.currentInstanceId).value = composePackage.parent_type;
             document.getElementById("parent_id").value = composePackage.parent_id;
             document.getElementById('data_parent_id' + SE.composeLayout.currentInstanceId).value = composePackage.parent_id;
-            document.getElementById('data_parent_name' + SE.composeLayout.currentInstanceId).value = composePackage.parent_name;  
-                
+            document.getElementById('data_parent_name' + SE.composeLayout.currentInstanceId).value = composePackage.parent_name;
+
             if(composePackage.email_id != null && composePackage.email_id.length > 0) {
                 document.getElementById("email_id" + SE.composeLayout.currentInstanceId).value = composePackage.email_id;
             } // if
@@ -4402,9 +4401,9 @@ SE.composeLayout = {
         		setTimeout("SE.composeLayout.setContentOnThisTiny();", 3000);
             } // if
             if (composePackage.attachments != null) {
-				SE.composeLayout.loadAttachments(composePackage.attachments);            	
+				SE.composeLayout.loadAttachments(composePackage.attachments);
             } // if
-            
+
             if (composePackage.fromAccounts != null && composePackage.fromAccounts.status) {
 				var addressFrom = document.getElementById('addressFrom' + SE.composeLayout.currentInstanceId);
 		        SE.util.emptySelectOptions(addressFrom);
@@ -4417,8 +4416,8 @@ SE.composeLayout = {
 		              	opt.selected = true;
 		              }
 		              addressFrom.options.add(opt);
-		        }			
-            	
+		        }
+
             } // if
         } // if
     },
@@ -4435,8 +4434,8 @@ SE.composeLayout = {
         if (typeof(composePackage.clearBody) != 'undefined' && composePackage.clearBody)
             SE.composeLayout.tinyHTML = '';
         else
-            SE.composeLayout.tinyHTML = tinyHTML + composePackage.body;		        
-    	
+            SE.composeLayout.tinyHTML = tinyHTML + composePackage.body;
+
          tiny.setContent(SE.composeLayout.tinyHTML);
          //Indicate that the contents has been loaded successfully.
          SE.composeLayout.loadedTinyInstances[SE.composeLayout.currentInstanceId] = true;
@@ -4458,7 +4457,7 @@ SE.composeLayout = {
      */
     forceCloseCompose : function(id) {
     	SE.composeLayout.closeCompose(id);
-    	
+
     	// handle flow back to originating view
         if(composePackage) {
             // check if it's a module we need to return to
@@ -4499,11 +4498,11 @@ SE.composeLayout = {
     *  Enable the quick search for the compose relate field or search tab
     */
     enableQuickSearchRelate: function(idx,overides){
-        
+
         if(typeof overides != 'undefined')
         {
             var newModuleID = overides['moduleSelectField']; //data_parent_type_search
-            var newModule = document.getElementById(newModuleID).value; 
+            var newModule = document.getElementById(newModuleID).value;
             var formName = overides['formName'];
             var fieldName = overides['fieldName'];
             var fieldId = overides['fieldId'];
@@ -4519,10 +4518,10 @@ SE.composeLayout = {
             var fullName = formName + "_" + fieldName;
             var postBlurFunction = "SE.composeLayout.qsAddAddress";
         }
-        
+
         if(typeof sqs_objects == 'undefined')
             window['sqs_objects'] = new Array;
-            
+
         window['sqs_objects'][fullName] = {
             form:formName,
 			method:"query",
@@ -4532,8 +4531,8 @@ SE.composeLayout = {
             conditions:[{name:"name",op:"like_custom",end:"%",value:""}],
 			post_onblur_function: postBlurFunction,
             order:"name","limit":"30","no_match_text":"No Match"};
-                                
-        
+
+
         if(typeof QSProcessedFieldsArray != 'undefined')
         	QSProcessedFieldsArray[fullName] = false;
         if (typeof(QSFieldsArray) != 'undefined' && typeof(QSFieldsArray[fullName]) != 'undefined') {
@@ -4543,10 +4542,10 @@ SE.composeLayout = {
         if (Dom.get(fullName + "_results")) {
         	Dom.get(fullName + "_results").parentNode.removeChild(Dom.get(fullName + "_results"));
         }
-            
+
         enableQS(false);
     },
-    
+
 	qsAddAddress : function(o) {
         if (o.name != "" && o.email1 != "")
         {
@@ -4595,7 +4594,7 @@ SE.composeLayout = {
     setComposeOptions : function(idx) {
         // send from accounts
         var addressFrom = document.getElementById('addressFrom' + idx);
-        
+
         if (addressFrom.options.length <= 0) {
         	SE.util.emptySelectOptions(addressFrom);
 	        var fromAccountOpts = SE.composeLayout.fromAccounts;
@@ -4675,7 +4674,7 @@ SE.composeLayout = {
         var sendType = type;
         AjaxObject.startRequest(callbackReplyForward, urlStandard + "&composeType=" + type + sugarEmail);
     },
-    
+
     /**
     *  Show the hidden cc or bcc fields
     */
@@ -4685,22 +4684,22 @@ SE.composeLayout = {
     	Dom.addClass(addrType+"_span"+idx, "yui-hidden");
 		Dom.addClass("bcc_cc_sep"+idx, "yui-hidden");
 		this[addrType+'Hidden'+idx] = false;
-		
+
 		//After bcc or cc is added, move options below last addr field
 		Dom.insertAfter("add_addr_options_tr"+idx, 'bcc_tr'+idx);
-		
+
 		//If both cc and bcc hidden, remove the empty row containing text.
 		if( ( typeof(this['ccHidden'+idx]) != 'undefined' && typeof(this['bccHidden'+idx]) != 'undefined')
 			   && ( this['ccHidden'+idx]  == false && this['bccHidden'+idx] == false) )
-			Dom.addClass("add_addr_options_tr"+idx, "yui-hidden");	
-		
+			Dom.addClass("add_addr_options_tr"+idx, "yui-hidden");
+
 		SE.composeLayout.resizeEditor(idx);
     },
     /**
     *  Hide the cc and bcc fields if they were shown.
     */
     hideHiddenAddresses: function(idx){
-        
+
         var addrTypes = ['cc','bcc'];
         for(var i = 0;i<addrTypes.length;i++)
         {
@@ -4708,7 +4707,7 @@ SE.composeLayout = {
             Dom.removeClass(addrTypes[i] + "_span"+idx, "yui-hidden");
             this[addrTypes[i] + 'Hidden'+idx] = true
         }
-        
+
         Dom.removeClass("bcc_cc_sep"+idx, "yui-hidden");
         Dom.removeClass("add_addr_options_tr"+idx, "yui-hidden");
         Dom.insertBefore("add_addr_options_tr"+idx, 'bcc_tr'+idx);
@@ -4836,7 +4835,7 @@ SE.util = {
     getPanelId : function() {
         return SE.innerLayout.get("activeTab").id ? SE.innerLayout.get("activeTab").id : "Preview";
     },
-    
+
     /**
      * wrapper to handle weirdness with IE
      * @param string instanceId
@@ -4875,7 +4874,7 @@ SE.util = {
     removeElementRecursive : function(el) {
         this.emptySelectOptions(el);
     },
-    
+
     /**
      * Fakes a sleep
      * @param int
@@ -4883,7 +4882,7 @@ SE.util = {
     sleep : function(secs) {
         setTimeout("void(0);", secs);
     },
-    
+
     /**
      * Converts a <select> element to an Ext.form.combobox
      */
@@ -4893,19 +4892,19 @@ SE.util = {
            select = document.getElementById(select);
        }
      },
-     
+
      findChildNode : function (parent, property, value) {
     	 for (i in parent.children) {
     		 var child = parent.children[i];
     		 if (child.data[property] && child.data[property] == value || child[property] && child[property] == value)
     			 return child;
     		 var searchChild = SE.util.findChildNode(child, property, value);
-    		 if (searchChild) 
+    		 if (searchChild)
     			 return searchChild;
     	 }
     	 return false;
      },
-     
+
      cascadeNodes : function (parent, fn, scope, args) {
     	 for (i in parent.children) {
     		 var child = parent.children[i];
