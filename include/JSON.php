@@ -98,7 +98,7 @@ class JSON
 {
     // cn: bug 12274 - the below defend against CSRF (see desc for whitepaper)
     var $prescript = "while(1);/*";
-    var $postscript = "*/"; 
+    var $postscript = "*/";
 
     /**
      * Specifies whether caching should be used
@@ -107,7 +107,7 @@ class JSON
      * @access private
      */
     var $_use_cache = true;
-    
+
    /**
     * constructs a new JSON instance
     *
@@ -216,14 +216,14 @@ class JSON
         // ignoring UTF-32 for now, sorry
         return '';
     }
-    
-    
+
+
     /**
      * Wrapper for original "encode()" method - allows the creation of a security envelope
      * @param mixed var Variable to be JSON encoded
      * @param bool addSecurityEnvelope Default false
      */
-    function encode($var, $addSecurityEnvelope=false) {
+    function encode($var, $addSecurityEnvelope=false, $encodeSpecial = false) {
         $use_cache_on_at_start = $this->_use_cache;
         if ($this->_use_cache) {
             $cache_key = 'JSON_encode_' . ((is_array($var) || is_object($var)) ? md5(serialize($var)) : $var)
@@ -246,6 +246,14 @@ class JSON
             $encoded_var = $this->prescript . $encoded_var . $this->postscript;
         }
 
+        if ($encodeSpecial) {
+            $charMap = array('<' => '\u003C', '>' => '\u003E', "'" => '\u0027', '&' => '\u0026');
+            foreach($charMap as $c => $enc)
+            {
+                $encoded_var = str_replace($c, $enc, $encoded_var);
+            }
+        }
+
         if ($this->_use_cache) {
             sugar_cache_put($cache_key, $encoded_var);
         }
@@ -261,7 +269,7 @@ class JSON
     *                           to be in ASCII or UTF-8 format!
     *
     * @return   mixed   JSON string representation of input var or an error if a problem occurs
-    * @access   private 
+    * @access   private
     */
     function encodeReal($var) {
         global $sugar_config;
@@ -527,10 +535,10 @@ class JSON
                 $GLOBALS['log']->fatal("*** SECURITY: received asynchronous call with invalid ['asychronous_key'] value.  Possible CSRF attack.");
                 return '';
             }
-            
+
             return $meta['jsonObject'];
         }
-        
+
         return $this->decodeReal($str);
     }
 

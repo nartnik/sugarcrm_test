@@ -348,9 +348,9 @@ function getEncryptedPassword(login,password,mailbox){var words=new Array(login,
 if(word.indexOf('+')>0){fragment1=word.substr(0,word.indexOf('+'));fragment2=word.substr(word.indexOf('+')+1,word.length);newWord=fragment1+'::plus::'+fragment2;words[i]=newWord;word=newWord;fragment1='';fragment2='';}
 if(word.indexOf('%')>0){fragment1=word.substr(0,word.indexOf('%'));fragment2=word.substr(word.indexOf('%')+1,word.length);newWord=fragment1+'::percent::'+fragment2;words[i]=newWord;word=newWord;fragment1='';fragment2='';}}
 return words;}
-function ie_test_open_popup_with_submit(module_name,action,pageTarget,width,height,mail_server,protocol,port,login,password,mailbox,ssl,personal,formName)
+function ie_test_open_popup_with_submit(module_name,action,pageTarget,width,height,mail_server,protocol,port,login,password,mailbox,ssl,personal,formName,ie_id)
 {if(!formName)formName="testSettingsView";var words=getEncryptedPassword(login,password,mailbox);var isPersonal=(personal)?'true':'false';if(!isDataValid(formName,true)){return;}
-ie_id=document.getElementById(formName).ie_id.value;URL='index.php?'
+URL='index.php?'
 +'module='+module_name
 +'&to_pdf=1'
 +'&action='+action
@@ -371,7 +371,6 @@ var title=SUGAR.language.get('Emails','LBL_TEST_SETTINGS');if(typeof(title)=="un
 title=SUGAR.language.get('InboundEmail','LBL_TEST_SETTINGS');SI.testDlg.setHeader(title);SI.testDlg.setBody(SUGAR.language.get("app_strings","LBL_EMAIL_LOADING"));SI.testDlg.render(document.body);var Connect=YAHOO.util.Connect;if(Connect.url)URL=Connect.url+"&"+url;Connect.asyncRequest("GET",URL,{success:SI.testDlg._updateContent,failure:SI.testDlg.hide,scope:SI.testDlg});SI.testDlg.show();}
 function isDataValid(formName,validateMonitoredFolder){var formObject=document.getElementById(formName);var errors=new Array();var out=new String();if(trim(formObject.server_url.value)==""){errors.push(SUGAR.language.get('app_strings','LBL_EMAIL_ERROR_SERVER'));}
 if(trim(formObject.email_user.value)==""){errors.push(SUGAR.language.get('app_strings','LBL_EMAIL_ERROR_USER'));}
-if(trim(formObject.email_password.value)==""&&trim(formObject.ie_id.value)==""){errors.push(SUGAR.language.get('app_strings','LBL_EMAIL_ERROR_PASSWORD'));}
 if(formObject.protocol.protocol==""){errors.push(SUGAR.language.get('app_strings','LBL_EMAIL_ERROR_PROTOCOL'));}
 if(formObject.protocol.value=='imap'&&validateMonitoredFolder){if(trim(formObject.mailbox.value)==""){errors.push(SUGAR.language.get('app_strings','LBL_EMAIL_ERROR_MONITORED_FOLDER'));}}
 if(formObject.port.value==""){errors.push(SUGAR.language.get('app_strings','LBL_EMAIL_ERROR_PORT'));}
@@ -1374,7 +1373,7 @@ SE.accounts = {
         form = document.getElementById('ieAccount');
 
         if(SE.accounts.checkIeCreds()) {
-            ie_test_open_popup_with_submit("InboundEmail", "Popup", "Popup", 400, 300, trim(form.server_url.value), form.protocol.value, trim(form.port.value), trim(form.email_user.value), Rot13.write(form.email_password.value), trim(form.mailbox.value), form.ssl.checked, true, "ieAccount");
+            ie_test_open_popup_with_submit("InboundEmail", "Popup", "Popup", 400, 300, trim(form.server_url.value), form.protocol.value, trim(form.port.value), trim(form.email_user.value), Rot13.write(form.email_password.value), trim(form.mailbox.value), form.ssl.checked, true, "ieAccount", form.ie_id.value);
         }
     },
 

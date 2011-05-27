@@ -97,9 +97,10 @@ class MassUpdate
 		global $sugar_config;
 		global $current_user;
 
-		$temp = array_merge($_GET, $_POST);
-        unset($temp['current_query_by_page']);
-		$query = base64_encode(serialize($temp));
+		unset($_REQUEST['current_query_by_page']);
+		unset($_REQUEST[session_name()]);
+		unset($_REQUEST['PHPSESSID']);
+		$query = base64_encode(serialize($_REQUEST));
 
         $bean = loadBean($_REQUEST['module']);
        $order_by_name = $bean->module_dir.'2_'.strtoupper($bean->object_name).'_ORDER_BY' ;

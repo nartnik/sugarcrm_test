@@ -538,7 +538,7 @@ function open_popup(module_name,width,height,initial_filter,close_popup,hide_cle
 {if(typeof(popupCount)=="undefined"||popupCount==0)
 popupCount=1;window.document.popup_request_data=popup_request_data;window.document.close_popup=close_popup;URL='index.php?'
 +'module='+module_name
-+'&action=Popup';if(initial_filter!=''){URL+='&query=true'+initial_filter;popupName=initial_filter.replace(/[^a-z_\-0-9]+/ig,'_');windowName=module_name+'_popup_window'+popupName;}else{windowName=module_name+'_popup_window'+popupCount;}
++'&action=Popup';if(initial_filter!=''){URL+='&query=true'+initial_filter;popupName=initial_filter.replace(/[^a-z_0-9]+/ig,'_');windowName=module_name+'_popup_window'+popupName;}else{windowName=module_name+'_popup_window'+popupCount;}
 popupCount++;if(hide_clear_button){URL+='&hide_clear_button=true';}
 windowFeatures='width='+width
 +',height='+height

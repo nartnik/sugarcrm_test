@@ -3727,7 +3727,7 @@ function open_popup(module_name, width, height, initial_filter, close_popup, hid
 	if (initial_filter != '') {
 		URL += '&query=true' + initial_filter;
 		// Bug 41891 - Popup Window Name
-		popupName = initial_filter.replace(/[^a-z_\-0-9]+/ig, '_');
+		popupName = initial_filter.replace(/[^a-z_0-9]+/ig, '_');
 		windowName = module_name + '_popup_window' + popupName;
 	} else {
 		windowName = module_name + '_popup_window' + popupCount;

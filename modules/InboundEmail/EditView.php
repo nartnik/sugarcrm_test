@@ -81,6 +81,7 @@ else
 
 if(isset($_REQUEST['isDuplicate']) && $_REQUEST['isDuplicate'] == 'true') {
 	$GLOBALS['log']->debug("isDuplicate found - duplicating record of id: ".$focus->id);
+	$origin_id = $focus->id;
 	$focus->id = "";
 }
 
@@ -232,6 +233,7 @@ $xtpl->assign('NAME', $focus->name);
 $xtpl->assign('STATUS', $status);
 $xtpl->assign('SERVER_URL', $focus->server_url);
 $xtpl->assign('USER', $focus->email_user);
+$xtpl->assign('ORIGIN_ID', isset($origin_id)?$origin_id:'');
 // Don't send password back
 $xtpl->assign('HAS_PASSWORD', empty($focus->email_password)?0:1);
 $xtpl->assign('TRASHFOLDER', $trashFolder);

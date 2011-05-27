@@ -650,7 +650,7 @@ class HTML_Safe
     public function clear()
     {
         $this->xhtml = '';
-        $this->dcCounter = 0;
+        $this->dcCounter = array();
         $this->stack = array();
         return true;
     }

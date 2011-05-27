@@ -4193,7 +4193,7 @@ function getUrls($string)
 /**
  * Sanitize image file from hostile content
  * @param string $path Image file
- * @param bool $jpeg Recode as JPEG (false - recode as PNG)
+ * @param bool $jpeg  Accept only JPEGs?
  */
 function verify_image_file($path, $jpeg = false)
 {
@@ -4202,16 +4202,21 @@ function verify_image_file($path, $jpeg = false)
     	if(!$img) {
     	    return false;
     	}
-        if($jpeg) {
+    	$img_size = getimagesize($path);
+		$filetype = $img_size['mime'];
+		//if filetype is jpeg or if we are only allowing jpegs, create jpg image
+        if($filetype == "image/jpeg" || $jpeg) {
             if(imagejpeg($img, $path)) {
                 return true;
             }
-        } else {
+        } elseif ($filetype == "image/png") { // else if the filetype is png, create png
         	imagealphablending($img, true);
         	imagesavealpha($img, true);
     	    if(imagepng($img, $path)) {
                 return true;
     	    }
+        } else {
+        	return false;	
         }
 	} else {
 	    // check image manually

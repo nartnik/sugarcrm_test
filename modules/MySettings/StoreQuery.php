@@ -72,10 +72,10 @@ class StoreQuery{
 	
 	function populateRequest(){
 		foreach($this->query as $key=>$val){
-            //We don't want to step on the search type, module, or offset if they are in the current request
-            if($key != 'advanced' && $key != 'module' && (substr($key, -7) != "_offset" || !isset($_REQUEST[$key]))) {
-    			$_REQUEST[$key] = $val;
-                $_GET[$key]     = $val;
+            // todo wp: remove this
+            if($key != 'advanced' && $key != 'module') { // cn: bug 6546 storequery stomps correct value for 'module' in Activities
+    			$_REQUEST[$key] = $val;	
+    			$_GET[$key] = $val;	
             }
 		}	
 	}

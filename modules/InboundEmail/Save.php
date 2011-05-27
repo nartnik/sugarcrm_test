@@ -40,8 +40,12 @@ require_once('include/SugarFolders/SugarFolders.php');
 global $current_user;
 
 $focus = new InboundEmail();
-$focus->retrieve($_REQUEST['record']);
-
+if(!empty($_REQUEST['record'])) {
+    $focus->retrieve($_REQUEST['record']);
+} elseif(!empty($_REQUEST['origin_id'])) {
+    $focus->retrieve($_REQUEST['origin_id']);
+    unset($focus->id);
+}
 foreach($focus->column_fields as $field) {
     if($field == 'email_password' && empty($_REQUEST['email_password']) && !empty($_REQUEST['email_user'])) {
         continue;

@@ -495,9 +495,9 @@ EOHTML;
 	protected function buildTargetList()
 	{
         global $app_strings;
-        $temp = array_merge($_GET, $_POST);
-        unset($temp['current_query_by_page']);
-		$current_query_by_page = base64_encode(serialize($temp));
+		unset($_REQUEST[session_name()]);
+		unset($_REQUEST['PHPSESSID']);
+        $current_query_by_page = base64_encode(serialize($_REQUEST));
 
 		$js = <<<EOF
             if(sugarListView.get_checks_count() < 1) {
