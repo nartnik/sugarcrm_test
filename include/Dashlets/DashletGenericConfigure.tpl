@@ -1,7 +1,7 @@
 {*
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -70,11 +70,21 @@
 	    <td scope='row'>
 		    {$strings.displayRows}
         </td>
-        <td colspan='3'>
+        <td{if !$isRefreshable} colspan='3'{/if}>
             <select name='displayRows'>
 				{html_options values=$displayRowOptions output=$displayRowOptions selected=$displayRowSelect}
            	</select>
         </td>
+        {if $isRefreshable}
+        <td scope='row'>
+		    {$strings.autoRefresh}
+        </td>
+        <td>
+            <select name='autoRefresh'>
+				{html_options options=$autoRefreshOptions selected=$autoRefreshSelect}
+           	</select>
+        </td>
+        {/if}
     </tr>
     <tr>
         <td colspan='4' align='center'>

@@ -2,7 +2,7 @@
 <?php
 /* PHPUnit
  *
- * Copyright (c) 2002-2009, Sebastian Bergmann <sb@sebastian-bergmann.de>.
+ * Copyright (c) 2002-2010, Sebastian Bergmann <sebastian@phpunit.de>.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -11,7 +11,7 @@
  *
  *   * Redistributions of source code must retain the above copyright
  *     notice, this list of conditions and the following disclaimer.
- * 
+ *
  *   * Redistributions in binary form must reproduce the above copyright
  *     notice, this list of conditions and the following disclaimer in
  *     the documentation and/or other materials provided with the
@@ -33,24 +33,27 @@
  * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- *
-
  */
 // no memory limit needed, since we are running this from the command line
 ini_set('memory_limit', '-1');
 
-set_include_path(dirname(__FILE__) . PATH_SEPARATOR . get_include_path());
+set_include_path(dirname(__FILE__) . PATH_SEPARATOR . dirname(__FILE__) . "/PHPUnit" . PATH_SEPARATOR . get_include_path());
 
 if ( isset($_SERVER['_']) )
 	$_SERVER['_'] = realpath($_SERVER['_']);
 
-require_once 'PHPUnit/Util/Filter.php';
+require_once 'PHP/CodeCoverage/Filter.php';
+PHP_CodeCoverage_Filter::getInstance()->addFileToBlacklist(__FILE__, 'PHPUNIT');
 
-PHPUnit_Util_Filter::addFileToFilter(__FILE__, 'PHPUNIT');
+if (extension_loaded('xdebug')) {
+    xdebug_disable();
+}
 
-require 'PHPUnit/TextUI/Command.php';
+require_once 'PHPUnit/Autoload.php';
 
 define('PHPUnit_MAIN_METHOD', 'PHPUnit_TextUI_Command::main');
 
 PHPUnit_TextUI_Command::main();
+
 ?>
+

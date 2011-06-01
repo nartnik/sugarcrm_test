@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -92,7 +92,7 @@ class Opportunity extends SugarBean {
 	var $rel_account_table = "accounts_opportunities";
 	var $rel_contact_table = "opportunities_contacts";
 	var $module_dir = "Opportunities";
-	
+
 	var $importable = true;
 	var $object_name = "Opportunity";
 
@@ -102,8 +102,10 @@ class Opportunity extends SugarBean {
 
 	var $relationship_fields = Array('task_id'=>'tasks', 'note_id'=>'notes', 'account_id'=>'accounts',
 									'meeting_id'=>'meetings', 'call_id'=>'calls', 'email_id'=>'emails', 'project_id'=>'project',
+									// Bug 38529 & 40938
+									'currency_id' => 'currencies',
 									);
-	
+
 	function Opportunity() {
 		parent::SugarBean();
 		global $sugar_config;
@@ -114,7 +116,7 @@ class Opportunity extends SugarBean {
 
 	var $new_schema = true;
 
-	
+
 
 	function get_summary_text()
 	{
@@ -123,10 +125,10 @@ class Opportunity extends SugarBean {
 
 	function create_list_query($order_by, $where, $show_deleted = 0)
 	{
-		
+
 $custom_join = $this->custom_fields->getJOIN();
                 $query = "SELECT ";
-            
+
                 $query .= "
                             accounts.id as account_id,
                             accounts.name as account_name,
@@ -149,10 +151,10 @@ $query .= 			"LEFT JOIN users
   					$query .= $custom_join['join'];
 				}
 		$where_auto = '1=1';
-		if($show_deleted == 0){	    
+		if($show_deleted == 0){
 			$where_auto = "
 			($this->rel_account_table.deleted is null OR $this->rel_account_table.deleted=0)
-			AND (accounts.deleted is null OR accounts.deleted=0)  
+			AND (accounts.deleted is null OR accounts.deleted=0)
 			AND opportunities.deleted=0";
 		}else 	if($show_deleted == 1){
 				$where_auto = " opportunities.deleted=1";
@@ -196,7 +198,7 @@ $query .= 			"LEFT JOIN users
 								}
 		$where_auto = "
 			($this->rel_account_table.deleted is null OR $this->rel_account_table.deleted=0)
-			AND (accounts.deleted is null OR accounts.deleted=0)  
+			AND (accounts.deleted is null OR accounts.deleted=0)
 			AND opportunities.deleted=0";
 
         if($where != "")
@@ -220,29 +222,34 @@ $query .= 			"LEFT JOIN users
 	}
 
 	function fill_in_additional_detail_fields()
-	{		
+	{
 		parent::fill_in_additional_detail_fields();
-		
-		$currency = new Currency();
-		$currency->retrieve($this->currency_id);
-		if($currency->id != $this->currency_id || $currency->deleted == 1){
-				$this->amount = $this->amount_usdollar;
-				$this->currency_id = $currency->id;
+
+		if(!empty($this->currency_id)) {
+		    $currency = new Currency();
+		    $currency->retrieve($this->currency_id);
+    		if($currency->id != $this->currency_id || $currency->deleted == 1){
+    				$this->amount = $this->amount_usdollar;
+    				$this->currency_id = $currency->id;
+    		}
 		}
        //get campaign name
-		$camp = new Campaign();
-		$camp->retrieve($this->campaign_id);
-        $this->campaign_name = $camp->name;
+        if(!empty($this->campaign_id)) {
+    		$camp = new Campaign();
+    		$camp->retrieve($this->campaign_id);
+            $this->campaign_name = $camp->name;
+        }
 		$this->account_name = '';
 		$this->account_id = '';
-		$ret_values=Opportunity::get_account_detail($this->id);
-		if (!empty($ret_values)) {
-			$this->account_name=$ret_values['name'];
-			$this->account_id=$ret_values['id'];
-			$this->account_id_owner =$ret_values['assigned_user_id'];
+		if(!empty($this->id)) {
+    		$ret_values=Opportunity::get_account_detail($this->id);
+    		if (!empty($ret_values)) {
+    			$this->account_name=$ret_values['name'];
+    			$this->account_id=$ret_values['id'];
+    			$this->account_id_owner =$ret_values['assigned_user_id'];
+    		}
 		}
-
-		}
+	}
 
 	/** Returns a list of the associated contacts
 	 * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc..
@@ -253,21 +260,21 @@ $query .= 			"LEFT JOIN users
 	{
 		$this->load_relationship('contacts');
 		$query_array=$this->contacts->getQuery(true);
-		
+
 		//update the select clause in the retruned query.
 		$query_array['select']="SELECT contacts.id, contacts.first_name, contacts.last_name, contacts.title, contacts.email1, contacts.phone_work, opportunities_contacts.contact_role as opportunity_role, opportunities_contacts.id as opportunity_rel_id ";
-	
+
 		$query='';
 		foreach ($query_array as $qstring) {
 			$query.=' '.$qstring;
-		}	
+		}
 	    $temp = Array('id', 'first_name', 'last_name', 'title', 'email1', 'phone_work', 'opportunity_role', 'opportunity_rel_id');
 		return $this->build_related_list2($query, new Contact(), $temp);
 	}
 
 	function update_currency_id($fromid, $toid){
 		$idequals = '';
-		
+
 		$currency = new Currency();
 		$currency->retrieve($toid);
 		foreach($fromid as $f){
@@ -294,7 +301,7 @@ $query .= 			"LEFT JOIN users
 		global $locale, $current_language, $current_user, $mod_strings, $app_list_strings, $sugar_config;
 		$app_strings = return_application_language($current_language);
         $params = array();
-		
+
 		$temp_array = $this->get_list_view_array();
 		$temp_array['SALES_STAGE'] = empty($temp_array['SALES_STAGE']) ? '' : $temp_array['SALES_STAGE'];
 		$temp_array["ENCODED_NAME"]=$this->name;
@@ -308,14 +315,14 @@ $query .= 			"LEFT JOIN users
                if(!empty($cur_res)){
                     $cur_row = $this->db->fetchByAssoc($cur_res);
                         if(isset($cur_row['symbol'])){
-                         return $cur_row['symbol'];   
+                         return $cur_row['symbol'];
                         }
                }
            }
            return '';
-    } 
+    }
 
-	
+
 	/**
 		builds a generic search based on the query string using or
 		do not include any $this-> because this is called on without having the class instantiated
@@ -337,16 +344,16 @@ $query .= 			"LEFT JOIN users
 	return $the_where;
 }
 
-	function save($check_notify = FALSE) 
+	function save($check_notify = FALSE)
     {
         // Bug 32581 - Make sure the currency_id is set to something
         global $current_user, $app_list_strings;
-        
+
         if ( empty($this->currency_id) )
             $this->currency_id = $current_user->getPreference('currency');
         if ( empty($this->currency_id) )
             $this->currency_id = -99;
-            
+
         //if probablity isn't set, set it based on the sales stage
         if (!isset($this->probability) && !empty($this->sales_stage))
         {
@@ -354,26 +361,26 @@ $query .= 			"LEFT JOIN users
         	if (isset($prob_arr[$this->sales_stage]))
         		$this->probability = $prob_arr[$this->sales_stage];
         }
-        
+
 		require_once('modules/Opportunities/SaveOverload.php');
-		
+
 		perform_save($this);
 		return parent::save($check_notify);
 
 	}
-	
+
 	function save_relationship_changes($is_update)
 	{
 		//if account_id was replaced unlink the previous account_id.
 		//this rel_fields_before_value is populated by sugarbean during the retrieve call.
-		if (!empty($this->account_id) and !empty($this->rel_fields_before_value['account_id']) and 
+		if (!empty($this->account_id) and !empty($this->rel_fields_before_value['account_id']) and
 				(trim($this->account_id) != trim($this->rel_fields_before_value['account_id']))) {
 				//unlink the old record.
-				$this->load_relationship('accounts');							
-				$this->accounts->delete($this->id,$this->rel_fields_before_value['account_id']);		    					    		    				
+				$this->load_relationship('accounts');
+				$this->accounts->delete($this->id,$this->rel_fields_before_value['account_id']);
 		}
-
-		parent::save_relationship_changes($is_update);
+		// Bug 38529 & 40938 - exclude currency_id
+		parent::save_relationship_changes($is_update, array('currency_id'));
 		
 		if (!empty($this->contact_id)) {
 			$this->set_opportunity_contact_relationship($this->contact_id);
@@ -391,7 +398,7 @@ $query .= 			"LEFT JOIN users
 	function set_notification_body($xtpl, $oppty)
 	{
 		global $app_list_strings;
-		
+
 		$xtpl->assign("OPPORTUNITY_NAME", $oppty->name);
 		$xtpl->assign("OPPORTUNITY_AMOUNT", $oppty->amount);
 		$xtpl->assign("OPPORTUNITY_CLOSEDATE", $oppty->date_closed);
@@ -411,7 +418,7 @@ $query .= 			"LEFT JOIN users
 		$array_assign = parent::listviewACLHelper();
 		$is_owner = false;
 		if(!empty($this->account_id)){
-			
+
 			if(!empty($this->account_id_owner)){
 				global $current_user;
 				$is_owner = $current_user->id == $this->account_id_owner;
@@ -422,10 +429,10 @@ $query .= 			"LEFT JOIN users
 			}else{
 				$array_assign['ACCOUNT'] = 'span';
 			}
-		
+
 		return $array_assign;
 	}
-	
+
 	/**
 	 * Static helper function for getting releated account info.
 	 */
@@ -449,7 +456,7 @@ $query .= 			"LEFT JOIN users
 	}
 }
 function getCurrencyType(){
-	
+
 }
 
 ?>

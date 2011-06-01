@@ -1,7 +1,7 @@
 {*
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -52,7 +52,7 @@
 		formWithPrecision = new addToValidatePrecision('popup_form_id', 'default', 'precision');
 		</script>
 	{else}
-		<input type='hidden' name='default' value='{$vardef.default}'>{$vardef.default}
+		<input type='hidden' name='default' id='default' value='{$vardef.default}'>{$vardef.default}
 	{/if}
 	</td>
 </tr>
@@ -67,6 +67,15 @@
 	{/if}
 	</td>
 </tr>
+{if $range_search_option_enabled}
+<tr>	
+    <td class='mbLBL'>{sugar_translate module="DynamicFields" label="COLUMN_TITLE_ENABLE_RANGE_SEARCH"}:</td>
+    <td>
+        <input type='checkbox' name='enable_range_search' value=1 {if !empty($vardef.enable_range_search) }checked{/if} {if $hideLevel > 5}disabled{/if} />
+        {if $hideLevel > 5}<input type='hidden' name='enable_range_search' value='{$vardef.enable_range_search}'>{/if}
+    </td>	
+</tr>
+{/if}
 <tr>
 	<td class='mbLBL'>{sugar_translate module="DynamicFields" label="COLUMN_TITLE_PRECISION"}:</td>
 	<td>

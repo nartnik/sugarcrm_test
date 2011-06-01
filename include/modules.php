@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -44,8 +44,11 @@ $moduleList = array();
 // this list defines the modules shown in the top tab list of the app
 //the order of this list is the default order displayed - do not change the order unless it is on purpose
 $moduleList[] = 'Home';
-
-$moduleList[] = 'Activities';
+$moduleList[] = 'Calendar';
+$moduleList[] = 'Calls';
+$moduleList[] = 'Meetings';
+$moduleList[] = 'Tasks';
+$moduleList[] = 'Notes';
 $moduleList[] = 'Leads';
 $moduleList[] = 'Contacts';
 $moduleList[] = 'Accounts';
@@ -53,6 +56,8 @@ $moduleList[] = 'Opportunities';
 
 $moduleList[] = 'Emails';
 $moduleList[] = 'Campaigns';
+$moduleList[] = 'Prospects';
+$moduleList[] = 'ProspectLists';
 
 $moduleList[] = 'Documents';
 $moduleList[] = 'Cases';
@@ -203,7 +208,7 @@ $beanFiles['EmailAddress'] = 'modules/EmailAddresses/EmailAddress.php';
 
 
 
-// TODO: Remove the Library module, it is an example. 
+// TODO: Remove the Library module, it is an example.
 //$moduleList[] = 'Library';
 //$beanList['Library']= 'Library';
 //$beanFiles['Library'] = 'modules/Library/Library.php';
@@ -218,7 +223,7 @@ $modInvisList = array('Administration', 'Currencies', 'CustomFields', 'Connector
     'Releases','Sync',
     'Users',  'Versions', 'LabelEditor','Roles','EmailMarketing'
     ,'OptimisticLock', 'TeamMemberships', 'TeamSets', 'TeamSetModule', 'Audit', 'MailMerge', 'MergeRecords', 'EmailAddresses',
-    'Schedulers','Schedulers_jobs', /*'Queues',*/ 'EmailTemplates', 
+    'Schedulers','Schedulers_jobs', /*'Queues',*/ 'EmailTemplates',
     'CampaignTrackers', 'CampaignLog', 'EmailMan', 'Prospects', 'ProspectLists',
     'Groups','InboundEmail',
     'ACLActions', 'ACLRoles',
@@ -243,10 +248,6 @@ $adminOnlyList = array(
                     );
 
 
-$modInvisListActivities = array('Calls', 'Meetings','Notes','Tasks','Calendar');
-
-
-
 $modInvisList[] = 'ACL';
 $modInvisList[] = 'ACLRoles';
 $modInvisList[] = 'Configurator';
@@ -261,7 +262,6 @@ $beanList['SugarFeed'] = 'SugarFeed';
 $beanFiles['SugarFeed'] = 'modules/SugarFeed/SugarFeed.php';
 $modInvisList[] = 'SugarFeed';
 
-
 // This is the mapping for modules that appear under a different module's tab
 // Be sure to also add the modules to $modInvisList, otherwise their tab will still appear
 $GLOBALS['moduleTabMap'] = array(
@@ -274,10 +274,13 @@ $GLOBALS['moduleTabMap'] = array(
     'SugarFeed' => 'Administration',
     'DocumentRevisions' => 'Documents',
     'EmailTemplates' => 'Emails',
-    'ProspectLists' => 'Campaigns',
-    'Prospects' => 'Campaigns',
-	'EmailMarketing' => 'Campaigns',
-);
+    'EmailMarketing' => 'Campaigns',
+ );
+$beanList['EAPM'] = 'EAPM';
+$beanFiles['EAPM'] = 'modules/EAPM/EAPM.php';
+$modules_exempt_from_availability_check['EAPM'] = 'EAPM';
+$modInvisList[] = 'EAPM';
+
 
 if (file_exists('include/modules_override.php'))
 {

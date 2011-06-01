@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -52,7 +52,7 @@ class SugarFieldCollection extends SugarFieldBase {
         $this->ss->assign('vardefJSON', '{literal}'.$vardefJSON.'{/literal}');
         $this->setup($parentFieldArray, $vardef, $displayParams, $tabindex);
         if(empty($this->tpl_path)){
-        	$this->tpl_path = 'include/SugarFields/Fields/Collection/DetailView.tpl';
+        	$this->tpl_path = $this->findTemplate('DetailView');
         }
         return $this->fetch($this->tpl_path);
     }
@@ -72,7 +72,7 @@ class SugarFieldCollection extends SugarFieldBase {
         $this->setup($parentFieldArray, $vardef, $displayParams, $tabindex);
 	    if(!$searchView) {
 	    	if(empty($this->tpl_path)){
-        		$this->tpl_path = 'include/SugarFields/Fields/Collection/EditView.tpl';
+        		$this->tpl_path = $this->findTemplate('EditView');
         	}
 	    	return $this->fetch($this->tpl_path);
 	    }

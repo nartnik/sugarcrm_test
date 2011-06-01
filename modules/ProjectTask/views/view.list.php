@@ -2,7 +2,7 @@
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -216,7 +216,7 @@ class ProjectTaskViewList extends ViewList{
 		
 		if(isset($this->options['show_title']) && $this->options['show_title']) {
 			$moduleName = isset($this->seed->module_dir) ? $this->seed->module_dir : $GLOBALS['mod_strings']['LBL_MODULE_NAME'];
-			echo get_module_title($moduleName, $GLOBALS['mod_strings']['LBL_MODULE_TITLE'], true); 
+			echo getClassicModuleTitle($moduleName, array($GLOBALS['mod_strings']['LBL_MODULE_TITLE']), FALSE); 
 		}
 
 		$where = '';

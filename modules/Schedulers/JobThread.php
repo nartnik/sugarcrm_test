@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -59,7 +59,7 @@ if(!empty($_REQUEST['job_id'])) {
 	$this->db->query($qLastRun);
 	
 	$job = new Job();
-	$job->runtime = gmdate($GLOBALS['timedate']->get_db_date_time_format(), strtotime('now'));
+	$job->runtime = TimeDate::getInstance()->nowDb();
 	if($job->startJob($job_id)) {
 		$GLOBALS['log']->info('----->Job [ '.$job_id.' ] was fired successfully');
 	} else {

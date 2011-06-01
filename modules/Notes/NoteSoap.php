@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -77,7 +77,7 @@ function saveFile($note, $portal = false){
         }else{
                 return '-1';
         }
-        
+
         return $return_id;
 }
 
@@ -110,11 +110,11 @@ function newSaveFile($note, $portal = false){
         }
 
         $return_id = $focus->id;
-        
+
         if(!empty($note['file'])){
         	$this->upload_file->final_move($focus->id);
         }
-        
+
 		if (!empty($note['related_module_id']) && !empty($note['related_module_name'])) {
         	$focus->process_save_dates=false;
         	$module_name = $note['related_module_name'];
@@ -126,7 +126,7 @@ function newSaveFile($note, $portal = false){
 				$focus->contact_id=$module_id;
 			}
 			$focus->save();
-        	
+
         } // if
         return $return_id;
 }
@@ -139,9 +139,7 @@ function retrieveFile($id, $filename){
 	$this->upload_file->stored_file_name = $filename;
 	$filepath = $this->upload_file->get_upload_path($id);
 	if(file_exists($filepath)){
-		$fp = sugar_fopen($filepath, 'rb');
-		$file = fread($fp, filesize($filepath));
-		fclose($fp);
+		$file = file_get_contents($filepath);
 		return base64_encode($file);
 	}
 	return -1;

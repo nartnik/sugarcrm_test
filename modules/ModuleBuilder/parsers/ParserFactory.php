@@ -3,7 +3,7 @@ if (! defined ( 'sugarEntry' ) || ! sugarEntry)
     die ( 'Not A Valid Entry Point' ) ;
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -64,9 +64,6 @@ class ParserFactory
             case MB_QUICKCREATE :
                 require_once 'modules/ModuleBuilder/parsers/views/GridLayoutMetaDataParser.php' ;
                 return new GridLayoutMetaDataParser ( $view, $moduleName, $packageName ) ;
-            case MB_CONVERTLEAD :
-                require_once 'modules/Leads/ConvertLayoutMetadataParser.php';
-                return new ConvertLayoutMetadataParser( $moduleName );
             case MB_BASICSEARCH :
             case MB_ADVANCEDSEARCH :
                 require_once 'modules/ModuleBuilder/parsers/views/SearchViewMetaDataParser.php' ;

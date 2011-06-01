@@ -1,7 +1,7 @@
 {*
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -54,6 +54,10 @@ li.active a img.deletePageImg {
    display: inline !important;
    margin-bottom: 2px;
 }
+
+div.moduleTitle {
+height: 10px;
+	}
 </style>
 {/literal}
 
@@ -75,8 +79,12 @@ document.body.setAttribute("class", "yui-skin-sam");
 <script type="text/javascript" src="{sugar_getjspath file='include/javascript/dashlets.js'}"></script>
 <script type="text/javascript" src='{sugar_getjspath file='include/JSON.js'}'></script>
 <script type='text/javascript' src='{sugar_getjspath file='include/MySugar/javascript/MySugar.js'}'></script>
-<script type="text/javascript" src="{sugar_getjspath file='include/javascript/swfobject.js'}"></script>
 <link rel='stylesheet' href='{sugar_getjspath file='include/ytree/TreeView/css/folders/tree.css'}'>
+
+
+{$chartResources}
+{$mySugarChartResources}
+
 
 <div class="clear"></div>
 <div id="pageContainer" class="yui-skin-sam">
@@ -127,7 +135,7 @@ document.body.setAttribute("class", "yui-skin-sam");
 	
 	
 	<div id="dashletsDialog" style="display:none;">
-		<div class="hd" id="dashletsDialogHeader"><a href="#" onClick="javascript:SUGAR.mySugar.closeDashletsDialog();">
+		<div class="hd" id="dashletsDialogHeader"><a href="javascript:void(0)" onClick="javascript:SUGAR.mySugar.closeDashletsDialog();">
 			<div class="container-close">&nbsp;</div></a>{$lblAdd}
 		</div>	
 		<div class="bd" id="dashletsList">
@@ -167,8 +175,7 @@ SUGAR.mySugar.init = function () {
 	{/if}
 	{literal}
 	SUGAR.mySugar.renderDashletsDialog();
-
-	SUGAR.mySugar.loadSugarCharts();
+	SUGAR.mySugar.sugarCharts.loadSugarCharts(activePage);
 }
 
 </script>

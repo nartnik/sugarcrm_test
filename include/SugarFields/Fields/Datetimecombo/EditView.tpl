@@ -1,6 +1,6 @@
 {*
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -41,12 +41,11 @@
 {{/if}}
 
 {{assign var=flag_field value=$vardef.name|cat:_flag}}
-
-<table border="0" cellpadding="0" cellspacing="0">
+<table border="0" cellpadding="0" cellspacing="0" class="dateTime">
 <tr valign="middle">
 <td nowrap>
 <input autocomplete="off" type="text" id="{{$idname}}_date" value="{$fields[{{sugarvar key='name' stringFormat=true}}].value}" size="11" maxlength="10" title='{{$vardef.help}}' tabindex="{{$tabindex}}" onblur="combo_{{$idname}}.update(); {{if isset($displayParams.updateCallback)}}{{$displayParams.updateCallback}}{{/if}}" onchange="combo_{{$idname}}.update(); {{if isset($displayParams.updateCallback)}}{{$displayParams.updateCallback}}{{/if}}">
-<img border="0" src="{sugar_getimagepath file='jscalendar.gif'}" alt="{$APP.LBL_ENTER_DATE}" id="{{$idname}}_trigger" align="absmiddle">&nbsp;
+<img border="0" src="{sugar_getimagepath file='jscalendar.gif'}" alt="{$APP.LBL_ENTER_DATE}" id="{{$idname}}_trigger" name="{{$idname}}_trigger" align="absmiddle">&nbsp;
 {{if empty($displayParams.splitDateTime)}}
 </td>
 <td nowrap>
@@ -81,7 +80,7 @@ function set_{{$idname}}_values(form) {ldelim}
 </tr>
 {{/if}}
 </table>
-<input type="hidden" id="{{$idname}}" name="{{$idname}}" value="{$fields[{{sugarvar key='name' stringFormat=true}}].value}">
+<input type="hidden" class="DateTimeCombo" id="{{$idname}}" name="{{$idname}}" value="{$fields[{{sugarvar key='name' stringFormat=true}}].value}">
 <script type="text/javascript" src="include/SugarFields/Fields/Datetimecombo/Datetimecombo.js"></script>
 <script type="text/javascript">
 var combo_{{$idname}} = new Datetimecombo("{$fields[{{sugarvar key='name' stringFormat=true}}].value}", "{{$idname}}", "{$TIME_FORMAT}", "{{$tabindex}}", '{{$displayParams.showNoneCheckbox}}', false, true);
@@ -96,14 +95,9 @@ addToValidate('{$form_name}',"{{$idname}}_date",'date',false,"{{$idname}}");
 addToValidateBinaryDependency('{$form_name}',"{{$idname}}_hours", 'alpha', false, "{$APP.ERR_MISSING_REQUIRED_FIELDS} {$APP.LBL_HOURS}" ,"{{$idname}}_date");
 addToValidateBinaryDependency('{$form_name}', "{{$idname}}_minutes", 'alpha', false, "{$APP.ERR_MISSING_REQUIRED_FIELDS} {$APP.LBL_MINUTES}" ,"{{$idname}}_date");
 addToValidateBinaryDependency('{$form_name}', "{{$idname}}_meridiem", 'alpha', false, "{$APP.ERR_MISSING_REQUIRED_FIELDS} {$APP.LBL_MERIDIEM}","{{$idname}}_date");
-</script>
 
-<script type="text/javascript">
-function update_{{$idname}}_available() {ldelim}
-      YAHOO.util.Event.onAvailable("{{$idname}}_date", this.handleOnAvailable, this); 
-{rdelim}
-
-update_{{$idname}}_available.prototype.handleOnAvailable = function(me) {ldelim}
+YAHOO.util.Event.onDOMReady(function()
+{ldelim}
 
 	Calendar.setup ({ldelim}
 	onClose : update_{{$idname}},
@@ -113,12 +107,12 @@ update_{{$idname}}_available.prototype.handleOnAvailable = function(me) {ldelim}
 	button : "{{$idname}}_trigger",
 	singleClick : true,
 	step : 1,
-	weekNumbers:false
+	weekNumbers: false,
+	comboObject: combo_{{$idname}}
 	{rdelim});
 	
 	//Call update for first time to round hours and minute values
-	combo_{{$idname}}.update();
-{rdelim}
+	combo_{{$idname}}.update(false);
 
-var obj_{{$idname}} = new update_{{$idname}}_available(); 
+{rdelim}); 
 </script>

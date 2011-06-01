@@ -1,4 +1,40 @@
 <?php
+/*********************************************************************************
+ * SugarCRM Community Edition is a customer relationship management program developed by
+ * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by the
+ * Free Software Foundation with the addition of the following permission added
+ * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
+ * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
+ * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License along with
+ * this program; if not, see http://www.gnu.org/licenses or write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301 USA.
+ * 
+ * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
+ * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ ********************************************************************************/
+
+ 
 require_once 'include/TimeDate.php';
 
 class TimeDateTest extends Sugar_PHPUnit_Framework_TestCase
@@ -10,59 +46,77 @@ class TimeDateTest extends Sugar_PHPUnit_Framework_TestCase
 
 	const DEFAULT_TIME_FORMAT = 'H:i';
 
-	protected $date_tests = array(
-		array("db" => '2005-10-25 07:00:00', "df" => 'd-m-Y', 'tz' => 'America/Los_Angeles', "display" => '25-10-2005', "dbdate" => "2005-10-25 00:00:00"),
-		// add times
-		array("db" => '2005-10-26 06:42:00', "df" => 'd-m-Y', "tf" => 'h.iA', 'tz' => 'America/Los_Angeles', "display" => '25-10-2005 11.42PM', "dbdate" => "2005-10-25 23:42:00"),
-		// GMT+0 timezone
-		array("db" => '2005-11-25 00:00:00', "df" => 'd-m-Y', 'tz' => 'Europe/London', "display" => '25-11-2005', "dbdate" => "2005-11-25 00:00:00"),
-		// GMT+1
-		array("db" => '2005-11-24 23:00:00', "dbdate" => "2005-11-25", "df" => 'd;m;Y', 'tz' => 'Europe/Oslo', "display" => '25;11;2005', "dbdate" => "2005-11-25 00:00:00"),
-		// DST in effect
-		array("db" => '2005-10-24 23:00:00', "dbdate" => "2005-10-25", "df" => 'd-m-Y', 'tz' => 'Europe/London', "display" => '25-10-2005', "dbdate" => "2005-10-25 00:00:00"),
-		// different format
-		array("db" => '1997-10-25 07:00:00', "df" => 'Y-m-d', 'tz' => 'America/Los_Angeles', "display" => '1997-10-25', "dbdate" => "1997-10-25 00:00:00"),
-		array("db" => '1997-01-25 00:00:00', "df" => 'm-d-Y', 'tz' => 'Europe/London', "display" => '01-25-1997', "dbdate" => "1997-01-25 00:00:00"),
-		// with times
-		array("db" => '2005-10-25 10:42:24', "df" => 'd/m/Y', "tf" => "H:i:s", 'tz' => 'America/Los_Angeles', "display" => '25/10/2005 03:42:24', "dbdate" => "2005-10-25 03:42:24"),
-		array("db" => '2005-10-25 02:42:24', "df" => 'd/m/Y', "tf" => "H:i:s", 'tz' => 'Europe/London', "display" => '25/10/2005 03:42:24', "dbdate" => "2005-10-25 03:42:24"),
-		array("db" => '2005-10-25 01:42:24', "df" => 'd/m/Y', "tf" => "H:i:s", 'tz' => 'Asia/Jerusalem', "display" => '25/10/2005 03:42:24', "dbdate" => "2005-10-25 03:42:24"),
-		// FAIL! FIXME: same format leads to no TZ conversion
-		array("db" => '2005-10-25 10:42:24', "df" => 'Y-m-d', "tf" => "H:i:s", 'tz' => 'America/Los_Angeles', "display" => '2005-10-25 03:42:24', "dbdate" => "2005-10-25 03:42:24"),
-		// short times
-		array("db" => '2005-10-25 10:42:00', "df" => 'd/m/Y', "tf" => "H:i", 'tz' => 'America/Los_Angeles', "display" => '25/10/2005 03:42', "dbdate" => "2005-10-25 03:42:00"),
-		array("db" => '2005-10-25 22:00:00', "df" => 'd/m/Y', "tf" => "ha", 'tz' => 'America/Los_Angeles', "display" => '25/10/2005 03pm', "dbdate" => "2005-10-25 15:00:00"),
-		array("db" => '2005-10-25 10:00:00', "df" => 'd/m/Y', "tf" => "h", 'tz' => 'America/Los_Angeles', "display" => '25/10/2005 03', "dbdate" => "2005-10-25 03:00:00"),
-		array("db" => '2005-10-25 20:00:00', "df" => 'd/m/Y', "tf" => "H", 'tz' => 'America/Los_Angeles', "display" => '25/10/2005 13', "dbdate" => "2005-10-25 13:00:00"),
-	);
-
-	protected $time_tests = array(
-		// full time
-		array("db" => "11:45:00", "display" => "11:45"),
-		array("db" => "05:17:28", "tf" => "H.i.s", "display" => "05.17.28"),
-		// short ones
-		array("db" => "17:34:00", "tf" => "H:i", "display" => "17:34"),
-		array("db" => "11:42:00", "tf" => "h.iA", "display" => "11.42AM"),
-		array("db" => "15:00:00", "tf" => "ha", "display" => "03pm"),
-		array("db" => "15:00:00", "tf" => "H", "display" => "15"),
-		// FIXME: is this a valid format? it doesn't allow roundtrip
-		array("db" => "03:00:00", "tf" => "h", "display" => "03"),
-		// weirdo
-		array("db" => "16:42:34", "tf" => "s:i:H", "display" => "34:42:16"),
-		);
+	public static function setUpBeforeClass()
+	{
+	    unset($GLOBALS['disable_date_format']);
+        $GLOBALS['current_user'] = SugarTestUserUtilities::createAnonymousUser();
+	}
 
 	public function setUp()
 	{
-        $GLOBALS['current_user'] = SugarTestUserUtilities::createAnonymousUser();
 		$this->time_date = new TimeDate();
 		$this->_noUserCache();
 	}
 
 	public function tearDown()
 	{
-		SugarTestUserUtilities::removeAllCreatedAnonymousUsers();
+	    SugarDateTime::$use_php_parser = true;
+	    SugarDateTime::$use_strptime = true;
+	}
+
+	public static function tearDownAfterClass()
+	{
+	    SugarTestUserUtilities::removeAllCreatedAnonymousUsers();
         unset($GLOBALS['current_user']);
-        unset($this->time_date);
+	}
+
+	public function dateTestSet()
+	{
+	    return array(
+    		array("db" => '2005-10-25 07:00:00', "df" => 'd-m-Y', 'tf' => '',		'tz' => 'America/Los_Angeles',		"display" => '25-10-2005', 			"dbdate" => "2005-10-25 00:00:00"),
+    		// add times
+    		array("db" => '2005-10-26 06:42:00', "df" => 'd-m-Y', "tf" => 'h.iA', 	'tz' => 'America/Los_Angeles', 		"display" => '25-10-2005 11.42PM', 	"dbdate" => "2005-10-25 23:42:00"),
+    		// GMT+0 timezone
+    		array("db" => '2005-11-25 00:00:00', "df" => 'd-m-Y', 'tf' => '',		'tz' => 'Europe/London', 			"display" => '25-11-2005', 			"dbdate" => "2005-11-25 00:00:00"),
+    		// GMT+1
+    		array("db" => '2005-11-24 23:00:00', "df" => 'd;m;Y', 'tf' => '',		'tz' => 'Europe/Oslo', 				"display" => '25;11;2005', 			"dbdate" => "2005-11-25 00:00:00"),
+    		// DST in effect
+    		array("db" => '2005-10-24 23:00:00', "df" => 'd-m-Y', 'tf' => '',		'tz' => 'Europe/London', 			"display" => '25-10-2005', 			"dbdate" => "2005-10-25 00:00:00"),
+    		// different format
+    		array("db" => '1997-10-25 07:00:00', "df" => 'Y-m-d', 'tf' => '',		'tz' => 'America/Los_Angeles', 		"display" => '1997-10-25', 			"dbdate" => "1997-10-25 00:00:00"),
+    		array("db" => '1997-01-25 00:00:00', "df" => 'm-d-Y', 'tf' => '',		'tz' => 'Europe/London', 			"display" => '01-25-1997', 			"dbdate" => "1997-01-25 00:00:00"),
+    		// with times
+    		array("db" => '2005-10-25 10:42:24', "df" => 'd/m/Y', "tf" => "H:i:s",	'tz' => 'America/Los_Angeles', 		"display" => '25/10/2005 03:42:24', "dbdate" => "2005-10-25 03:42:24"),
+    		array("db" => '2005-10-25 02:42:24', "df" => 'd/m/Y', "tf" => "H:i:s",	'tz' => 'Europe/London', 			"display" => '25/10/2005 03:42:24', "dbdate" => "2005-10-25 03:42:24"),
+    		array("db" => '2005-10-25 01:42:24', "df" => 'd/m/Y', "tf" => "H:i:s",	'tz' => 'Asia/Jerusalem', 			"display" => '25/10/2005 03:42:24', "dbdate" => "2005-10-25 03:42:24"),
+    		// FAIL! FIXME: same format leads to no TZ conversion
+    		array("db" => '2005-10-25 10:42:24', "df" => 'Y-m-d', "tf" => "H:i:s",	'tz' => 'America/Los_Angeles', 		"display" => '2005-10-25 03:42:24', "dbdate" => "2005-10-25 03:42:24"),
+    		// short times
+    		array("db" => '2005-10-25 10:42:00', "df" => 'd/m/Y', "tf" => "H:i",	'tz' => 'America/Los_Angeles', 		"display" => '25/10/2005 03:42', 	"dbdate" => "2005-10-25 03:42:00"),
+    		array("db" => '2005-10-25 22:00:00', "df" => 'd/m/Y', "tf" => "ha",		'tz' => 'America/Los_Angeles', 		"display" => '25/10/2005 03pm', 	"dbdate" => "2005-10-25 15:00:00"),
+    		array("db" => '2005-10-25 10:00:00', "df" => 'd/m/Y', "tf" => "h",		'tz' => 'America/Los_Angeles', 		"display" => '25/10/2005 03', 		"dbdate" => "2005-10-25 03:00:00"),
+    		array("db" => '2005-10-25 20:00:00', "df" => 'd/m/Y', "tf" => "H",		'tz' => 'America/Los_Angeles', 		"display" => '25/10/2005 13', 		"dbdate" => "2005-10-25 13:00:00"),
+    		array("db" => '2005-10-25 07:00:00', "df" => 'd/m/Y', "tf" => "ha",		'tz' => 'America/Los_Angeles', 		"display" => '25/10/2005 12am', 	"dbdate" => "2005-10-25 00:00:00"),
+    		array("db" => '2005-10-25 19:00:00', "df" => 'd/m/Y', "tf" => "ha",		'tz' => 'America/Los_Angeles', 		"display" => '25/10/2005 12pm', 	"dbdate" => "2005-10-25 12:00:00"),
+    		);
+	}
+
+	public function timetestSet()
+	{
+	    return array(
+    		// full time
+    		array("db" => "11:45:00", "tf" => '', "display" => "11:45"),
+    		array("db" => "05:17:28", "tf" => "H.i.s", "display" => "05.17.28"),
+    		// short ones
+    		array("db" => "17:34:00", "tf" => "H:i", "display" => "17:34"),
+    		array("db" => "11:42:00", "tf" => "h.iA", "display" => "11.42AM"),
+    		array("db" => "15:00:00", "tf" => "ha", "display" => "03pm"),
+    		array("db" => "15:00:00", "tf" => "H", "display" => "15"),
+    		// FIXME: is this a valid format? it doesn't allow roundtrip
+    		array("db" => "03:00:00", "tf" => "h", "display" => "03"),
+    		// weirdo
+    		array("db" => "16:42:34", "tf" => "s:i:H", "display" => "34:42:16"),
+		);
 	}
 
 	protected function _noUserCache()
@@ -70,7 +124,8 @@ class TimeDateTest extends Sugar_PHPUnit_Framework_TestCase
 		$this->time_date->allow_cache = false;
 	}
 
-	protected function _setPrefs($datef, $timef, $tz) {
+	protected function _setPrefs($datef, $timef, $tz)
+	{
 			$GLOBALS['current_user']->setPreference('datef', $datef);
 			$GLOBALS['current_user']->setPreference('timef', $timef);
 			$GLOBALS['current_user']->setPreference('timezone', $tz);
@@ -98,234 +153,198 @@ class TimeDateTest extends Sugar_PHPUnit_Framework_TestCase
 
 	/**
 	 * test conversion from local datetime to DB datetime
+	 * @dataProvider dateTestSet
 	 */
-	public function testToDbFormats()
+	public function testToDbFormats($db, $df, $tf, $tz,  $display, $dbdate)
 	{
-		foreach($this->date_tests as $datetest) {
-			$tf = isset($datetest["tf"]) ? $datetest["tf"] : self::DEFAULT_TIME_FORMAT;
-			$this->_setPrefs($datetest["df"], $tf, $datetest["tz"]);
-			$this->assertEquals($datetest["db"],
-				$this->time_date->to_db($datetest["display"]),
-				"Broken conversion for '{$datetest["df"]} $tf' with date '{$datetest["display"]}' and TZ {$datetest["tz"]}");
-		}
+		$tf = empty($tf) ? self::DEFAULT_TIME_FORMAT : $tf;
+		$this->_setPrefs($df, $tf, $tz);
+		$this->assertEquals($db,
+    	$this->time_date->to_db($display),
+	    	"Broken conversion for '$df $tf' with date '$display' and TZ $tz");
 	}
 
 	/**
 	 * test conversion from full local datetime to DB date
+	 * @dataProvider dateTestSet
 	 */
-	public function testToDbDateFormatsWithOffset()
+	public function testToDbDateFormatsWithOffset($db, $df, $tf, $tz,  $display, $dbdate)
 	{
-		foreach($this->date_tests as $datetest) {
-			$tf = isset($datetest["tf"]) ? $datetest["tf"] : self::DEFAULT_TIME_FORMAT;
-			$this->_setPrefs($datetest["df"], $tf, $datetest["tz"]);
-			$this->assertEquals(
-				$this->_dateOnly($datetest["db"]),
-				$this->time_date->to_db_date($datetest["display"], true),
-				"Broken conversion for '{$datetest["df"]} $tf' with date '{$datetest["display"]}' and TZ {$datetest["tz"]}");
-		}
+		$tf = empty($tf) ? self::DEFAULT_TIME_FORMAT : $tf;
+		$this->_setPrefs($df, $tf, $tz);
+		$this->assertEquals(
+			$this->_dateOnly($db),
+			$this->time_date->to_db_date($display, true),
+			"Broken conversion for '{$df} $tf' with date '{$display}' and TZ {$tz}");
 	}
 
 	/**
 	 * test conversion from local date to DB date, no TZ handling
+	 * @dataProvider dateTestSet
 	 */
-	public function testToDbDateFormatsNoOffset()
+	public function testToDbDateFormatsNoOffset($db, $df, $tf, $tz,  $display, $dbdate)
 	{
-		foreach($this->date_tests as $datetest) {
-			$tf = isset($datetest["tf"]) ? $datetest["tf"] : self::DEFAULT_TIME_FORMAT;
-			$this->_setPrefs($datetest["df"], $tf, $datetest["tz"]);
-			$this->assertEquals(
-				$this->_dateOnly($datetest["dbdate"]),
-				$this->time_date->to_db_date($this->_dateOnly($datetest["display"]), false),
-				"Broken conversion for '{$datetest["df"]} $tf' with date '{$datetest["display"]}' and TZ {$datetest["tz"]}");
-		}
+		$tf = empty($tf) ? self::DEFAULT_TIME_FORMAT : $tf;
+	    $this->_setPrefs($df, $tf, $tz);
+		$this->assertEquals(
+			$this->_dateOnly($dbdate),
+			$this->time_date->to_db_date($this->_dateOnly($display), false),
+			"Broken conversion for '{$df} $tf' with date '{$display}' and TZ {$tz}");
 	}
 
 	/**
 	 * test conversion from full local datetime to DB time
+	 * @dataProvider dateTestSet
 	 */
-	public function testToDbTimeFormatsWithTz()
+	public function testToDbTimeFormatsWithTz($db, $df, $tf, $tz,  $display, $dbdate)
 	{
-		foreach($this->date_tests as $datetest) {
-			$tf = isset($datetest["tf"]) ? $datetest["tf"] : self::DEFAULT_TIME_FORMAT;
-			$this->_setPrefs($datetest["df"], $tf, $datetest["tz"]);
-			$this->assertEquals(
-				$this->_timeOnly($datetest["db"]),
-				$this->time_date->to_db_time($datetest["display"], true),
-				"Broken conversion for '{$datetest["df"]} $tf' with date '{$datetest["display"]}' and TZ {$datetest["tz"]}");
+		$tf = empty($tf) ? self::DEFAULT_TIME_FORMAT : $tf;
+		$this->_setPrefs($df, $tf, $tz);
+		if(strpos($display, ' ') === false) {
+		    $display = $this->time_date->expandDate($display, "$df $tf");
 		}
+		$this->assertEquals(
+			$this->_timeOnly($db),
+			$this->time_date->to_db_time($display, true),
+			"Broken conversion for '{$df} $tf' with date '{$display}' and TZ {$tz}");
 	}
 
 	/**
 	 * test conversion from local time to DB time, no TZ handling
+	 * @dataProvider timeTestSet
 	 */
-	public function testToDbTimeFormatsNoTz()
+	public function testToDbTimeFormatsNoTz($db, $tf, $display)
 	{
-		foreach($this->time_tests as $datetest) {
-			$tf = isset($datetest["tf"]) ? $datetest["tf"] : self::DEFAULT_TIME_FORMAT;
-			$this->_setPrefs('Y-m-d', $tf, '');
-			$this->assertEquals(
-				$datetest["db"],
-				$this->time_date->to_db_time($datetest["display"], false),
-				"Broken conversion for '$tf' with date '{$datetest["display"]}'");
-		}
+		$tf = empty($tf) ? self::DEFAULT_TIME_FORMAT : $tf;
+		$this->_setPrefs('Y-m-d', $tf, '');
+		$this->assertEquals(
+			$db,
+			$this->time_date->to_db_time($display, false),
+			"Broken conversion for '$tf' with date '{$display}'");
 	}
 
 	/**
 	 * test conversion from local date+time to DB date+time, no TZ handling
+	 * @dataProvider dateTestSet
 	 */
-	public function testToDbDateTimeFormats()
+	public function testToDbDateTimeFormats($db, $df, $tf, $tz,  $display, $dbdate)
 	{
-		foreach($this->date_tests as $datetest) {
-			$tf = isset($datetest["tf"]) ? $datetest["tf"] : self::DEFAULT_TIME_FORMAT;
-			$this->_setPrefs($datetest["df"], $tf, $datetest["tz"]);
-			$dt = explode(' ', $datetest["display"]);
-			if(count($dt) > 1) {
-				list($date, $time) = $dt;
-			} else {
-				$date = $dt[0];
-				$z = new DateTime("@0", new DateTimeZone("GMT"));
-				$time = $z->format($tf);
-			}
-			$this->assertEquals(
-				explode(' ',$datetest["dbdate"]),
-				$this->time_date->to_db_date_time($date, $time),
-				"Broken conversion for '{$datetest["df"]} $tf' with date '{$datetest["display"]}' and TZ {$datetest["tz"]}");
+		$tf = empty($tf) ? self::DEFAULT_TIME_FORMAT : $tf;
+		$this->_setPrefs($df, $tf, $tz);
+		$dt = explode(' ', $display);
+		if(count($dt) > 1) {
+			list($date, $time) = $dt;
+		} else {
+			$date = $dt[0];
+			$z = new DateTime("@0", new DateTimeZone("GMT"));
+			$time = $z->format($tf);
 		}
+		$this->assertEquals(
+			explode(' ',$dbdate),
+			$this->time_date->to_db_date_time($date, $time),
+			"Broken conversion for '{$df} $tf' with date '{$display}' and TZ {$tz}");
 	}
 
 
 	/**
 	 * test conversion from DB date+time to local date+time with TZ handling
+	 * @dataProvider dateTestSet
 	 */
-	public function testToDisplayDateTimeFormats()
+	public function testToDisplayDateTimeFormats($db, $df, $tf, $tz,  $display, $dbdate)
 	{
-		foreach($this->date_tests as $datetest) {
-			if(!isset($datetest["tf"])) {
-				$tf = null;
-			} else {
-				$tf = $datetest["tf"];
-			}
-			$df = $datetest["df"]." ".$tf;
-			$this->_setPrefs($datetest["df"], $tf, $datetest["tz"]);
-			$result = $this->time_date->to_display_date_time($datetest["db"], true, true, $GLOBALS['current_user']);
-			if(!isset($datetest["tf"])) {
-				$result = $this->_dateOnly($result);
-			}
-			$this->assertEquals(
-				$datetest["display"],
-				$result,
-				"Broken conversion for '$df' with date '{$datetest["db"]}' and TZ {$datetest["tz"]}");
+		$this->_setPrefs($df, $tf, $tz);
+		$result = $this->time_date->to_display_date_time($db, true, true, $GLOBALS['current_user']);
+		if(empty($tf)) {
+			$result = $this->_dateOnly($result);
 		}
+		$this->assertEquals(
+			$display,
+			$result,
+			"Broken conversion for '$df' with date '{$db}' and TZ {$tz}");
 	}
 
 	/**
 	 * test conversion from DB date+time to local date+time without TZ handling
+	 * @dataProvider dateTestSet
 	 */
-	public function testToDisplayFormatsNoTz()
+	public function testToDisplayFormatsNoTz($db, $df, $tf, $tz,  $display, $dbdate)
 	{
-		foreach($this->date_tests as $datetest) {
-			if(!isset($datetest["tf"])) {
-				$tf = null;
-			} else {
-				$tf = $datetest["tf"];
-			}
-			$df = $datetest["df"]." ".$tf;
-			$this->_setPrefs($datetest["df"], $tf, $datetest["tz"]);
-			$result = $this->time_date->to_display($datetest["dbdate"], $this->time_date->get_db_date_time_format(), $df);
-			if(!isset($datetest["tf"])) {
-				$result = $this->_dateOnly($result);
-			}
-			$this->assertEquals(
-				$datetest["display"],
-				$result,
-				"Broken conversion for '$df' with date '{$datetest["db"]}' and TZ {$datetest["tz"]}");
+	    $this->_setPrefs($df, $tf, $tz);
+	    if(!empty($tf)) {
+	        $df .= " $tf";
+	    }
+		$result = $this->time_date->to_display($dbdate, $this->time_date->get_db_date_time_format(), $df);
+		if(empty($tf)) {
+			$result = $this->_dateOnly($result);
 		}
+		$this->assertEquals(
+			$display,
+			$result,
+			"Broken conversion for '$df' with date '{$db}' and TZ {$tz}");
 	}
 
 	/**
 	 * test conversion from DB time to local time without TZ conversion
+	 * @dataProvider timeTestSet
 	 */
-	public function testToDisplayTimeFormatsNoTZ()
+	public function testToDisplayTimeFormatsNoTZ($db, $tf, $display)
 	{
-		foreach($this->time_tests as $datetest) {
-			$tf = isset($datetest["tf"]) ? $datetest["tf"] : self::DEFAULT_TIME_FORMAT;
-			$this->_setPrefs('Y-m-d', $tf, '');
-			$this->assertEquals(
-				$datetest["display"],
-				$this->time_date->to_display_time($datetest["db"], true, false),
-				"Broken conversion for '$tf' with date '{$datetest["db"]}'");
-		}
+		if(empty($tf)) return;
+		$this->_setPrefs('Y-m-d', $tf, '');
+		$this->assertEquals(
+			$this->_timeOnly($display),
+			$this->time_date->to_display_time($db, true, false),
+			"Broken conversion for '$tf' with date '{$db}'");
 	}
 
 	/**
 	 * test conversion from DB time to local time with TZ conversion
+	 * @dataProvider dateTestSet
 	 */
-	public function testToDisplayTimeFormatsWithTZ()
+	public function testToDisplayTimeFormatsWithTZ($db, $df, $tf, $tz,  $display, $dbdate)
 	{
-		foreach($this->date_tests as $datetest) {
-			if(!isset($datetest["tf"])) continue;
-			$this->_setPrefs($datetest["df"], $datetest["tf"], $datetest["tz"]);
-			$result = $this->time_date->to_display_time($datetest["db"], true, true);
-			$result = $this->_timeOnly($result);
-			$this->assertEquals(
-				$this->_timeOnly($datetest["display"]),
-				$result,
-				"Broken conversion for '{$datetest["tf"]}' with date '{$datetest["db"]}' and TZ {$datetest["tz"]}");
-		}
+		if(empty($tf)) return;
+		$this->_setPrefs($df, $tf, $tz);
+		$result = $this->time_date->to_display_time($db, true, true);
+		$result = $this->_timeOnly($result);
+		$this->assertEquals(
+			$this->_timeOnly($display),
+			$result,
+			"Broken conversion for '{$tf}' with date '{$db}' and TZ {$tz}");
 	}
 
 
 	/**
 	 * test conversion from DB date to local date without TZ handling
+	 * @dataProvider dateTestSet
 	 */
-	public function testToDisplayDateFormatsNoTz()
+	public function testToDisplayDateFormatsNoTz($db, $df, $tf, $tz,  $display, $dbdate)
 	{
-		foreach($this->date_tests as $datetest) {
-			if(!isset($datetest["tf"])) {
-				$tf = null;
-			} else {
-				$tf = $datetest["tf"];
-			}
-			$df = $datetest["df"]." ".$tf;
-			$this->_setPrefs($datetest["df"], $tf, $datetest["tz"]);
-			$result = $this->time_date->to_display_date($this->_dateOnly($datetest["dbdate"]), false);
-			$this->assertEquals(
-				$this->_dateOnly($datetest["display"]),
-				$this->_dateOnly($result),
-				"Broken conversion for '{$datetest["df"]}' with date '{$datetest["dbdate"]}' and TZ {$datetest["tz"]}");
-		}
+		$this->_setPrefs($df, $tf, $tz);
+		$result = $this->time_date->to_display_date($this->_dateOnly($dbdate), false);
+		$this->assertEquals(
+			$this->_dateOnly($display),
+			$this->_dateOnly($result),
+			"Broken conversion for '{$df}' with date '{$dbdate}' and TZ {$tz}");
 	}
 
 	/**
 	 * test conversion from DB date to local date with TZ handling
+	 * @dataProvider dateTestSet
 	 */
-	public function testToDisplayDateFormatsWithTz()
+	public function testToDisplayDateFormatsWithTz($db, $df, $tf, $tz,  $display, $dbdate)
 	{
-		foreach($this->date_tests as $datetest) {
-			if(!isset($datetest["tf"])) {
-				$tf = null;
-			} else {
-				$tf = $datetest["tf"];
-			}
-			$df = $datetest["df"]." ".$tf;
-			$this->_setPrefs($datetest["df"], $tf, $datetest["tz"]);
-			$result = $this->time_date->to_display_date($datetest["db"], true);
-			$this->assertEquals(
-				$this->_dateOnly($datetest["display"]),
-				$this->_dateOnly($result),
-				"Broken conversion for '{$datetest["df"]}' with date '{$datetest["dbdate"]}' and TZ {$datetest["tz"]}");
-		}
+		$this->_setPrefs($df, $tf, $tz);
+		$result = $this->time_date->to_display_date($db, true);
+		$this->assertEquals(
+			$this->_dateOnly($display),
+			$this->_dateOnly($result),
+			"Broken conversion for '{$df}' with date '{$dbdate}' and TZ {$tz}");
 	}
 
-	/**
-	 * test midnight formatting
-	 */
-	public function testGetMidnight()
+	public function midnightDataSet()
 	{
-		if(!is_callable(array($this->time_date, "get_default_midnight"))) {
-			$this->markTestSkipped("Method is no longer public");
-		}
-		$times = array(
+	    return array(
 			array("tf" => "H:i", "time" => "00:00"),
 			array("tf" => "H:i:s", "time" => "00:00:00"),
 			array("tf" => "h:i", "time" => "12:00"),
@@ -333,11 +352,20 @@ class TimeDateTest extends Sugar_PHPUnit_Framework_TestCase
 			array("tf" => "h`iA", "time" => "12`00AM"),
 			array("tf" => "h`i`sa", "time" => "12`00`00am"),
 		);
-		foreach($times as $timetest) {
-			$this->_setPrefs('', $timetest["tf"], "America/Los_Angeles");
-			$this->assertEquals($timetest["time"],  $this->time_date->get_default_midnight(true),
-				"Bad midnight value for {$timetest["time"]} format {$timetest["tf"]}");
+	}
+
+	/**
+	 * test midnight formatting
+	 * @dataProvider midnightDataSet
+	 */
+	public function testGetMidnight($tf, $time)
+	{
+		if(!is_callable(array($this->time_date, "get_default_midnight"))) {
+			$this->markTestSkipped("Method is no longer public");
 		}
+		$this->_setPrefs('', $tf, "America/Los_Angeles");
+		$this->assertEquals($time,  $this->time_date->get_default_midnight(true),
+			"Bad midnight value for $time format $tf");
 	}
 
 	public function testSwapFormatsWithTheSameDateFormat()
@@ -438,7 +466,7 @@ class TimeDateTest extends Sugar_PHPUnit_Framework_TestCase
 	}
 
     /**
-     * @group bug17528
+     * @ticket 17528
      */
 	public function testSwapDatetimeFormatToDbFormat()
 	{
@@ -457,7 +485,7 @@ class TimeDateTest extends Sugar_PHPUnit_Framework_TestCase
 	}
 
 	/**
-     * @group bug17528
+     * @ticket 17528
      */
 	public function testTodbCanHandleDdmmyyyyFormats()
 	{
@@ -479,7 +507,7 @@ class TimeDateTest extends Sugar_PHPUnit_Framework_TestCase
 	}
 
 	/**
-     * @group bug17528
+     * @ticket 17528
      */
 	public function testTodbCanHandleMmddyyyyFormats()
 	{
@@ -496,7 +524,7 @@ class TimeDateTest extends Sugar_PHPUnit_Framework_TestCase
 	}
 
 	/**
-     * @group bug17528
+     * @ticket 17528
      */
 	public function testTodbdateCanHandleDdmmyyyyFormats()
 	{
@@ -512,7 +540,7 @@ class TimeDateTest extends Sugar_PHPUnit_Framework_TestCase
 	}
 
 	/**
-     * @group bug17528
+     * @ticket 17528
      */
 	public function testTodbdateCanHandleMmddyyyyFormats()
 	{
@@ -560,54 +588,22 @@ class TimeDateTest extends Sugar_PHPUnit_Framework_TestCase
 		$GLOBALS['current_user']->setPreference('timef',$old_time);
 	}
 
-	public function providerGetDateFromRules()
-	{
-	    return array(
-	        array('2009',10,1,0,7200,"2009-10-04 02:00:00"),
-	        array('2009',4,1,0,7200,"2009-04-05 02:00:00"),
-	        array('2010',3,24,5,7200,"2010-03-26 02:00:00"),
-	        array('2010',9,12,0,7200,"2010-09-12 02:00:00"),
-	        );
-	}
-
-	/**
-	 * @dataProvider providerGetDateFromRules
-	 */
-	public function testGetDateFromRules(
-	    $year,
-	    $startMonth,
-	    $startDate,
-	    $weekday,
-	    $startTime,
-	    $returnValue
-	    )
-	{
-		if(!is_callable(array($this->time_date, "getDateFromRules"))) {
-			$this->markTestSkipped("Method is no longer public");
-		}
-		$this->assertEquals(
-	        $this->time_date->getDateFromRules($year, $startMonth, $startDate, $weekday, $startTime),
-	        $returnValue
-	        );
-	}
-
 	/**
 	 * tests for check_matching_format
+	 * @dataProvider dateTestSet
 	 */
-	public function testCheckMatchingFormats()
+	public function testCheckMatchingFormats($db, $df, $tf, $tz,  $display, $dbdate)
 	{
-		foreach($this->date_tests as $datetest) {
-			if(isset($datetest["tf"])) {
-				$df = $this->time_date->merge_date_time($df = $datetest["df"], $datetest["tf"]);
-			} else {
-				$df = $datetest["df"];
-			}
-			$this->assertTrue($this->time_date->check_matching_format($datetest["display"], $df),
-				"Broken match for '$df' with date '{$datetest["display"]}'");
-		}
+        if(!empty($tf)) {
+            $df = $this->time_date->merge_date_time($df, $tf);
+        }
+		$this->assertTrue($this->time_date->check_matching_format($display, $df),
+				"Broken match for '$df' with date '{$display}'");
+	}
 
-		// Some bad dates not detected by current code, it's too lenient
-		$badtests = array(
+	public function badMatchTestSet()
+	{
+	    return  array(
 			array("format" => "Y-m-d", "date" => ""),
 			array("format" => "Y-m-d", "date" => "blah-blah-blah"),
 			array("format" => "Y-m-d", "date" => "1-2"),
@@ -621,10 +617,17 @@ class TimeDateTest extends Sugar_PHPUnit_Framework_TestCase
 			//FIXME: array("format" => "Y-m-d", "date" => "here: 2007-20-25"),
 			//FIXME: array("format" => "Y-m-d", "date" => "2007-20-25 here"),
 		);
-		foreach($badtests as $datetest) {
-			$this->assertFalse($this->time_date->check_matching_format($datetest["date"], $datetest["format"]),
-			"Broken match for '{$datetest["format"]}' with date '{$datetest["date"]}'");
-		}
+	}
+
+	/**
+	 * tests for check_matching_format
+	 * @dataProvider badMatchTestSet
+	 */
+	public function testCheckbadMatchingFormats($format, $date)
+	{
+		// Some bad dates not detected by current code, it's too lenient
+		$this->assertFalse($this->time_date->check_matching_format($date, $format),
+			"Broken match for '$format' with date '$date'");
 	}
 
 	/**
@@ -645,13 +648,16 @@ class TimeDateTest extends Sugar_PHPUnit_Framework_TestCase
 	 */
 	public function testGetGMT()
 	{
-		$gmt = $this->time_date->get_gmt_db_datetime();
+		if (is_windows() || !function_exists("strptime")) {
+            $this->markTestSkipped('Skipping on Windows, no strptime');
+        }
+        $gmt = $this->time_date->nowDb();
 		$dt = strptime($gmt, "%Y-%m-%d %H:%M:%S");
 		$this->assertEquals($dt['tm_year']+1900, gmdate("Y"));
 		$this->assertEquals($dt['tm_mon']+1, gmdate("m"));
 		$this->assertEquals($dt['tm_mday'], gmdate("d"));
 
-		$gmt = $this->time_date->get_gmt_db_date();
+		$gmt = $this->time_date->nowDb();
 		$dt = strptime($gmt, "%Y-%m-%d");
 		$this->assertEquals($dt['tm_year']+1900, gmdate("Y"));
 		$this->assertEquals($dt['tm_mon']+1, gmdate("m"));
@@ -665,7 +671,7 @@ class TimeDateTest extends Sugar_PHPUnit_Framework_TestCase
 	{
 		$this->assertEquals(gmdate($this->time_date->merge_date_time($this->time_date->get_db_date_format(),
 																		$this->time_date->get_db_time_format())),
-			 $this->time_date->get_gmt_db_datetime());
+			 $this->time_date->nowDb());
 	}
 
 	public function testGetCalFormats()
@@ -693,56 +699,50 @@ class TimeDateTest extends Sugar_PHPUnit_Framework_TestCase
 		}
 	}
 
-	/**
-	 * test for handleOffsetMax
-	 */
-	public function testDayMinMax()
+	public function dayDataSet()
 	{
-		$day_tests = array(
+	    return array(
 			array("date" => "2010-05-19", "start" => "2010-05-19 07:00:00", "end" => "2010-05-20 06:59:59", 'tz' => 'America/Los_Angeles'),
 			array("date" => "2010-01-19", "start" => "2010-01-19 08:00:00", "end" => "2010-01-20 07:59:59", 'tz' => 'America/Los_Angeles'),
 			array("date" => "2010-05-19", "start" => "2010-05-18 23:00:00", "end" => "2010-05-19 22:59:59", 'tz' => 'Europe/London'),
 			array("date" => "2010-01-19", "start" => "2010-01-19 00:00:00", "end" => "2010-01-19 23:59:59", 'tz' => 'Europe/London'),
 			array("date" => "2010-05-19", "start" => "2010-05-18 22:00:00", "end" => "2010-05-19 21:59:59", 'tz' => 'Europe/Oslo'),
 		);
-		foreach($day_tests as $datetest) {
-			$this->_setPrefs('', '', $datetest["tz"]);
-			$dates = $this->time_date->handleOffsetMax($datetest["date"], '');
-			$this->assertEquals($datetest["start"], $dates["min"],
-				"Bad min result for {$datetest["date"]} tz {$datetest["tz"]}");
-			$this->assertEquals($datetest["end"], $dates["max"],
-				"Bad max result for {$datetest["date"]} tz {$datetest["tz"]}");
-		}
+	}
+
+	/**
+	 * test for handleOffsetMax
+	 * @dataProvider dayDataSet
+	 */
+	public function testDayMinMax($date, $start, $end, $tz)
+	{
+		$this->_setPrefs('', '', $tz);
+		$dates = $this->time_date->handleOffsetMax($date, '');
+		$this->assertEquals($start, $dates["min"],
+				"Bad min result for {$date} tz {$tz}");
+		$this->assertEquals($end, $dates["max"],
+				"Bad max result for {$date} tz {$tz}");
 	}
 
 	/**
 	 * test for getDayStartEndGMT
+ 	 * @dataProvider dayDataSet
 	 */
-	public function testGetDayStartEnd()
+	public function testGetDayStartEnd($date, $start, $end, $tz)
 	{
-		$day_tests = array(
-			array("date" => "05/19/2010", "start" => "2010-05-19 07:00:00", "end" => "2010-05-20 06:59:59", 'tz' => 'America/Los_Angeles'),
-			array("date" => "01/19/2010", "start" => "2010-01-19 08:00:00", "end" => "2010-01-20 07:59:59", 'tz' => 'America/Los_Angeles'),
-			array("date" => "05/19/2010", "start" => "2010-05-18 23:00:00", "end" => "2010-05-19 22:59:59", 'tz' => 'Europe/London'),
-			array("date" => "01/19/2010", "start" => "2010-01-19 00:00:00", "end" => "2010-01-19 23:59:59", 'tz' => 'Europe/London'),
-			array("date" => "05/19/2010", "start" => "2010-05-18 22:00:00", "end" => "2010-05-19 21:59:59", 'tz' => 'Europe/Oslo'),
-		);
-		foreach($day_tests as $datetest) {
-			$this->_setPrefs('m/d/Y', '', $datetest["tz"]);
-			$dates = $this->time_date->getDayStartEndGMT($datetest["date"], '');
-			$this->assertEquals($datetest["start"], $dates["start"],
-				"Bad min result for {$datetest["date"]} tz {$datetest["tz"]}");
-			$this->assertEquals($datetest["end"], $dates["end"],
-				"Bad max result for {$datetest["date"]} tz {$datetest["tz"]}");
-		}
+		$this->_setPrefs('m/d/Y', '', $tz);
+        $date_arr = explode("-", $date);
+        $date = $date_arr[1].'/'.$date_arr[2].'/'.$date_arr[0];
+        $dates = $this->time_date->getDayStartEndGMT($date);
+		$this->assertEquals($start, $dates["start"],
+				"Bad min result for {$date} tz {$tz}");
+		$this->assertEquals($end, $dates["end"],
+				"Bad max result for {$date} tz {$tz}");
 	}
 
-	/**
-	 * test for merge_time_meridiem
-	 */
-	public function testMergeAmPm()
+	public function ampmDataSet()
 	{
-		$ampm_tests = array(
+	    return array(
 			array("date" => "05:17:28", "mer" => "am", "tf" => "H:i:s", "display" => "05:17:28"),
 			array("date" => "05:17:28", "mer" => "am", "tf" => "h:i:sa", "display" => "05:17:28am"),
 			// short ones
@@ -752,13 +752,19 @@ class TimeDateTest extends Sugar_PHPUnit_Framework_TestCase
 			array("date" => "03", "mer" => "AM", "tf" => "ha", "display" => "03AM"),
 			array("date" => "15", "mer" => "AM", "tf" => "H", "display" => "15"),
 		);
-	foreach($ampm_tests as $datetest) {
-			$amdate = $this->time_date->merge_time_meridiem($datetest["date"], $datetest["tf"], $datetest["mer"]);
-			$this->assertEquals($datetest["display"], $amdate,
-				"Bad min result for {$datetest["date"]} format {$datetest["tf"]}");
-		}
 	}
-	
+
+	/**
+	 * test for merge_time_meridiem
+	 * @dataProvider ampmDataSet
+	 */
+	public function testMergeAmPm($date, $mer, $tf, $display)
+	{
+		$amdate = $this->time_date->merge_time_meridiem($date, $tf, $mer);
+		$this->assertEquals($display, $amdate,
+				"Bad min result for {$date} format {$tf}");
+	}
+
 	public function providerSplitDateTime()
 	{
 	    return array(
@@ -767,7 +773,7 @@ class TimeDateTest extends Sugar_PHPUnit_Framework_TestCase
 	        array("10-04-2010 2:00","10-04-2010","2:00"),
 	        );
 	}
-	
+
 	/**
 	 * @dataProvider providerSplitDateTime
 	 */
@@ -779,5 +785,118 @@ class TimeDateTest extends Sugar_PHPUnit_Framework_TestCase
 	{
 	    $this->assertEquals($date,$this->time_date->getDatePart($datetime));
 	    $this->assertEquals($time,$this->time_date->getTimePart($datetime));
+	}
+
+	public function testNoCache()
+	{
+        $this->_setPrefs("Y-m-d", "H:i:s", "GMT");
+	    $now1 = $this->time_date->now();
+	    sleep(2);
+	    $now2 = $this->time_date->now();
+	    $this->assertNotEquals($now1, $now2, "now() should produce different result when not cached");
+	}
+
+	public function testCache()
+	{
+        $this->_setPrefs("Y-m-d", "H:i:s", "GMT");
+	    $this->time_date->allow_cache = true;
+	    $now1 = $this->time_date->now();
+	    sleep(2);
+	    $now2 = $this->time_date->now();
+	    $this->assertEquals($now1, $now2, "now() should produce same result when cached");
+	}
+
+	public function stringFormats()
+	{
+	    return array(
+	        array("H:i", "15:38", "15:38:00"),
+	        array("h:ia", "03:38pm", "15:38:00"),
+	        array("h:iA", "03:38PM", "15:38:00"),
+	        array("h:ia", "03:38am", "03:38:00"),
+	        array("h:iA", "03:38AM", "03:38:00"),
+	        array("H.i", "15.38", "15:38:00"),
+	        array("h.ia", "03.38pm", "15:38:00"),
+	        array("h.iA", "03.38PM", "15:38:00"),
+	        array("h:ia", "03:38 pm", "15:38:00"),
+	        array("h:iA", "03:38 PM", "15:38:00"),
+	        array("h.ia", "03.38am", "03:38:00"),
+	        array("h.iA", "03.38AM", "03:38:00"),
+	        array("h:ia", "03:38 am", "03:38:00"),
+	        array("h:iA", "03:38 AM", "03:38:00"),
+	        );
+	}
+
+	/**
+	 * @dataProvider stringFormats
+	 * @param string $format
+	 * @param string $string
+	 * @param string $result
+	 */
+	public function testCreateFromString($format, $string, $result)
+	{
+        $this->_setPrefs("Y-m-d", $format, "GMT");
+        $tz = new DateTimeZone("GMT");
+        SugarDateTime::$use_php_parser = true;
+	    $date = SugarDateTime::createFromFormat($format, $string, $tz);
+	    $this->assertInstanceOf("SugarDateTime", $date, "Parsing $string failed with PHP parser");
+	    $this->assertEquals($result, $this->time_date->getTimePart($date->asDb()));
+
+	    SugarDateTime::$use_php_parser = false;
+	    $date = SugarDateTime::createFromFormat($format, $string, $tz);
+	    $this->assertInstanceOf("SugarDateTime", $date, "Parsing $string failed with strptime");
+	    $this->assertEquals($result, $this->time_date->getTimePart($date->asDb()));
+
+	    SugarDateTime::$use_strptime = false;
+	    $date = SugarDateTime::createFromFormat($format, $string, $tz);
+	    $this->assertInstanceOf("SugarDateTime", $date, "Parsing $string failed with manual parser");
+	    $this->assertEquals($result, $this->time_date->getTimePart($date->asDb()));
+
+	    SugarDateTime::$use_php_parser = true;
+	    SugarDateTime::$use_strptime = true;
+	}
+
+	public function testGetTimeDate()
+	{
+	    global $current_user;
+	    $this->_setPrefs("Y-m-d", "H:i", "GMT");
+
+	    $f = $this->time_date->get_date_time_format();
+	    $this->assertEquals("Y-m-d H:i", $f);
+
+	    $f = $this->time_date->get_date_time_format(true);
+	    $this->assertEquals("Y-m-d H:i", $f);
+
+	    $f = $this->time_date->get_date_time_format(false);
+	    $this->assertEquals("Y-m-d H:i", $f);
+
+	    $f = $this->time_date->get_date_time_format(null);
+	    $this->assertEquals("Y-m-d H:i", $f);
+
+	    $f = $this->time_date->get_date_time_format(true, null);
+	    $this->assertEquals("Y-m-d H:i", $f);
+
+	    $f = $this->time_date->get_date_time_format(false, null);
+	    $this->assertEquals("Y-m-d H:i", $f);
+
+	    $f = $this->time_date->get_date_time_format(null, null);
+	    $this->assertEquals("Y-m-d H:i", $f);
+
+	    $f = $this->time_date->get_date_time_format(true, $current_user);
+	    $this->assertEquals("Y-m-d H:i", $f);
+
+	    $f = $this->time_date->get_date_time_format(false, $current_user);
+	    $this->assertEquals("Y-m-d H:i", $f);
+
+	    $f = $this->time_date->get_date_time_format(null, $current_user);
+	    $this->assertEquals("Y-m-d H:i", $f);
+
+	    $f = $this->time_date->get_date_time_format($current_user);
+	    $this->assertEquals("Y-m-d H:i", $f);
+
+	    $f = $this->time_date->get_date_time_format($current_user);
+	    $this->assertEquals("Y-m-d H:i", $f);
+
+	    $f = $this->time_date->get_date_time_format($current_user);
+	    $this->assertEquals("Y-m-d H:i", $f);
 	}
 }

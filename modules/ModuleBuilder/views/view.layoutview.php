@@ -3,7 +3,7 @@ if (! defined ( 'sugarEntry' ) || ! sugarEntry)
     die ( 'Not A Valid Entry Point' ) ;
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -77,13 +77,13 @@ class ViewLayoutView extends ViewEdit
     /**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
-	protected function _getModuleTitleParams()
+	protected function _getModuleTitleParams($browserTitle = false)
 	{
 	    global $mod_strings;
 	    
     	return array(
     	   translate('LBL_MODULE_NAME','Administration'),
-    	   $mod_strings['LBL_MODULEBUILDER'],
+    	   ModuleBuilderController::getModuleTitle(),
     	   );
     }
 
@@ -117,6 +117,7 @@ class ViewLayoutView extends ViewEdit
         $requiredFields = implode($parser->getRequiredFields () , ',');
         $slashedRequiredFields = addslashes($requiredFields);
         $buttons = array ( ) ;
+        $disableLayout = false;
 
         if ($preview)
         {
@@ -124,46 +125,77 @@ class ViewLayoutView extends ViewEdit
         } else
         {
             $smarty->assign ( 'layouttitle', translate ( 'LBL_CURRENT_LAYOUT', 'ModuleBuilder' ) ) ;
+
+            if($this->editLayout == MB_DETAILVIEW || $this->editLayout == MB_QUICKCREATE){
+		        $parser2 = ParserFactory::getParser(MB_EDITVIEW,$this->editModule,$this->package);
+                if($this->editLayout == MB_DETAILVIEW){
+		            $disableLayout = $parser2->getSyncDetailEditViews();
+                }
+                if(!empty($_REQUEST['copyFromEditView'])){
+                    $editViewPanels = $parser2->convertFromCanonicalForm ( $parser2->_viewdefs [ 'panels' ] , $parser2->_fielddefs ) ;
+                    $parser->_viewdefs [ 'panels' ] = $editViewPanels;
+                    $parser->_fielddefs = $parser2->_fielddefs;
+                    $parser->setUseTabs($parser2->getUseTabs());
+                }
+		    }
+
             if (! $this->fromModuleBuilder)
             {
-                $buttons [] = array ( 
+	            $buttons [] = array (
                     'id' => 'saveBtn' , 
                     'text' => translate ( 'LBL_BTN_SAVE' ) , 
-                    'actionScript' => "onclick='if(Studio2.checkGridLayout(\"{$this->editLayout}\")) Studio2.handleSave();'" 
+                    'actionScript' => "onclick='if(Studio2.checkGridLayout(\"{$this->editLayout}\")) Studio2.handleSave();'",
+                	'disabled' => $disableLayout, 
                 ) ;
                 $buttons [] = array ( 
                     'id' => 'publishBtn' , 
                     'text' => translate ( 'LBL_BTN_SAVEPUBLISH' ) , 
-                    'actionScript' => "onclick='if(Studio2.checkGridLayout(\"{$this->editLayout}\")) Studio2.handlePublish();'" 
+                    'actionScript' => "onclick='if(Studio2.checkGridLayout(\"{$this->editLayout}\")) Studio2.handlePublish();'",
+                	'disabled' => $disableLayout, 
                 ) ;
-                $buttons [] = array ( 'id' => 'spacer' , 'width' => '50px' ) ;
+                $buttons [] = array ( 'id' => 'spacer' , 'width' => '33px' ) ;
                 $buttons [] = array ( 
 	                'id' => 'historyBtn' , 
 	                'text' => translate ( 'LBL_HISTORY' ) , 
-	                'actionScript' => "onclick='ModuleBuilder.history.browse(\"{$this->editModule}\", \"{$this->editLayout}\")'"
+	                'actionScript' => "onclick='ModuleBuilder.history.browse(\"{$this->editModule}\", \"{$this->editLayout}\")'",
+                    'disabled' => $disableLayout,
                 ) ;
                 $buttons [] = array ( 
 	                'id' => 'historyDefault' , 
 	                'text' => translate ( 'LBL_RESTORE_DEFAULT' ) , 
-	                'actionScript' => "onclick='ModuleBuilder.history.revert(\"{$this->editModule}\", \"{$this->editLayout}\", \"{$history->getLast()}\", \"\")'" 
+	                'actionScript' => "onclick='ModuleBuilder.history.revert(\"{$this->editModule}\", \"{$this->editLayout}\", \"{$history->getLast()}\", \"\")'",
+                	'disabled' => $disableLayout, 
                 ) ;
             } else
             {
                 $buttons [] = array ( 
                     'id' => 'saveBtn' , 
                     'text' => $GLOBALS [ 'mod_strings' ] [ 'LBL_BTN_SAVE' ] , 
-                    'actionScript' => "onclick='if(Studio2.checkGridLayout(\"{$this->editLayout}\")) Studio2.handlePublish();'" 
+                    'actionScript' => "onclick='if(Studio2.checkGridLayout(\"{$this->editLayout}\")) Studio2.handlePublish();'",
+                    'disabled' => $disableLayout,
                 ) ;
-                $buttons [] = array ( 'id' => 'spacer' , 'width' => '50px' ) ;
+                $buttons [] = array ( 'id' => 'spacer' , 'width' => '33px' ) ;
                 $buttons [] = array (
                     'id' => 'historyBtn' , 
                     'text' => translate ( 'LBL_HISTORY' ) , 
-                    'actionScript' => "onclick='ModuleBuilder.history.browse(\"{$this->editModule}\", \"{$this->editLayout}\")'" 
+                    'actionScript' => "onclick='ModuleBuilder.history.browse(\"{$this->editModule}\", \"{$this->editLayout}\")'",
+                    'disabled' => $disableLayout, 
                 ) ;
                 $buttons [] = array ( 
                     'id' => 'historyDefault' , 
                     'text' => translate ( 'LBL_RESTORE_DEFAULT' ) , 
-                    'actionScript' => "onclick='ModuleBuilder.history.revert(\"{$this->editModule}\", \"{$this->editLayout}\", \"{$history->getLast()}\", \"\")'" 
+                    'actionScript' => "onclick='ModuleBuilder.history.revert(\"{$this->editModule}\", \"{$this->editLayout}\", \"{$history->getLast()}\", \"\")'",
+                    'disabled' => $disableLayout, 
+                ) ;
+            }
+
+
+            if($this->editLayout == MB_DETAILVIEW || $this->editLayout == MB_QUICKCREATE){
+                $buttons [] = array (
+                'id' => 'copyFromEditView' ,
+                'text' => translate ( 'LBL_COPY_FROM_EDITVIEW' ) ,
+                'actionScript' => "onclick='ModuleBuilder.copyFromView(\"{$this->editModule}\", \"{$this->editLayout}\")'",
+                'disabled' => $disableLayout,
                 ) ;
             }
         }
@@ -176,7 +208,11 @@ class ViewLayoutView extends ViewEdit
             } else {
         	    $html .= "<td><input id='{$button['id']}' type='button' valign='center' class='button' style='cursor:pointer' "
         	       . "onmousedown='this.className=\"buttonOn\";return false;' onmouseup='this.className=\"button\"' "
-        	       . "onmouseout='this.className=\"button\"' {$button['actionScript']} value = '{$button['text']}' ></td>" ;
+        	       . "onmouseout='this.className=\"button\"' {$button['actionScript']} value = '{$button['text']}'" ;
+        	    if(!empty($button['disabled'])){
+        	    	 $html .= " disabled";
+        	    }
+        	    $html .= "></td>";
             }
         }
 
@@ -184,13 +220,17 @@ class ViewLayoutView extends ViewEdit
 
         // assign fields and layout
         $smarty->assign ( 'available_fields', $parser->getAvailableFields () ) ;
+        
+        $smarty->assign ( 'disable_layout', $disableLayout) ;
         $smarty->assign ( 'required_fields', $requiredFields) ;
         $smarty->assign ( 'layout', $parser->getLayout () ) ;
+        $smarty->assign ( 'field_defs', $parser->getFieldDefs () ) ;
         $smarty->assign ( 'view_module', $this->editModule ) ;
         $smarty->assign ( 'view', $this->editLayout ) ;
         $smarty->assign ( 'maxColumns', $parser->getMaxColumns() ) ;
         $smarty->assign ( 'nextPanelId', $parser->getFirstNewPanelId() ) ;
         $smarty->assign ( 'displayAsTabs', $parser->getUseTabs() ) ;
+        $smarty->assign ( 'syncDetailEditViews', $parser->getSyncDetailEditViews() ) ;
         $smarty->assign ( 'fieldwidth', 150 ) ;
         $smarty->assign ( 'translate', $this->fromModuleBuilder ? false : true ) ;
 

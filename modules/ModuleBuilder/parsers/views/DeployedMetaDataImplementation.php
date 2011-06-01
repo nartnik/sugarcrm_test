@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -362,4 +362,15 @@ class DeployedMetaDataImplementation extends AbstractMetaDataImplementation impl
         }
 		return $ret;
 	}
+
+    /**
+     * This is just a wrapper to the private method _saveToFile
+     * @param  $file    the file name to save to
+     * @param  $defs    the defs to save to the file
+     * @return void
+     */
+    public function saveToFile($file, $defs)
+    {
+        $this->_saveToFile ( $file, $defs ) ;
+    }
 }

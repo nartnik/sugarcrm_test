@@ -1,6 +1,6 @@
 <!--
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -45,16 +45,12 @@ var LBL_REQUEST_SUBMIT = '{sugar_translate module="Users" label="LBL_REQUEST_SUB
 <table cellpadding="0" align="center" width="100%" cellspacing="0" border="0">
 	<tr>
 		<td align="center">
-		<div class="dashletPanelMenu" style="width: 460px;">
-		<div class="hd"><div class="tl"></div><div class="hd-center"></div><div class="tr"></div></div>
-		<div class="bd">
-		<div class="ml"></div>
-		<div class="bd-center">
+		<div class="loginBoxShadow" style="width: 460px;">
 			<div class="loginBox">
 			<table cellpadding="0" cellspacing="0" border="0" align="center">
 				<tr>
 					<td align="left"><b>{sugar_translate module="Users" label="LBL_LOGIN_WELCOME_TO"}</b><br>
-						<IMG src="include/images/sugar_md_open.png" alt="Sugar" width="340" height="25" style="margin: 5px 0;">
+					    {$LOGIN_IMAGE}
 					</td>
 				</tr>
 				<tr>
@@ -157,10 +153,7 @@ var LBL_REQUEST_SUBMIT = '{sugar_translate module="Users" label="LBL_REQUEST_SUB
 				</tr>
 			</table>
 			</div>
-			</div>
-			<div class="mr"></div>
-			</div>
-<div class="ft"><div class="bl"></div><div class="ft-center"></div><div class="br"></div></div>
+
 </div>
 		</td>
 	</tr>

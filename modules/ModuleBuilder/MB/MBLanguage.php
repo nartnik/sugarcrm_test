@@ -1,6 +1,6 @@
 <?php	
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -49,7 +49,8 @@ class MBLanguage{
 			$this->generateAppStrings();
 		}
 		
-		function loadStrings($file){
+		function loadStrings($file)
+        {
             $module = strtoupper($this->name);
             $object_name = strtoupper($this->key_name);
             $_object_name = strtolower($this->name);		
@@ -72,12 +73,11 @@ class MBLanguage{
 		}
 		
 	function loadAppListStrings($file){
-			
-			if(!file_exists($file))return;
+            if(!file_exists($file))return;
 			//we may not need this when loading in the app strings, but there is no harm
 			//in setting it.
 			$object_name = strtolower($this->key_name);
-			
+
 			$d = dir($file);
 			while($e = $d->read()){
 				if(substr($e, 0, 1) != '.' && is_file($file . '/' . $e)){

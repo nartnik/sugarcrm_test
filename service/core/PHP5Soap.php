@@ -1,5 +1,5 @@
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -73,9 +73,8 @@ abstract class PHP5Soap extends SugarSoapService{
 		if (stristr($qs, 'wsdl') || $HTTP_RAW_POST_DATA == ''){
 			$wsdlCacheFile = $this->getWSDLPath(false);
 			if (stristr($qs, 'wsdl')) {
-			    if($fh = @sugar_fopen($wsdlCacheFile, "r")) {
-			    	$contents = fread($fh, filesize($wsdlCacheFile));
-			    	fclose($fh);
+			    $contents = @sugar_file_get_contents($wsdlCacheFile);
+			    if($contents !== false) {
 					header("Content-Type: text/xml; charset=ISO-8859-1\r\n");
 					print $contents;
 			    } // if

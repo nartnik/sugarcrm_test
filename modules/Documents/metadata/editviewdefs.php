@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -55,11 +55,10 @@ $viewdefs['Documents']['EditView'] = array(
  'panels' =>array (
   'lbl_document_information' => 
   array (
-    
     array (
       array(
-      		'name'=>'uploadfile', 
-            'customCode' => '<input type="hidden" name="escaped_document_name"><input name="uploadfile" type="{$FILE_OR_HIDDEN}" size="30" maxlength="" onchange="setvalue(this);" value="{$fields.filename.value}">{$fields.filename.value}',
+      		'name' => 'filename',
+            'displayParams' => array('onchangeSetFileNameTo' => 'document_name'),
       ),
       array (
             'name' => 'status_id',
@@ -112,7 +111,15 @@ $viewdefs['Documents']['EditView'] = array(
            ),
     ),
     
-    
+    ),
+  'LBL_PANEL_ASSIGNMENT' =>
+  array (
+     array (
+        array (
+            'name' => 'assigned_user_name',
+            'label' => 'LBL_ASSIGNED_TO_NAME',
+          ),
+    ),
   ),
 )
 

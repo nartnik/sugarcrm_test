@@ -1,5 +1,5 @@
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -56,7 +56,10 @@ function open_popup(module_name, width, height, initial_filter, close_popup, hid
 	// set the variables that the popup will pull from
 	window.document.popup_request_data = popup_request_data;
 	window.document.close_popup = close_popup;
-
+	//globally changing width and height of standard pop up window from 600 x 400 to 800 x 800 
+	width = (width == 600) ? 800 : width;
+	height = (height == 400) ? 800 : height;
+	
 	// launch the popup
 	URL = 'index.php?'
 		+ 'module=' + module_name

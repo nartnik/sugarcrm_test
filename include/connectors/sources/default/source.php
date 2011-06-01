@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -108,6 +108,18 @@ abstract class source{
  	
 	public function saveConfig() {
 		$config_str = "<?php\n/***CONNECTOR SOURCE***/\n";
+
+        // Handle encryption
+        if(isset($this->_config['encrypt_properties'])&&is_array($this->_config['encrypt_properties'])&&isset($this->_config['properties'])){
+            require_once('include/utils/encryption_utils.php');
+            foreach($this->_config['encrypt_properties'] as $name) {
+                if(isset($this->_config['properties'][$name])) {
+                    $this->_config['properties'][$name] = blowfishEncode(blowfishGetKey('encrypt_field'),$this->_config['properties'][$name]);
+                }
+            }
+        }
+        
+
 		foreach($this->_config as $key => $val) {
 			if(!empty($val)){
 				$config_str .= override_value_to_string_recursive2('config', $key, $val, false);
@@ -133,6 +145,18 @@ abstract class source{
 			require("custom/modules/Connectors/connectors/sources/{$dir}/config.php");
 		}
 		$this->_config = $config;
+
+        // Handle decryption
+        if(isset($this->_config['encrypt_properties'])&&is_array($this->_config['encrypt_properties'])&&isset($this->_config['properties'])){
+            require_once('include/utils/encryption_utils.php');
+            foreach($this->_config['encrypt_properties'] as $name) {
+                if(isset($this->_config['properties'][$name])) {
+                    $this->_config['properties'][$name] = blowfishDecode(blowfishGetKey('encrypt_field'),$this->_config['properties'][$name]);
+                }
+            }
+        }
+        
+
 		
 		//If there are no required config fields specified, we will default them to all be required
 		if(empty($this->_required_config_fields)) {
@@ -189,8 +213,8 @@ abstract class source{
 
  	public function getProperty($name){
  		$properties = $this->getProperties();
- 		if(!empty($properties['name'])){
- 			return $properties['name'];
+ 		if(!empty($properties[$name])){
+ 			return $properties[$name];
  		}else{
  			return '';
  		}

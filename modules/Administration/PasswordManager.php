@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -62,11 +62,14 @@ function clearPasswordSettings() {
 
 }
 require_once('modules/Administration/Forms.php');
-echo get_module_title(
-                $mod_strings['LBL_MODULE_NAME'], 
-                $mod_strings['LBL_MANAGE_PASSWORD_TITLE'], 
-                true
-                );
+echo getClassicModuleTitle(
+        "Administration", 
+        array(
+            "<a href='index.php?module=Administration&action=index'>".translate('LBL_MODULE_NAME','Administration')."</a>",
+           $mod_strings['LBL_MANAGE_PASSWORD_TITLE'],
+           ), 
+        false
+        );
 require_once('modules/Configurator/Configurator.php');
 $configurator = new Configurator();
 $sugarConfig = SugarConfig::getInstance();

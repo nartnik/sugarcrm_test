@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -415,9 +415,7 @@ EOQ;
 
 	function populateRequestFromBuffer($file) {
 		$results = array ();
-		$temp = sugar_fopen($file, 'r');
-		$buffer = fread($temp, filesize($file));
-		fclose($temp);
+		$temp = sugar_file_get_contents($file);
 		preg_match_all("'name[\ ]*=[\ ]*[\']([^\']*)\''si", $buffer, $results);
 		$res = $results[1];
 		foreach ($res as $r) {
@@ -446,9 +444,7 @@ EOQ;
 		$xtpl = $files[$_SESSION['studio']['selectedFileId']]['php_file'];
 		$originalFile = $files[$_SESSION['studio']['selectedFileId']]['template_file'];
 		$type = StudioParser::getFileType($files[$_SESSION['studio']['selectedFileId']]['type']);
-		$xtpl_fp = sugar_fopen($xtpl, 'r');
-		$buffer = fread($xtpl_fp, filesize($xtpl));
-		fclose($xtpl_fp);
+		$buffer = sugar_file_get_contents($xtpl);
 		$cache_file = create_cache_directory('studio/'.$file);
 		$xtpl_cache = create_cache_directory('studio/'.$xtpl);
 		$module = $this->workingModule;

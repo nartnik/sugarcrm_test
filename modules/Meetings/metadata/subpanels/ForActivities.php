@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -49,6 +49,8 @@ $subpanel_layout = array(
 		'object_image'=>array(
 			'widget_class' => 'SubPanelIcon',
  		 	'width' => '2%',
+			'image2'=>'__VARIABLE',
+ 		 	'image2_ext_url_field'=>'displayed_url',
 		),
 		'close_button'=>array(
 			'widget_class' => 'SubPanelCloseButton',
@@ -112,7 +114,7 @@ $subpanel_layout = array(
 		'time_start'=>array(
 			'usage'=>'query_only',
 	
-		),					
+		),	
 	),
 );		
 ?>

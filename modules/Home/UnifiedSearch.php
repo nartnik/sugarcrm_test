@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -45,17 +45,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 
 require_once('modules/Home/UnifiedSearchAdvanced.php');
+global $mod_strings, $modListHeader, $app_strings, $beanList, $beanFiles;
+$usa = new UnifiedSearchAdvanced();
+$usa->search();
 
-if(!empty($_REQUEST['usa_form'])) {
-	$usa = new UnifiedSearchAdvanced();
-	echo $usa->getDropDownDiv();
-}
-else {
-	global $mod_strings, $modListHeader, $app_strings, $beanList, $beanFiles;
-		
-	echo get_module_title("Search", $mod_strings['LBL_SEARCH_RESULTS'], true);
-
-	$usa = new UnifiedSearchAdvanced();
-	$usa->search();
-}	
 ?>

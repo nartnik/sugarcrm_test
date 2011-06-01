@@ -1,7 +1,7 @@
 <?php
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -38,7 +38,8 @@
 
 require_once('include/SugarFields/Fields/Float/SugarFieldFloat.php');
 
-class SugarFieldCurrency extends SugarFieldFloat {
+class SugarFieldCurrency extends SugarFieldFloat 
+{
     function getListViewSmarty($parentFieldArray, $vardef, $displayParams, $col) {
         $tabindex = 1;
     	$this->setup($parentFieldArray, $vardef, $displayParams, $tabindex, false);
@@ -56,5 +57,20 @@ class SugarFieldCurrency extends SugarFieldFloat {
 	    	$this->ss->assign('currency_id',$parentFieldArray['currency_id']);
 	    }
         return $this->fetch($this->findTemplate('ListView'));
+    }
+    
+    /**
+     * @see SugarFieldBase::importSanitize()
+     */
+    public function importSanitize(
+        $value,
+        $vardef,
+        $focus,
+        ImportFieldSanitize $settings
+        )
+    {
+        $value = str_replace($settings->currency_symbol,"",$value);
+        
+        return $settings->float($value,$vardef,$focus);
     }
 }

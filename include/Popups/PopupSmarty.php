@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -246,7 +246,9 @@ class PopupSmarty extends ListViewSmarty{
 			$formBase = new $this->_popupMeta['create']['formBaseClass']();
 			if(isset($_REQUEST['doAction']) && $_REQUEST['doAction'] == 'save')
 			{
-				$formBase->handleSave('', false, true);
+				//If it's a new record, set useRequired to false
+				$useRequired = empty($_REQUEST['id']) ? false : true;
+				$formBase->handleSave('', false, $useRequired);
 			}
 		}
 	    
@@ -298,6 +300,7 @@ class PopupSmarty extends ListViewSmarty{
         $this->searchForm->lv = $lv;
         $this->searchForm->displaySavedSearch = false;
 
+        
         $this->searchForm->populateFromRequest('advanced_search');
         $searchWhere = $this->_get_where_clause();
         $this->searchColumns = $this->searchForm->searchColumns;

@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -61,7 +61,7 @@ $GLOBALS['log']->info('EmailTemplate detail view');
 ///////////////////////////////////////////////////////////////////////////////
 ////	OUTPUT 
 echo insert_popup_header();
-echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_SIGNATURE'].' '.$focus->name, true); 
+echo getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_SIGNATURE'].' '.$focus->name), true); 
 
 
 $xtpl = new XTemplate ('modules/Users/UserSignatureEditView.html');

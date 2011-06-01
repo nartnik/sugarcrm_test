@@ -1,6 +1,6 @@
 {*
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -108,7 +108,8 @@
                                 </td>
                                 <td width="20%" scope="row" nowrap="nowrap"><span id="mail_smtpssl_label">{$app_strings.LBL_EMAIL_SMTP_SSL_OR_TLS}</span></td>
                                 <td width="30%">
-                                <select id="mail_smtpssl" name="mail_smtpssl" tabindex="501">{$MAIL_SSL_OPTIONS}</select>
+                                <select id="mail_smtpssl" name="mail_smtpssl" tabindex="501" 
+                                    onclick="javascript:SUGAR.email2.accounts.smtp_setDefaultSMTPPort();">{$MAIL_SSL_OPTIONS}</select>
                                 </td>
                             </tr>
                             <tr id="smtp_auth1">

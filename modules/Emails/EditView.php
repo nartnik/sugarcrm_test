@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -153,7 +153,7 @@ $from = $current_user->getEmailInfo();
 ///////////////////////////////////////////////////////////////////////////////
 ////	XTEMPLATE ASSIGNMENT
 if($email_type == 'archived') {
-	echo get_module_title('Emails', $mod_strings['LBL_ARCHIVED_MODULE_NAME'].":", true);
+	echo getClassicModuleTitle('Emails', array($mod_strings['LBL_ARCHIVED_MODULE_NAME']), true);
 	$xtpl=new XTemplate('modules/Emails/EditViewArchive.html');
 } else {
 
@@ -184,7 +184,7 @@ if($email_type == 'archived') {
 	header("Location: index.php?module=Emails&action=Compose&record=$focus->id&replyForward=true&reply=$replyType");
 	return;
 
-	echo get_module_title('Emails', $mod_strings['LBL_COMPOSE_MODULE_NAME'].":", true);
+	echo getClassicModuleTitle('Emails', array($mod_strings['LBL_COMPOSE_MODULE_NAME']), true);
 	$xtpl=new XTemplate('modules/Emails/EditView.html');
 }
 echo "\n</p>\n";

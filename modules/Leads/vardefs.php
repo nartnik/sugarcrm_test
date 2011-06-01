@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,7 +35,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  * "Powered by SugarCRM".
  ********************************************************************************/
 
-$dictionary['Lead'] = array('table' => 'leads','audited'=>true, 'unified_search' => true,'duplicate_merge'=>true,
+$dictionary['Lead'] = array('table' => 'leads','audited'=>true, 'unified_search' => true, 'unified_search_default_enabled' => true, 'duplicate_merge'=>true,
 		'comment' => 'Leads are persons of interest early in a sales cycle', 'fields' => array (
 
 
@@ -499,6 +499,7 @@ $dictionary['Lead'] = array('table' => 'leads','audited'=>true, 'unified_search'
        array('name' => 'idx_del_user', 'type' => 'index', 'fields'=> array('deleted', 'assigned_user_id')),
         array('name' =>'idx_lead_assigned', 'type'=>'index', 'fields'=>array('assigned_user_id')),
         array('name' =>'idx_lead_contact', 'type'=>'index', 'fields'=>array('contact_id')),
+        array('name' =>'idx_reports_to', 'type'=>'index', 'fields'=>array('reports_to_id')),
 
                                              )
 , 'relationships' => array (

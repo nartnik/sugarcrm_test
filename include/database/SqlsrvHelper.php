@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -55,33 +55,33 @@ class SqlsrvHelper extends MssqlHelper
      * @see DBHelper::getColumnType()
      */
     public function getColumnType(
-        $type, 
-        $name = '', 
+        $type,
+        $name = '',
         $table = ''
         )
     {
 		$columnType = parent::getColumnType($type,$name,$table);
-        
+
 		if ( in_array($columnType,array('char','varchar')) && !preg_match('/(_id$|^id$)/', $name))
 			$columnType = 'n'.$columnType;
-		
+
 		if ( in_array($columnType,array('text','ntext','image')) ) {
 		    $columnType = 'nvarchar(max)';
-        } 
+        }
 
         return $columnType;
     }
-	
+
 	/**
 	 * @see DBHelper::massageValue()
 	 */
 	public function massageValue(
-        $val, 
+        $val,
         $fieldDef
         )
     {
         $type = $this->getFieldType($fieldDef);
-        
+
 		switch ($type) {
 		case 'int':
 		case 'double':
@@ -94,7 +94,7 @@ class SqlsrvHelper extends MssqlHelper
             return $val;
             break;
         }
-        
+
         $qval = $this->quote($val);
 
         switch ($type) {
@@ -117,7 +117,7 @@ class SqlsrvHelper extends MssqlHelper
             return "$qval";
             break;
         case 'text':
-        case 'ntext':		  
+        case 'ntext':
         case 'blob':
         case 'longblob':
         case 'clob':
@@ -126,50 +126,50 @@ class SqlsrvHelper extends MssqlHelper
             return $qval;
             break;
 		}
-        
+
         return $val;
 	}
-	
+
 	/**
 	 * Detect if no clustered index has been created for a table; if none created then just pick the first index and make it that
 	 *
 	 * @see MssqlHelper::indexSQL()
      */
-    public function indexSQL( 
-        $tableName, 
-        $fieldDefs, 
+    public function indexSQL(
+        $tableName,
+        $fieldDefs,
         $indices
-        ) 
+        )
     {
         if ( $this->doesTableHaveAClusteredIndexDefined($tableName) ) {
-            return parent::indexSQL($tableName, $fieldDefs, $indices); 
+            return parent::indexSQL($tableName, $fieldDefs, $indices);
         }
-        
+
         // check to see if one of the passed in indices is a primary one; if so we can bail as well
         foreach ( $indices as $index ) {
             if ( $index['type'] == 'primary' ) {
-                return parent::indexSQL($tableName, $fieldDefs, $indices); 
+                return parent::indexSQL($tableName, $fieldDefs, $indices);
             }
         }
-        
+
         // Change the first index listed to be a clustered one instead ( so we have at least one for the table )
         if ( isset($indices[0]) ) {
             $indices[0]['type'] = 'clustered';
         }
-        
-        return parent::indexSQL($tableName, $fieldDefs, $indices); 
+
+        return parent::indexSQL($tableName, $fieldDefs, $indices);
     }
-    
+
     /**
      * @see DBHelper::get_columns()
      */
     public function get_columns(
         $tablename
-        ) 
+        )
     {
         //find all unique indexes and primary keys.
         $result = $this->db->query("sp_columns_90 $tablename");
-        
+
         $columns = array();
         while (($row=$this->db->fetchByAssoc($result)) !=null) {
             $column_name = strtolower($row['COLUMN_NAME']);
@@ -182,7 +182,7 @@ class SqlsrvHelper extends MssqlHelper
 			elseif ( in_array($row['TYPE_NAME'],array('nchar','nvarchar')) ) {
 				$columns[$column_name]['len']=strtolower($row['PRECISION']);
 				if ( $row['TYPE_NAME'] == 'nvarchar' && $row['PRECISION'] == '0' ) {
-				    $columns[$column_name]['len']='max';
+				    $columns[$column_name]['len']='255';
 				}
 			}
             elseif ( !in_array($row['TYPE_NAME'],array('datetime','text')) ) {
@@ -192,10 +192,10 @@ class SqlsrvHelper extends MssqlHelper
                 $columns[$column_name]['auto_increment'] = '1';
                 $columns[$column_name]['type']=str_replace(' identity','',strtolower($row['TYPE_NAME']));
             }
-            
+
             if (!empty($row['IS_NULLABLE']) && $row['IS_NULLABLE'] == 'NO' && (empty($row['KEY']) || !stristr($row['KEY'],'PRI')))
                 $columns[strtolower($row['COLUMN_NAME'])]['required'] = 'true';
-            
+
             $column_def = 0;
             if ( strtolower($tablename) == 'relationships' ) {
                 $column_def = $this->db->getOne("select cdefault from syscolumns where id = object_id('relationships') and name = '$column_name'");
@@ -213,7 +213,7 @@ class SqlsrvHelper extends MssqlHelper
         }
         return $columns;
     }
-    
+
     /**
      * @see DBHelper::get_indices()
      */
@@ -234,7 +234,7 @@ SELECT sys.tables.object_id, sys.tables.name as table_name, sys.columns.name as 
         AND sys.tables.name = '$tableName'
 EOSQL;
         $result = $this->db->query($query);
-        
+
         $indices = array();
         while (($row=$this->db->fetchByAssoc($result)) != null) {
             $index_type = 'index';
@@ -249,7 +249,7 @@ EOSQL;
         }
         return $indices;
     }
-    
+
     /**
      * protected function to return true if the given tablename has any clustered indexes defined.
      *
@@ -261,7 +261,7 @@ EOSQL;
         $query = <<<EOSQL
 SELECT IST.TABLE_NAME
     FROM INFORMATION_SCHEMA.TABLES IST
-    WHERE objectProperty(object_id(IST.TABLE_NAME), 'IsUserTable') = 1 
+    WHERE objectProperty(object_id(IST.TABLE_NAME), 'IsUserTable') = 1
         AND objectProperty(object_id(IST.TABLE_NAME), 'TableHasClustIndex') = 1
         AND IST.TABLE_NAME = '{$tableName}'
 EOSQL;
@@ -273,7 +273,7 @@ EOSQL;
 
         return true;
     }
-    
+
     /**
      * protected function to return true if the given tablename has any fulltext indexes defined.
      *
@@ -296,7 +296,7 @@ EOSQL;
 
         return true;
     }
-    
+
     /**
      * Override method to add support for detecting and dropping fulltext indices.
      *
@@ -304,9 +304,9 @@ EOSQL;
      * @see MssqlHelper::changeColumnSQL()
      */
     protected function changeColumnSQL(
-        $tablename, 
-        $fieldDefs, 
-        $action, 
+        $tablename,
+        $fieldDefs,
+        $action,
         $ignoreRequired = false
         )
     {
@@ -314,10 +314,24 @@ EOSQL;
         if ( $this->doesTableHaveAFulltextIndexDefined($tablename) ) {
             $sql .= "DROP FULLTEXT INDEX ON {$tablename}";
         }
-        
+
         $sql .= parent::changeColumnSQL($tablename, $fieldDefs, $action, $ignoreRequired);
-        
+
         return $sql;
+    }
+    
+    /**
+     * @see DBHelper::massageFieldDef()
+     */
+    public function massageFieldDef(
+        &$fieldDef,
+        $tablename
+        )
+    {
+        parent::massageFieldDef($fieldDef,$tablename);
+        
+        if ($fieldDef['type'] == 'bit')
+            $fieldDef['len'] = '1';
     }
 }
 ?>

@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -51,7 +51,7 @@ require_once('include/ListView/ListViewSmarty.php');
 
 global $app_strings, $app_list_strings, $current_language, $currentModule, $mod_strings;
 
-echo get_module_title('SavedSearch', $mod_strings['LBL_MODULE_TITLE'], false);
+echo getClassicModuleTitle('SavedSearch', array($mod_strings['LBL_MODULE_TITLE']), false);
 echo get_form_header($mod_strings['LBL_SEARCH_FORM_TITLE'], '', false);
 
 $search_form = new XTemplate ('modules/SavedSearch/SearchForm.html');

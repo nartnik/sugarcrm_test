@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -116,7 +116,7 @@ class Prospect extends Person {
 		if($custom_join)
 				$custom_join['join'] .= $relate_link_join;
                          $query = "SELECT
-                                prospects.*,email_addresses.email_address email1,
+                                prospects.*,email_addresses.email_address email_address,
                                 users.user_name as assigned_user_name ";
 						if($custom_join){
    							$query .= $custom_join['select'];

@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,7 +35,11 @@
  ********************************************************************************/
 
 $viewdefs['Accounts']['DetailView'] = array(
-    'templateMeta' => array('form' => array('buttons'=>array('EDIT', 'DUPLICATE', 'DELETE', 'FIND_DUPLICATES')),
+    'templateMeta' => array('form' => array('buttons'=>array('EDIT', 
+    'DUPLICATE', 
+    'DELETE', 
+    'FIND_DUPLICATES',
+)),
                             'maxColumns' => '2',
                             'widths' => array(
                                             array('label' => '10', 'field' => '30'), 
@@ -54,6 +58,15 @@ $viewdefs['Accounts']['DetailView'] = array(
             'name' => 'name',
             'comment' => 'Name of the Company',
             'label' => 'LBL_NAME',
+            'displayParams' => 
+              array (
+                'enableConnectors' => true,
+                'module' => 'Accounts',
+                'connectors' => 
+                array (
+                  0 => 'ext_rest_linkedin',
+                ),
+            ),          
           ),
           array (
             'name' => 'phone_office',

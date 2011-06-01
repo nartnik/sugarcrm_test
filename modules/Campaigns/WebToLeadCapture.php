@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -83,7 +83,13 @@ if (isset($_POST['campaign_id']) && !empty($_POST['campaign_id'])) {
                 $lead->new_with_id = true;
             }
             $GLOBALS['check_notify'] = true;
-            $lead = $leadForm->handleSave($prefix, false, true, false, $lead);
+
+            //bug: 42398 - have to unset the id from the required_fields since it is not populated in the $_POST
+            unset($lead->required_fields['id']);
+            unset($lead->required_fields['team_name']);
+            unset($lead->required_fields['team_count']);
+            // checkRequired needs a major overhaul before it works for web to lead forms.
+            $lead = $leadForm->handleSave($prefix, false, false, false, $lead);
             
 			if(!empty($lead)){
 				
@@ -94,7 +100,7 @@ if (isset($_POST['campaign_id']) && !empty($_POST['campaign_id'])) {
 	            $camplog->related_type = $lead->module_dir;
 	            $camplog->activity_type = "lead";
 	            $camplog->target_type = $lead->module_dir;
-	            $campaign_log->activity_date=$timedate->to_display_date_time(gmdate($GLOBALS['timedate']->get_db_date_time_format()));
+	            $campaign_log->activity_date=$timedate->now();
 	            $camplog->target_id    = $lead->id;
 	            $camplog->save();
 

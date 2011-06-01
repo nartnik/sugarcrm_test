@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -228,7 +228,7 @@ EOQ2;
 //	'zh_cn' => '简体中文',
 //	'ja_jp' => 'Japanese - 日本語',
 //);
-$demoDD = "<select name='demoData' id='demoData'><option value='no' >".$mod_strings['LBL_NO']."</option><option value='en_us'>".$mod_strings['LBL_YES']."</option>";
+$demoDD = "<select name='demoData' id='demoData'><option value='no' >".$mod_strings['LBL_NO']."</option><option value='yes'>".$mod_strings['LBL_YES']."</option>";
 //foreach($supported_demodata as $key => $v){
 //	// mssql is broken for mbcs
 //	if( ($_SESSION['setup_db_type'] == 'mssql') && ($key != 'en_us'))

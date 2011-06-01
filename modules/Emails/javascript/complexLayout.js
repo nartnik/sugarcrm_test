@@ -1,5 +1,5 @@
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -179,8 +179,8 @@ function complexLayoutInit() {
             	{
             		se.complexLayout.getUnitByPosition("left").set("header", app_strings.LBL_EMAIL_SEARCH);
             	   //Setup the calendars if needed
-	               Calendar.setup ({inputField : "searchDateFrom", ifFormat : calFormat, showsTime : false, button : "jscal_trigger_from", singleClick : true, step : 1, weekNumbers:false});
-	               Calendar.setup ({inputField : "searchDateTo", ifFormat : calFormat, showsTime : false, button : "jscal_trigger_to", singleClick : true, step : 1, weekNumbers:false});
+	               Calendar.setup ({inputField : "searchDateFrom", ifFormat : calFormat, showsTime : false, button : "searchDateFrom_trigger", singleClick : true, step : 1, weekNumbers:false});
+	               Calendar.setup ({inputField : "searchDateTo", ifFormat : calFormat, showsTime : false, button : "searchDateTo_trigger", singleClick : true, step : 1, weekNumbers:false});
                    
 	               //Initalize sqs object for assigned user name 
 	               se.e2Layout.initSQSObject('advancedSearchForm','assigned_user_name');  

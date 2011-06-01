@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -43,6 +43,7 @@
   $searchdefs['Bugs'] = array(
 					'templateMeta' => array(
 							'maxColumns' => '3', 
+  							'maxColumnsBasic' => '4', 
                             'widths' => array('label' => '10', 'field' => '30'),                 
                            ),
                     'layout' => array(  					
@@ -50,6 +51,7 @@
 						 	'name', 
 							array('name'=>'current_user_only', 'label'=>'LBL_CURRENT_USER_FILTER', 'type'=>'bool'),
 							
+					        array ('name' => 'open_only', 'label' => 'LBL_OPEN_ITEMS', 'type' => 'bool', 'default' => false, 'width' => '10%'),       
 		      ),
 						'advanced_search' => array(
 							'bug_number', 

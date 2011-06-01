@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -63,9 +63,9 @@ global $current_user;
 //if (!is_admin($current_user)) sugar_die("Unauthorized access to administration.");
 //account for use within wizards
 if($focus->campaign_type == 'NewsLetter'){
-    echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_NEWSLETTER_WIZARD_START_TITLE'].$focus->name, true, false);
+    echo getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_NEWSLETTER_WIZARD_START_TITLE'].$focus->name), true, false);
 }else{
-    echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_CAMPAIGN_WIZARD_START_TITLE'].$focus->name, true, false);
+    echo getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_CAMPAIGN_WIZARD_START_TITLE'].$focus->name), true, false);
 }
 
 global $theme;
@@ -160,7 +160,7 @@ global $currentModule;
     
     //if (!is_admin($current_user)) sugar_die("Unauthorized access to administration.");
     //account for use within wizards
-        echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_CAMPAIGN_WIZARD'].$focus->name, true, false);
+        echo getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_CAMPAIGN_WIZARD'].$focus->name), true, false);
              
 
     $ss = new Sugar_Smarty();

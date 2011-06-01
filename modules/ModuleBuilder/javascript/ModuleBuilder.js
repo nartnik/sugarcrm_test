@@ -1,5 +1,5 @@
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -358,6 +358,7 @@ if (typeof(ModuleBuilder) == 'undefined') {
 		state: {
 			isDirty: false,
 			saving: false,
+            hideFailedMesage: false,
 			intended_view: {
 				url: null,
 				successCall: null
@@ -416,32 +417,43 @@ if (typeof(ModuleBuilder) == 'undefined') {
 				ModuleBuilder.getContent(ModuleBuilder.state.intended_view.url, ModuleBuilder.state.intended_view.successCall);
 			},
 			popup: function(){
-				ModuleBuilder.state.popup_window = new YAHOO.widget.SimpleDialog("confirmUnsaved", {
-					width: "400px",
-					draggable: true,
-					constraintoviewport: true,
-					modal: true,
-					fixedcenter: true,
-					text: SUGAR.language.get('ModuleBuilder', 'LBL_CONFIRM_DONT_SAVE'),
-					bodyStyle: "padding:5px",
-					buttons: [{
-						text: SUGAR.language.get('ModuleBuilder', 'LBL_BTN_DONT_SAVE'),
-						handler: ModuleBuilder.state.onDontSaveClick
-					}, {
-						text: SUGAR.language.get('ModuleBuilder', 'LBL_BTN_CANCEL'),
-						isDefault:true,
-						handler: function(){
-							ModuleBuilder.state.popup_window.hide()
-						}
-					},{
-						text: SUGAR.language.get('ModuleBuilder', 'LBL_BTN_SAVE_CHANGES'),
-						handler: ModuleBuilder.state.onSaveClick
-					}]
-				});
-				ModuleBuilder.state.popup_window.setHeader(SUGAR.language.get('ModuleBuilder', 'LBL_CONFIRM_DONT_SAVE_TITLE'));
-				ModuleBuilder.state.popup_window.render(document.body);
+                ModuleBuilder.state.popup_window = new YAHOO.widget.SimpleDialog("confirmUnsaved", {
+                 width: "400px",
+                 draggable: true,
+                 constraintoviewport: true,
+                 modal: true,
+                 fixedcenter: true,
+                 text: SUGAR.language.get('ModuleBuilder', 'LBL_CONFIRM_DONT_SAVE'),
+                 bodyStyle: "padding:5px",
+                 buttons: [{
+                    text: SUGAR.language.get('ModuleBuilder', 'LBL_BTN_DONT_SAVE'),
+                    handler: ModuleBuilder.state.onDontSaveClick
+                 }, {
+                    text: SUGAR.language.get('ModuleBuilder', 'LBL_BTN_CANCEL'),
+                    isDefault:true,
+                    handler: function(){
+                        ModuleBuilder.state.popup_window.hide()
+                    }
+                 },{
+                    text: SUGAR.language.get('ModuleBuilder', 'LBL_BTN_SAVE_CHANGES'),
+                    handler: ModuleBuilder.state.onSaveClick
+                    }]
+                });
+                ModuleBuilder.state.popup_window.setHeader(SUGAR.language.get('ModuleBuilder', 'LBL_CONFIRM_DONT_SAVE_TITLE'));
+                if(ModuleBuilder.disablePopupPrompt != 1){
+                    ModuleBuilder.state.popup_window.render(document.body);
+                }else{
+                    ModuleBuilder.state.onDontSaveClick();
+                }
 			}
 		},
+        copyFromView: function(module, layout){
+            var url = ModuleBuilder.contentURL;
+            ModuleBuilder.getContent(url+"&copyFromEditView=true");
+             ModuleBuilder.contentURL = url;
+            ModuleBuilder.state.intended_view.url = url;
+            ModuleBuilder.state.isDirty = true;
+        },
 		//AJAX Navigation Functions
 		navigate : function(url) {
 			//Check if we are just registering the url
@@ -612,7 +624,9 @@ if (typeof(ModuleBuilder) == 'undefined') {
 			document.location.href = 'index.php?module=ModuleBuilder&action=index&type=' + type;
 		},
 		failed: function(o){
-			ajaxStatus.flashStatus(SUGAR.language.get('ModuleBuilder', 'LBL_AJAX_FAILED_DATA'), 2000);
+            if(!ModuleBuilder.state.hideFailedMesage){
+                ajaxStatus.flashStatus(SUGAR.language.get('ModuleBuilder', 'LBL_AJAX_FAILED_DATA'), 2000);
+            }
 		},
 		//Wizard Functions
 		buttonDown: function(button, name, list){
@@ -840,6 +854,7 @@ if (typeof(ModuleBuilder) == 'undefined') {
 			);
 			
 			ModuleBuilder.failed = function(){};
+            ModuleBuilder.state.hideFailedMesage = true;
 			//Reload the page
 			window.setTimeout("window.location.assign(window.location.href.split('#')[0])", 2000);
 			

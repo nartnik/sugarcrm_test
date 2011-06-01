@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -127,6 +127,27 @@ $layout_defs['Accounts'] = array(
 	    		),          
 			)			
 		),
+        'documents' => array(
+            'order' => 25,
+            'module' => 'Documents',
+            'subpanel_name' => 'default',
+            'sort_order' => 'asc',
+            'sort_by' => 'id',
+            'title_key' => 'LBL_DOCUMENTS_SUBPANEL_TITLE',
+            'get_subpanel_data' => 'documents',
+            'top_buttons' => 
+            array (
+                0 => 
+                array (
+                    'widget_class' => 'SubPanelTopButtonQuickCreate',
+                    ),
+                1 => 
+                array (
+                    'widget_class' => 'SubPanelTopSelectButton',
+                    'mode' => 'MultiSelect',
+                    ),
+                ),
+        ),
 		'contacts' => array(
 			'order' => 30,
 			'module' => 'Contacts',
@@ -152,8 +173,7 @@ $layout_defs['Accounts'] = array(
 			'add_subpanel_data' => 'opportunity_id',
 			'title_key' => 'LBL_OPPORTUNITIES_SUBPANEL_TITLE',
 			'top_buttons' => array(
-				array('widget_class' => 'SubPanelTopButtonQuickCreate'),
-				array('widget_class' => 'SubPanelTopSelectButton', 'mode'=>'MultiSelect')
+				array('widget_class' => 'SubPanelTopButtonQuickCreate')
 			),
 		),
 		'leads' => array(
@@ -230,6 +250,15 @@ $layout_defs['Accounts'] = array(
 				array('widget_class' => 'SubPanelTopSelectButton', 'mode'=>'MultiSelect'),
 			),
 		),
+        'campaigns' => array(
+			'order' => 70,
+			'module' => 'CampaignLog',
+			'sort_order' => 'desc',
+			'sort_by' => 'activity_date',
+			'get_subpanel_data'=>'campaigns',
+			'subpanel_name' => 'ForTargets',
+			'title_key' => 'LBL_CAMPAIGNS',	
+		),		
 	),
 );
 ?>

@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -48,8 +48,9 @@ $mod_strings = array (
 	'LBL_ANY_EMAIL' => 'Any Email:',
 	'LBL_ANY_PHONE' => 'Any Phone:',
 	'LBL_ASSIGNED_TO_NAME' => 'User:',
-	'LBL_RATING'=>'Rating',
-	'LBL_ASSIGNED_USER'=>'Assigned to:',
+	'LBL_RATING' => 'Rating',
+	'LBL_ASSIGNED_TO' => 'Assigned to:',
+	'LBL_ASSIGNED_USER' => 'Assigned to:',
 	'LBL_ASSIGNED_TO_ID' => 'Assigned to:',
 	'LBL_BILLING_ADDRESS_CITY' => 'Billing City:',
 	'LBL_BILLING_ADDRESS_COUNTRY' => 'Billing Country:',
@@ -92,7 +93,8 @@ $mod_strings = array (
 	'LBL_PHONE_FAX' => 'Phone Fax:',
 	'LBL_PHONE_OFFICE' => 'Office Phone:',
 	'LBL_PHONE' => 'Phone:',
-    'LBL_EMAIL_ADDRESS'=>'Email Address(es)',
+    'LBL_EMAIL_ADDRESS' => 'Email Address',
+	'LBL_EMAIL_ADDRESSES' => 'Email Address(es)',
 	'LBL_POSTAL_CODE' => 'Postal Code:',
 	'LBL_PUSH_BILLING' => 'Push Billing',
 	'LBL_PUSH_SHIPPING' => 'Push Shipping',
@@ -119,8 +121,8 @@ $mod_strings = array (
 	'LNK_ACCOUNT_LIST' => 'Accounts',
 	'LNK_NEW_ACCOUNT' => 'Create Account',
 
-	'MSG_DUPLICATE' => 'Creating this account may potentially create a duplicate account. You may either select an account from the list below or you may click on Save to continue creating a new account with the previously entered data.',
-	'MSG_SHOW_DUPLICATES' => 'Creating this account may potentially create a duplicate account. You may either click on Save to continue creating this new account with the previously entered data or you may click Cancel.',
+	'MSG_DUPLICATE' => 'The account record you are about to create might be a duplicate of an account record that already exists. Account records containing similar names are listed below.<br>Click Create Account to continue creating this new account, or select an existing account listed below.',
+	'MSG_SHOW_DUPLICATES' => 'The account record you are about to create might be a duplicate of an account record that already exists. Account records containing similar names are listed below.<br>Click Save to continue creating this new account, or click Cancel to return to the module without creating the account.',
 
 	'NTC_COPY_BILLING_ADDRESS' => 'Copy billing address to shipping address',
 	'NTC_COPY_BILLING_ADDRESS2' => 'Copy to shipping',

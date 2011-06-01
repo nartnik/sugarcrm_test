@@ -1,5 +1,5 @@
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -54,7 +54,7 @@ function Datetimecombo (datetime, field, timeformat, tabindex, showCheckbox, che
     this.datetime = datetime;
     this.allowEmptyHM = allowEmptyHM;
     if(typeof this.datetime == "undefined" || datetime == '' || trim(datetime).length < 10) {
-       this.datetime = "";
+       this.datetime = '';
        var d = new Date();
        var month = d.getMonth();
        var date = d.getDate();
@@ -65,9 +65,14 @@ function Datetimecombo (datetime, field, timeformat, tabindex, showCheckbox, che
 
     this.fieldname = field;
     //Get hours and minutes and adjust as necessary
-    this.hrs = parseInt(datetime.substring(11,13), 10);
-    this.mins = parseInt(datetime.substring(14,16), 10);
-
+    
+    if(datetime != '')
+    {
+    	parts = datetime.split(' ');
+        this.hrs = parseInt(parts[1].substring(0,2), 10);
+        this.mins = parseInt(parts[1].substring(3,5), 10);    	
+    }
+    
     //A safety scan to make sure hrs and minutes are formatted correctly
 	if (this.mins > 0 && this.mins < 15) {
 		this.mins = 15;
@@ -111,11 +116,13 @@ function Datetimecombo (datetime, field, timeformat, tabindex, showCheckbox, che
 Datetimecombo.prototype.jsscript = function(callback) {
 	//text = '\n<script language="javascript" type="text/html">';
 	text = '\nfunction update_' + this.fieldname + '(calendar) {';
+	/*
 	text += '\nif(calendar != null) {';
 	text += '\ncalendar.onUpdateTime();';
 	text += '\ncalendar.onSetTime();';
 	text += '\ncalendar.hide();';
 	text += '\n}'
+	*/
     text += '\nd = document.getElementById("' + this.fieldname + '_date").value;';
     text += '\nh = document.getElementById("' + this.fieldname + '_hours").value;';
     text += '\nm = document.getElementById("' + this.fieldname + '_minutes").value;';
@@ -138,7 +145,7 @@ Datetimecombo.prototype.jsscript = function(callback) {
  * This function renders the HTML form elements for this widget
  */
 Datetimecombo.prototype.html = function(callback) {
-
+	
 	//Now render the items
 	var text = '<select class="datetimecombo_time" size="1" id="' + this.fieldname + '_hours" tabindex="' + this.tabindex + '" onchange="combo_' + this.fieldname + '.update(); ' + callback + '">';
 	var h1 = this.has12Hours ? 1 : 0;
@@ -190,7 +197,11 @@ Datetimecombo.prototype.html = function(callback) {
  * XXX TODO 20100317 Frank Steegmans: The code in this module is violating so many best practices
  * that it will need to get rewritten. Also note that it still stems from before the datetime unification.
  */
-Datetimecombo.prototype.update = function() {
+Datetimecombo.prototype.update = function(updateListeners) {
+	//On initial load, we call update but we don't want to trigger listeners as the value hasn't really changed.
+	if (typeof (updateListeners) == "undefined")
+		updateListeners = true;
+
 	// Bug 42025: hour/minute/second still required when start_date is non required
 	//			  Fixing this by just assigning default when they aren't required
     var d = window.document.getElementById(this.fieldname + '_date');
@@ -220,6 +231,9 @@ Datetimecombo.prototype.update = function() {
 		newdate = '';
 	}
 	document.getElementById(this.fieldname).value = newdate;
+	//Check for onchange actions and fire them
+	if(updateListeners)
+		SUGAR.util.callOnChangeListers(this.fieldname);
 
     if(this.showCheckbox) {	
          flag = this.fieldname + '_flag';

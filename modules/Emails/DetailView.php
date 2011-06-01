@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -88,6 +88,11 @@ if($focus->status == 'draft') {
 	//die();
 }
 
+// ACL Access Check
+if (!$focus->ACLAccess('DetailView')){
+	ACLController::displayNoAccess(true);
+	sugar_cleanup(true);
+}
 
 //needed when creating a new email with default values passed in
 if (isset($_REQUEST['contact_name']) && is_null($focus->contact_name)) {
@@ -127,24 +132,25 @@ if (!empty($focus->status)) {
 	$email_type = $_REQUEST['type'];
 }
 
+
 ///////////////////////////////////////////////////////////////////////////////
 ////	OUTPUT
 ///////////////////////////////////////////////////////////////////////////////
 echo "\n<p>\n";
 $GLOBALS['log']->info("Email detail view");
 if ($email_type == 'archived') {
-	echo get_module_title('Emails', $mod_strings['LBL_ARCHIVED_EMAIL'].": ".$focus->name, true);
+	echo getClassicModuleTitle('Emails', array($mod_strings['LBL_ARCHIVED_EMAIL'],$focus->name), true);
 	$xtpl=new XTemplate ('modules/Emails/DetailView.html');
 } else {
 	$xtpl=new XTemplate ('modules/Emails/DetailViewSent.html');
 	if($focus->type == 'out') {
-		echo get_module_title('Emails', $mod_strings['LBL_SENT_MODULE_NAME'].": ".$focus->name, true);
+		echo getClassicModuleTitle('Emails', array($mod_strings['LBL_SENT_MODULE_NAME'],$focus->name), true);
 		//$xtpl->assign('DISABLE_REPLY_BUTTON', 'NONE');
 	} elseif ($focus->type == 'draft') {
 		$xtpl->assign('DISABLE_FORWARD_BUTTON', 'NONE');
-		echo get_module_title('Emails', $mod_strings['LBL_LIST_FORM_DRAFTS_TITLE'].": ".$focus->name, true);
+		echo getClassicModuleTitle('Emails', array($mod_strings['LBL_LIST_FORM_DRAFTS_TITLE'],$focus->name), true);
 	} elseif($focus->type == 'inbound') {
-		echo get_module_title('Emails', $mod_strings['LBL_INBOUND_TITLE'].": ".$focus->name, true);
+		echo getClassicModuleTitle('Emails', array($mod_strings['LBL_INBOUND_TITLE'],$focus->name), true);
 	}
 }
 echo "\n</p>\n";
@@ -234,10 +240,10 @@ if (!empty($focus->parent_type) && $focus->parent_type !='test') {
     $xtpl->assign('PARENT_TYPE', $app_list_strings['record_type_display'][$focus->parent_type] . ':');
 }
 
-$to_addr = !empty($focus->to_addrs_names) ? htmlentities($focus->to_addrs_names) : nl2br($focus->to_addrs);
-$from_addr = !empty($focus->from_addr_name) ? htmlentities($focus->from_addr_name) : nl2br($focus->from_addr);
-$cc_addr = !empty($focus->cc_addrs_names) ? htmlentities($focus->cc_addrs_names) : nl2br($focus->cc_addrs);
-$bcc_addr = !empty($focus->bcc_addrs_names) ? htmlentities($focus->bcc_addrs_names) : nl2br($focus->bcc_addrs);
+$to_addr = !empty($focus->to_addrs_names) ? htmlspecialchars($focus->to_addrs_names, ENT_COMPAT, 'UTF-8') : nl2br($focus->to_addrs);
+$from_addr = !empty($focus->from_addr_name) ? htmlspecialchars($focus->from_addr_name, ENT_COMPAT, 'UTF-8') : nl2br($focus->from_addr);
+$cc_addr = !empty($focus->cc_addrs_names) ? htmlspecialchars($focus->cc_addrs_names, ENT_COMPAT, 'UTF-8') : nl2br($focus->cc_addrs);
+$bcc_addr = !empty($focus->bcc_addrs_names) ? htmlspecialchars($focus->bcc_addrs_names, ENT_COMPAT, 'UTF-8') : nl2br($focus->bcc_addrs);
 
 $xtpl->assign('MOD', $mod_strings);
 $xtpl->assign('APP', $app_strings);

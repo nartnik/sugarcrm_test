@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -43,7 +43,7 @@ require_once('include/upload_file.php');
 class DocumentSoap{
 var $upload_file;
 	function DocumentSoap(){
-		$this->upload_file = new UploadFile('uploadfile');	
+		$this->upload_file = new UploadFile('filename_file');
 	}
 	
 	function saveFile($document, $portal = false){

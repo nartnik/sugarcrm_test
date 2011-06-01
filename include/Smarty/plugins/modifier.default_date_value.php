@@ -152,7 +152,7 @@ include/Smarty/plugins/modifier.default_date_value.php
 
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -207,6 +207,5 @@ function smarty_modifier_default_date_value($defaultValue) {
 	global $timedate;
 	require_once('modules/DynamicFields/templates/Fields/TemplateDate.php');
 	$td = new TemplateDate();
-	return $timedate->to_display_date(date($GLOBALS['timedate']->dbDayFormat,strtotime($td->dateStrings[$defaultValue])), false);
+	return $timedate->asUser(new SugarDateTime($td->dateStrings[$defaultValue]));
 }
-?>

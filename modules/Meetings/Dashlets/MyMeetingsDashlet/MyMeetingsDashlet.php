@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -165,10 +165,20 @@ class MyMeetingsDashlet extends DashletGeneric {
                                      'myItems' => translate('LBL_DASHLET_CONFIGURE_MY_ITEMS_ONLY', 'Meetings'),
                                      'displayRows' => $GLOBALS['mod_strings']['LBL_DASHLET_CONFIGURE_DISPLAY_ROWS'],
                                      'title' => $GLOBALS['mod_strings']['LBL_DASHLET_CONFIGURE_TITLE'],
-                                     'save' => $GLOBALS['app_strings']['LBL_SAVE_BUTTON_LABEL']));
+                                     'save' => $GLOBALS['app_strings']['LBL_SAVE_BUTTON_LABEL'],
+                                     'autoRefresh' => $GLOBALS['app_strings']['LBL_DASHLET_CONFIGURE_AUTOREFRESH'],
+                                     ));
+		
+        require_once('modules/Meetings/Meeting.php');
+        $types = getMeetingsExternalApiDropDown();
+        $this->currentSearchFields['type']['input'] = '<select size="3" multiple="true" name="type[]">'
+                                     . get_select_options_with_id($types, (empty($this->filters['type']) ? '' : $this->filters['type']))
+                                     . '</select>';
+        $this->configureSS->assign('searchFields', $this->currentSearchFields);
+		
         return $this->configureSS->fetch($this->configureTpl);
     }
-        
+    
     function saveStatus()
     {
        

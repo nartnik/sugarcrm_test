@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -153,7 +153,7 @@ class TemplateEnum extends TemplateText{
 		$def['len'] = $this->max_size;
 		$def['studio'] = 'visible';
 		// this class may be extended, so only do the unserialize for genuine TemplateEnums
-		if (get_class( $this ) == 'TemplateEnum' )
+		if (get_class( $this ) == 'TemplateEnum' && empty($def['dependency']) )
 			$def['dependency'] = isset($this->ext4)? unserialize(html_entity_decode($this->ext4)) : null ;
 		return $def;
 	}

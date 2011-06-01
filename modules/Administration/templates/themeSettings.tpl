@@ -1,6 +1,6 @@
 {*
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,7 +35,7 @@
  ********************************************************************************/
 
 *}
-<script type="text/javascript" src="include/javascript/sugar_grp_yui_widgets.js"></script>
+<script type="text/javascript" src="{sugar_getjspath file='include/javascript/sugar_grp_yui_widgets.js'}"></script>
 <link rel="stylesheet" type="text/css" href="{sugar_getjspath file='modules/Connectors/tpls/tabs.css'}"/>
 
 <form name="themeSettings" method="POST">
@@ -43,7 +43,7 @@
 	<input type="hidden" name="action" value="ThemeSettings">
 	<input type="hidden" name="disabled_themes" value="">
 	
-	<table border="0" cellspacing="1" cellpadding="1">
+	<table border="0" cellspacing="1" cellpadding="1" class="actionsContainer">
 		<tr>
 			<td>
 			<input title="{$APP.LBL_SAVE_BUTTON_LABEL}" accessKey="{$APP.LBL_SAVE_BUTTON_TITLE}" class="button primary" onclick="SUGAR.saveThemeSettings();" type="button" name="button" value="{$APP.LBL_SAVE_BUTTON_LABEL}">
@@ -54,7 +54,10 @@
 	
 	<div class='add_table' style='margin-bottom:5px'>
 		<table id="themeSettings" class="themeSettings edit view" style='margin-bottom:0px;' border="0" cellspacing="0" cellpadding="0">
-			<tr>
+            <td nowrap><b>{$MOD.DEFAULT_THEME}</b> &nbsp;
+                <select name='default_theme' id='default_theme'>{$THEMES}</select>
+            </td>
+		    <tr>
 				<td width='1%'>
 					<div id="enabled_div"></div>	
 				</td>
@@ -65,7 +68,7 @@
 		</table>
 	</div>
 	
-	<table border="0" cellspacing="1" cellpadding="1">
+	<table border="0" cellspacing="1" cellpadding="1" class="actionsContainer">
 		<tr>
 			<td>
 				<input title="{$APP.LBL_SAVE_BUTTON_LABEL}" accessKey="{$APP.LBL_SAVE_BUTTON_TITLE}" class="button primary" onclick="SUGAR.saveThemeSettings();" type="button" name="button" value="{$APP.LBL_SAVE_BUTTON_LABEL}">
@@ -118,8 +121,14 @@
 		var themes = [];
 		for(var i=0; i < disabledTable.getRecordSet().getLength(); i++){
 			var data = disabledTable.getRecord(i).getData();
-			if (data.dir && data.dir != '')
+			if (data.dir && data.dir != '') {
 			    themes[i] = data.dir;
+			    if ( themes[i] == document.getElementById('default_theme').value ) {
+			        if ( !confirm(SUGAR.language.get('Administration', 'LBL_DEFAULT_THEME_IS_DISABLED')) ) {
+			            return false;
+			        }
+			    }
+			}
 		}
 		
 		ajaxStatus.showStatus(SUGAR.language.get('Administration', 'LBL_SAVING'));
@@ -127,7 +136,7 @@
             Connect.method, 
             Connect.url, 
             {success: SUGAR.saveCallBack},
-			'to_pdf=1&module=Administration&action=ThemeSettings&disabled_themes=' + YAHOO.lang.JSON.stringify(themes)
+			'to_pdf=1&module=Administration&action=ThemeSettings&default_theme='+document.getElementById('default_theme').value+'&disabled_themes=' + YAHOO.lang.JSON.stringify(themes)
         );
 		
 		return true;

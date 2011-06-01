@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -42,11 +42,11 @@ global $mod_strings;
 global $sugar_config;
 
 $ignoreCase = (substr_count(strtolower($_SERVER['SERVER_SOFTWARE']), 'apache/2') > 0)?'(?i)':'';
-$htaccess_file   = getcwd() . "/.htaccess";	
+$htaccess_file   = getcwd() . "/.htaccess";
 $contents = '';
 $restrict_str = <<<EOQ
 
-# BEGIN SUGARCRM RESTRICTIONS	
+# BEGIN SUGARCRM RESTRICTIONS
 RedirectMatch 403 {$ignoreCase}.*\.log$
 RedirectMatch 403 {$ignoreCase}/+not_imported_.*\.txt
 RedirectMatch 403 {$ignoreCase}/+(soap|cache|xtemplate|data|examples|include|log4php|metadata|modules)/+.*\.(php|tpl)
@@ -67,7 +67,7 @@ if(file_exists($htaccess_file)){
         if(preg_match("/\s*#\s*END\s*SUGARCRM\s*RESTRICTIONS/i", $line))$skip = false;
     }
 }
-$status =  file_put_contents($htaccess_file, $contents . $restrict_str);      
+$status =  file_put_contents($htaccess_file, $contents . $restrict_str);
 if( !$status ){
     echo '<p>' . $mod_strings['LBL_HT_NO_WRITE'] . '<span class=stop>$htaccess_file</span></p>\n';
     echo '<p>' . $mod_strings['LBL_HT_NO_WRITE_2'] . '</p>\n';
@@ -103,7 +103,7 @@ eoq;
 if(file_exists($uploadHta) && filesize($uploadHta)) {
 	// file exists, parse to make sure it is current
 	if(is_writable($uploadHta) && ($fpUploadHta = @sugar_fopen($uploadHta, "r+"))) {
-		$oldHtaccess = fread($fpUploadHta, filesize($uploadHta));
+		$oldHtaccess = file_get_contents($uploadHta);
 		// use a different regex boundary b/c .htaccess uses the typicals
 		if(!preg_match("=".$denyAll."=", $oldHtaccess)) {
 			$oldHtaccess .= $denyAll;

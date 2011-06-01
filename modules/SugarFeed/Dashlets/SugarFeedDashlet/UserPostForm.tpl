@@ -1,7 +1,7 @@
 {*
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -38,15 +38,14 @@
 
 *}
 
-
 <form name='form_{$id}' id='form_{$id}'>
 <div class="dashletNonTable" style='white-space:nowrap;'>
   <table border=0 cellspacing=0 cellpadding=2>
     <tr>
       <td nowrap="nowrap"><span id='more_img_{$id}'>{$more_img}</span><span id='less_img_{$id}' style="display:none;">{$less_img}</span> <b>{$user_name}</b>&nbsp;</td>
-      <td style="padding-right: 5px;"><input id="text" name="text" type="text" size='25' maxlength='100' value="{$LBL_IS} " /></td>
+      <td style="padding-right: 5px;"><input id="text" name="text" type="text" size='25' maxlength='100' value="" /></td>
       <td nowrap="nowrap">
-      <input type="button" value="{$LBL_POST}" class="button" style="vertical-align:top" onclick="SugarFeed.pushUserFeed('{$id}');"></td>
+      <input type="submit" value="{$LBL_POST}" class="button" style="vertical-align:top" onclick="SugarFeed.pushUserFeed('{$id}'); return false;"></td>
     </tr>
 </table>
 <div id='more_{$id}' style='display:none;padding-top:5px'>
@@ -60,3 +59,18 @@
 </div>
 
 </form>
+
+<form name='SugarFeedReplyForm_{$id}' id='SugarFeedReplyForm_{$id}'>
+<input type='hidden' name='parentFeed' value=''>
+<div style='white-space:nowrap; display: none;'>
+ <table border=0 cellspacing=0 cellpadding=2>
+    <tr>
+      <td nowrap="nowrap"><b>{$user_name}</b>&nbsp;</td>
+      <td style="padding-right: 5px;"><input id="text" name="text" type="text" size='25' maxlength='100' value="" /></td>
+      <td nowrap="nowrap">
+      <input type="submit" value="{$LBL_POST}" class="button" style="vertical-align:top" onclick="SugarFeed.replyToFeed('{$id}'); return false;"></td>
+    </tr>
+</table>
+</div>
+</form>
+

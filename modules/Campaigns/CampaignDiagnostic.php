@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -61,7 +61,6 @@ if(!isset($_REQUEST['inline']) || $_REQUEST['inline'] != 'inline'){
 	$params[] = $mod_strings['LBL_CAMPAIGN_DIAGNOSTICS'];
 	
 	echo getClassicModuleTitle('Campaigns', $params, true);
-    //echo "<h2>".get_module_title($mod_strings['LBL_MODULE_NAME'],$mod_strings['LBL_CAMPAIGN_DIAGNOSTICS'],true)."</h2>";
 }
 
 global $theme;

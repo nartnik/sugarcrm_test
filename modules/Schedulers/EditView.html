@@ -1,6 +1,6 @@
 <!--
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -108,7 +108,7 @@
 						<td><slot><input name="day_of_week" tabindex="7" maxlength="25" type="text" size="3" value="{DAY_OF_WEEK}"></slot></td>
 					</tr><tr>
                         <td colspan="5"><slot>
-                            <i>{MOD.LBL_CRONTAB_EXAMPLES} {MOD.LBL_CRONTAB_SERVER_TIME_PRE} {SERVER_TIMEZONE} {SERVER_OFFSET} {MOD.LBL_CRONTAB_SERVER_TIME_POST}</i>
+                            <i>{MOD.LBL_CRONTAB_EXAMPLES}</i>
                         </slot></td>
 					</tr>
 				</table>
@@ -284,7 +284,7 @@ function validateCronInterval(formId) {
 	var fieldIsValid = function(value, min, max) {
 		var inRange = function(value, min, max) {
 			return (value >= min && value <= max);
-		}	
+		}
 		//Check for *
 		if (value == "*") {
 			return true;

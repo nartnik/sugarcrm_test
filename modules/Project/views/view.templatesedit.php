@@ -1,7 +1,7 @@
 <?php
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -43,12 +43,12 @@ class ProjectViewTemplatesEdit extends ViewEdit
  	/**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
-	protected function _getModuleTitleParams()
+	protected function _getModuleTitleParams($browserTitle = false)
 	{
 	    global $mod_strings;
 	    
 	    $crumbs = array();
-	    $crumbs[] = $this->_getModuleTitleListParam();
+	    $crumbs[] = $this->_getModuleTitleListParam($browserTitle);
 	    if(!empty($this->bean->id)){
 	    	$crumbs[] =  "<a href='index.php?module=Project&action=EditView&record={$this->bean->id}'>{$this->bean->name}</a>";
 	    }

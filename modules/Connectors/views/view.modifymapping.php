@@ -2,7 +2,7 @@
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -45,7 +45,7 @@ class ViewModifyMapping extends SugarView
  	/**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
-	protected function _getModuleTitleParams()
+	protected function _getModuleTitleParams($browserTitle = false)
 	{
 	    global $mod_strings;
 	    
@@ -75,6 +75,13 @@ class ViewModifyMapping extends SugarView
 		$this->ss->assign('mod', $mod_strings);
 		$this->ss->assign('APP', $app_strings);
 		$connectors = ConnectorUtils::getConnectors(true);
+        foreach($connectors as $id=>$source) {
+            $s = SourceFactory::getSource($id);
+            $mapping = $s->getMapping();
+			if(empty($mapping)) {
+			    unset($connectors[$id]);
+			}
+		}
 
 		$this->ss->assign('SOURCES', $connectors);
 	    echo $this->getModuleTitle();

@@ -1,7 +1,7 @@
 <?php
  if(!defined('sugarEntry'))define('sugarEntry', true);
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -220,13 +220,14 @@ function validate_user($user_name, $password){
 		// we also need to set the current_user.
 		$user->retrieve($user->id);
 		$current_user = $user;
-
+        login_success();
 		return true;
 	}else if(function_exists('mcrypt_cbc')){
 		$password = decrypt_string($password);
 		if($authController->login($user_name, $password) && isset($_SESSION['authenticated_user_id'])){
 			$user->retrieve($_SESSION['authenticated_user_id']);
 			$current_user = $user;
+			login_success();
 			return true;
 		}
 	}else{
@@ -787,13 +788,13 @@ function track_email($user_name, $password,$parent_id, $contact_ids, $date_sent,
 
 	$date_sent = preg_replace("@([0-9]*)/([0-9]*)/([0-9]*)( .*$)@", "\\3-\\1-\\2\\4", $date_sent);
 
-	
+
 	$seed_user = new User();
 
 	$user_id = $seed_user->retrieve_user_id($user_name);
 	$seed_user->retrieve($user_id);
 	$current_user = $seed_user;
-	
+
 
 	$email = new Email();
 	if(!$email->ACLAccess('Save')){
@@ -836,12 +837,12 @@ function create_contact($user_name,$password, $first_name, $last_name, $email_ad
 		return 0;
 	}
 
-	
+
 	$seed_user = new User();
 	$user_id = $seed_user->retrieve_user_id($user_name);
 	$seed_user->retrieve($user_id);
 
-	
+
 	$contact = new Contact();
 	if(!$contact->ACLAccess('Save')){
 		return -1;
@@ -861,11 +862,11 @@ function create_lead($user_name,$password, $first_name, $last_name, $email_addre
 
 	//todo make the activity body not be html encoded
 
-	
+
 	$seed_user = new User();
 	$user_id = $seed_user->retrieve_user_id($user_name);
 
-	
+
 	$lead = new Lead();
 	if(!$lead->ACLAccess('Save')){
 		return -1;
@@ -885,7 +886,7 @@ function create_account($user_name,$password, $name, $phone, $website)
 
 	//todo make the activity body not be html encoded
 
-	
+
 	$seed_user = new User();
 	$user_id = $seed_user->retrieve_user_id($user_name);
 	$account = new Account();
@@ -909,7 +910,7 @@ function create_case($user_name,$password, $name)
 
 	//todo make the activity body not be html encoded
 
-	
+
 	$seed_user = new User();
 	$user_id = $seed_user->retrieve_user_id($user_name);
 	$case = new aCase();
@@ -927,7 +928,7 @@ function create_opportunity($user_name,$password, $name, $amount)
 		return 0;
 	}
 
-	
+
 	$seed_user = new User();
 	$user_id = $seed_user->retrieve_user_id($user_name);
 	$opp = new Opportunity();

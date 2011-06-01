@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -123,27 +123,7 @@ class EmailUI {
 
 
         //Check quick create module access
-        $QCAvailibleModules = array();
-        $QCModules = array(
-        'Bugs',
-        'Cases',
-        'Contacts',
-        'Leads',
-        'Tasks'
-        );
-        foreach($QCModules as $module) {
-        	$class = substr($module, 0, strlen($module) - 1);
-            require_once("modules/{$module}/{$class}.php");
-
-            if($class=="Case") {
-                $class = "aCase";
-            }
-
-            $seed = new $class();
-        	if ($seed->ACLAccess('edit')) {
-        		$QCAvailibleModules[] = $module;
-        	}
-        }
+        $QCAvailableModules = $this->_loadQuickCreateModules();
 
         //Get the quickSearch js needed for assigned user id on Search Tab
         require_once('include/QuickSearchDefaults.php');
@@ -171,7 +151,7 @@ class EmailUI {
 		$this->smarty->assign('sugar_flavor', $sugar_flavor);
 		$this->smarty->assign('current_language', $current_language);
 		$this->smarty->assign('server_unique_key', $server_unique_key);
-		$this->smarty->assign('qcModules', json_encode($QCAvailibleModules));
+		$this->smarty->assign('qcModules', json_encode($QCAvailableModules));
 		$extAllDebugValue = "ext-all.js";
 		$this->smarty->assign('extFileName', $extAllDebugValue);
 
@@ -187,7 +167,8 @@ class EmailUI {
 		$this->smarty->assign('dateFormat', $cuDatePref['date']);
 		$this->smarty->assign('dateFormatExample', str_replace(array("Y", "m", "d"), array("yyyy", "mm", "dd"), $cuDatePref['date']));
 		$this->smarty->assign('calFormat', $timedate->get_cal_date_format());
-
+        $this->smarty->assign('TIME_FORMAT', $timedate->get_user_time_format());
+		
 		$ieAccounts = $ie->retrieveByGroupId($current_user->id);
 		$ieAccountsOptions = "<option value=''>{$app_strings['LBL_NONE']}</option>\n";
 
@@ -296,11 +277,12 @@ class EmailUI {
 				    type : "js",
 				    fullpath: "include/javascript/sugarwidgets/SugarYUIWidgets.js",
 				    varName: "YAHOO.SUGAR",
-				    requires: ["datatable", "dragdrop", "treeview", "tabview"]
+				    requires: ["datatable", "dragdrop", "treeview", "tabview", "calendar"]
 				});
 				loader.insert();
 
 				{$preloadFolder};
+	
 			</script>
 eoq;
 
@@ -330,6 +312,31 @@ eoq;
     }
 
     /**
+     * Load the modules from the metadata file and include in a custom one if it exists
+     *
+     * @return array
+     */
+    protected function _loadQuickCreateModules()
+    {
+        $QCAvailableModules = array();
+        $QCModules = array();
+
+        include('modules/Emails/metadata/qcmodulesdefs.php');
+        if (file_exists('custom/modules/Emails/metadata/qcmodulesdefs.php')) {
+            include('custom/modules/Emails/metadata/qcmodulesdefs.php');
+        }
+
+        foreach($QCModules as $module) {
+            $seed = SugarModule::get($module)->loadBean();
+            if ( ( $seed instanceOf SugarBean ) && $seed->ACLAccess('edit') ) {
+                $QCAvailableModules[] = $module;
+            }
+        }
+        
+        return $QCAvailableModules;
+    }
+
+    /**
      * Given an email link url (eg. index.php?action=Compose&parent_type=Contacts...) break up the
      * request components and create a compose package that can be used by the quick compose UI. The
      * result is typically passed into the js call SUGAR.quickCompose.init which initalizes the quick compose
@@ -338,7 +345,7 @@ eoq;
      * @param String $emailLinkUrl
      * @return JSON Object containing the composePackage and full link url
      */
-    function generateComposePackageForQuickCreateFromComposeUrl($emailLinkUrl)
+    function generateComposePackageForQuickCreateFromComposeUrl($emailLinkUrl, $lazyLoad=false)
     {
         $composeData = explode("&",$emailLinkUrl);
         $a_composeData = array();
@@ -348,7 +355,7 @@ eoq;
     		$a_composeData[$tmp[0]] = urldecode($tmp[1]);
     	}
 
-    	return $this->generateComposePackageForQuickCreate($a_composeData,$emailLinkUrl);
+    	return $this->generateComposePackageForQuickCreate($a_composeData,$emailLinkUrl, $lazyLoad);
     }
     /**
      * Generate the composePackage for the quick compose email UI.  The package contains
@@ -360,11 +367,16 @@ eoq;
      *                              directed to the full compose screen if needed
      * @return JSON Object containg composePackage and fullLinkUrl
      */
-    function generateComposePackageForQuickCreate($composeData,$fullLinkUrl)
+    function generateComposePackageForQuickCreate($composeData,$fullLinkUrl, $lazyLoad=false)
     {
         $_REQUEST['forQuickCreate'] = true;
-    	require_once('modules/Emails/Compose.php');
-    	$composePackage = generateComposeDataPackage($composeData,FALSE);
+
+        if(!$lazyLoad){
+    	    require_once('modules/Emails/Compose.php');
+    	    $composePackage = generateComposeDataPackage($composeData,FALSE);
+        }else{
+            $composePackage = $composeData;
+        }
 
     	// JSON object is passed into the function defined within the a href onclick event
     	// which is delimeted by '.  Need to escape all single quotes and &, <, >
@@ -376,8 +388,9 @@ eoq;
     	}
 
     	$quickComposeOptions = array('fullComposeUrl' => $fullLinkUrl,'composePackage' => $composePackage);
-    	$json = new JSON();
-    	$j_quickComposeOptions = $json->encode($quickComposeOptions, false, true);
+
+    	$j_quickComposeOptions = JSON::encode($quickComposeOptions, false ,true);
+
 
     	return $j_quickComposeOptions;
     }
@@ -792,8 +805,7 @@ eoq;
 		$this->folder->has_child = 0;
 		$this->folder->created_by = $current_user->id;
 		$this->folder->modified_by = $current_user->id;
-		$this->folder->date_created = date($GLOBALS['timedate']->get_db_date_time_format(), gmmktime());
-		$this->folder->date_modified = date($GLOBALS['timedate']->get_db_date_time_format(), gmmktime());
+		$this->folder->date_modified = $this->folder->date_created = TimeDate::getInstance()->nowDb();
 
 		$this->folder->save();
 		return array(
@@ -1398,11 +1410,11 @@ eoq;
 		$title = "";
 		$offset		= 0;
 		if($focus->type == 'out') {
-			$title = get_module_title('Emails', $mod_strings['LBL_SENT_MODULE_NAME'].": ".$focus->name, true);
+			$title = getClassicModuleTitle('Emails', array($mod_strings['LBL_SENT_MODULE_NAME'],$focus->name), true);
 		} elseif ($focus->type == 'draft') {
-			$title = get_module_title('Emails', $mod_strings['LBL_LIST_FORM_DRAFTS_TITLE'].": ".$focus->name, true);
+			$title = getClassicModuleTitle('Emails', array($mod_strings['LBL_LIST_FORM_DRAFTS_TITLE'],$focus->name), true);
 		} elseif($focus->type == 'inbound') {
-			$title = get_module_title('Emails', $mod_strings['LBL_INBOUND_TITLE'].": ".$focus->name, true);
+			$title = getClassicModuleTitle('Emails', array($mod_strings['LBL_INBOUND_TITLE'],$focus->name), true);
 		}
 		$smarty->assign("emailTitle", $title);
 
@@ -1818,7 +1830,7 @@ function getSingleMessage($ie) {
 			$out = $ie->displayOneEmail($_REQUEST['uid'], $_REQUEST['mbox']);
 			// modify the out object to store date in GMT format on the local cache file
 			$dateTimeInUserFormat = $out['meta']['email']['date_start'];
-			$out['meta']['email']['date_start'] = $timedate->to_db_date($dateTimeInUserFormat) . " " . $timedate->to_db_time($dateTimeInUserFormat);
+			$out['meta']['email']['date_start'] = $timedate->to_db($dateTimeInUserFormat);
 			if ($status == 'error') {
 				$writeToCacheFile = false;
 			}
@@ -2114,7 +2126,10 @@ eoq;
 				$q = array();
 				foreach ($searchBeans as $searchBean)
 				{
-					$q[] = '('.$this->findEmailFromBeanIds('', $searchBean, $whereArr).')';
+				    $searchq = $this->findEmailFromBeanIds('', $searchBean, $whereArr);
+				    if(!empty($searchq)) {
+					    $q[] = "($searchq)";
+				    }
 				}
 				if (!empty($q))
     			    $finalQuery .= implode("\n UNION ALL \n", $q);

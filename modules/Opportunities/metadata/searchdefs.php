@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -38,6 +38,7 @@ $searchdefs['Opportunities'] = array(
   'templateMeta' => 
   array (
     'maxColumns' => '3',
+    'maxColumnsBasic' => '4', 
     'widths' => 
     array (
       'label' => '10',
@@ -62,7 +63,7 @@ $searchdefs['Opportunities'] = array(
         'default' => true,
         'width' => '10%',
       ),
-      
+	  array ('name' => 'open_only', 'label' => 'LBL_OPEN_ITEMS', 'type' => 'bool', 'default' => false, 'width' => '10%'),
     ),
     'advanced_search' => 
     array (
@@ -126,7 +127,6 @@ $searchdefs['Opportunities'] = array(
         'default' => true,
         'name' => 'next_step',
       ),
-	  
     ),
   ),
 					

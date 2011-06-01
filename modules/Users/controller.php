@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -57,6 +57,11 @@ class UsersController extends SugarController
             $u->employee_status = 'Terminated';
             $u->save();
             $GLOBALS['log']->info("User id: {$GLOBALS['current_user']->id} deleted user record: {$_REQUEST['record']}");
+
+            $eapm = loadBean('EAPM');
+            $eapm->delete_user_accounts($_REQUEST['record']);
+            $GLOBALS['log']->info("Removing user's External Accounts");
+            
             SugarApplication::redirect("index.php?module=Users&action=index");
         }
         else 
@@ -78,7 +83,7 @@ class UsersController extends SugarController
 	    $_POST['should_remind'] = '1';
 	    $_POST['reminder_time'] = 1800;
         $_POST['mailmerge_on'] = 'on';
-	    $_POST['user_theme'] = 'Sugar5';
+        $_POST['user_theme'] = (string) SugarThemeRegistry::getDefault();
 	    
 	    // save and redirect to new view
 	    $_REQUEST['return_module'] = 'Home';

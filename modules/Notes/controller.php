@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -45,9 +45,17 @@
   
  class NotesController extends SugarController
 {
-	
 	function action_save(){
 		require_once('include/upload_file.php');
+		
+		// CCL - Bugs 41103 and 43751.  41103 address the issue where the parent_id is set, but
+		// the relate_id field overrides the relationship.  43751 fixes the problem where the relate_id and
+		// parent_id are the same value (in which case it should just use relate_id) by adding the != check
+		if ((!empty($_REQUEST['relate_id']) && !empty($_REQUEST['parent_id'])) && ($_REQUEST['relate_id'] != $_REQUEST['parent_id']))
+		{
+			$_REQUEST['relate_id'] = false;
+		}
+		
 		$GLOBALS['log']->debug('PERFORMING NOTES SAVE');
 		$upload_file = new UploadFile('uploadfile');
 		$do_final_move = 0;
@@ -86,7 +94,7 @@
 		}
 	}
 	
-	function action_editview(){
+    function action_editview(){
 		$this->view = 'edit';
 		$GLOBALS['view'] = $this->view;
 		if(!empty($_REQUEST['deleteAttachment'])){

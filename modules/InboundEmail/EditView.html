@@ -1,6 +1,6 @@
 <!--
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -119,7 +119,7 @@
 				<select name='protocol' id="protocol" tabindex='30' onchange="toggle_monitored_folder(this); setPortDefault();" {IE_DISABLED}>{PROTOCOL}</select></slot></td>
 			<td valign="top" scope="row">
 				<slot>{MOD.LBL_PASSWORD}:
-				<span class="required">{APP.LBL_REQUIRED_SYMBOL}&nbsp;</slot></td>
+				<span class="required">{EMAIL_PASS_REQ_SYMB}&nbsp;</slot></td>
 			<td valign="top"  width="35%">
 				<slot>
 				<input name='email_password' id="email_password" tabindex='80' size='30' maxlength='100' type="password" autocomplete="off" {IE_DISABLED}>
@@ -334,9 +334,9 @@ function checkOtherFields() {
 } // fn
 
 
-function checkTrashFolder() {
-	var field1=document.getElementById('protocol');
-	if (field1.value == 'imap') {
+function checkTrashFolder() 
+{
+	if (document.getElementById('protocol').value == 'imap' && document.getElementById('mailbox_type').value != 'bounce') {
 		var trashFolderValue = document.getElementById("trashFolder").value;
 		if (trim(trashFolderValue).length <= 0) {
 		    requiredTxt = SUGAR.language.get('app_strings', 'ERR_MISSING_REQUIRED_FIELDS');
@@ -369,9 +369,9 @@ function showCreateCaseRow() {
 } // fn
 
 function possibleActionChange() {
-	var maliBoxType = document.getElementById('mailbox_type');
+	var mailBoxType = document.getElementById('mailbox_type');
 	var trashRequiredSpan = document.getElementById('trashRequiredSpan');
-	if(maliBoxType.value == 'bounce') {
+	if(mailBoxType.value == 'bounce') {
 
 		trashRequiredSpan.style.display = 'none';
 		trashRequiredSpan.style.display = 'none';

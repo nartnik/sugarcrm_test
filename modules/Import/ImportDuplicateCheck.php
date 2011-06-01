@@ -2,7 +2,7 @@
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -144,6 +144,12 @@ class ImportDuplicateCheck
                         ($index['name'] == 'special_idx_email1')
                         ) > 0 )
                     return true;
+            }
+            // Adds a hook so you can define a method in the bean to handle dupe checking
+            elseif ( isset($index['dupeCheckFunction']) ) {
+                $functionName = substr_replace($index['dupeCheckFunction'],'',0,9);
+                if ( method_exists($this->_focus,$functionName) )
+                    return $this->_focus->$functionName($index);
             }
             else {
                 $index_fields = array('deleted' => '0');

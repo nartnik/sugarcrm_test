@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -42,7 +42,6 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  * All Rights Reserved.
  * Contributor(s): ______________________________________..
  ********************************************************************************/
-
 
 
 
@@ -151,6 +150,16 @@ class Note extends SugarBean {
 			}
             $removeFile = clean_path(getAbsolutePath("{$GLOBALS['sugar_config']['upload_dir']}{$this->id}"));
 		}
+		if(!empty($this->doc_type) && !empty($this->doc_id)){
+            $document = ExternalAPIFactory::loadAPI($this->doc_type);
+
+	      	$response = $document->deleteDoc($this);
+            $this->doc_type = '';
+            $this->doc_id = '';
+            $this->doc_url = '';
+            $this->filename = '';
+            $this->file_mime_type = ''; 
+		}
 		if(file_exists($removeFile)) {
 			if(!unlink($removeFile)) {
 				$GLOBALS['log']->error("*** Could not unlink() file: [ {$removeFile} ]");
@@ -161,6 +170,13 @@ class Note extends SugarBean {
 				$this->save();
 				return true;
 			}
+		} else {
+			$this->filename = '';
+			$this->file_mime_type = ''; 
+			$this->file = '';
+			$this->doc_id = '';
+			$this->save();
+			return true;
 		}
 		return false;
 	}	
@@ -215,7 +231,7 @@ class Note extends SugarBean {
 		if(!empty($this->contact_name)){
 			
 			$emailAddress = new SugarEmailAddress();
-			$this->contact_email = $emailAddress->getPrimaryAddress(false, 'Contacts', $this->contact_id);
+			$this->contact_email = $emailAddress->getPrimaryAddress(false, $this->contact_id, 'Contacts');
 		}
 		
 		if(isset($this->contact_id) && $this->contact_id != '') {
@@ -303,7 +319,7 @@ class Note extends SugarBean {
 			case 'ACL':return true;
 		}
 		return false;
-	}
-
+	}	
 }
+
 ?>

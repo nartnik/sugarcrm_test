@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -67,7 +67,7 @@ if (isset($_REQUEST['contact_name']) && is_null($focus->contact_name)) {
 if (isset($_REQUEST['contact_id']) && is_null($focus->contact_id)) {
 	$focus->contact_id = $_REQUEST['contact_id'];
 }
-echo get_module_title($mod_strings['LBL_SEND'], $mod_strings['LBL_SEND'], true);
+echo getClassicModuleTitle($mod_strings['LBL_SEND'], array($mod_strings['LBL_SEND']), true);
 
 $GLOBALS['log']->info("Email detail view");
 

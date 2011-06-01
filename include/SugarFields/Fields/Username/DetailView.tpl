@@ -1,6 +1,6 @@
 {*
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,7 +35,9 @@
  ********************************************************************************/
 
 *}
-{$fields[{{sugarvar key='salutation' stringFormat=true}}].value}&nbsp;{$fields[{{sugarvar key='first_name' stringFormat=true}}].value}&nbsp;{$fields[{{sugarvar key='last_name' stringFormat=true}}].value}
+<span class="sugar_field" id="{{sugarvar key='name'}}">
+{$fields[{{sugarvar key='salutation' stringFormat=true}}].value} {$fields[{{sugarvar key='first_name' stringFormat=true}}].value} {$fields[{{sugarvar key='last_name' stringFormat=true}}].value}
+</span>
 {{if !empty($displayParams.enableConnectors)}}
 {{sugarvar_connector view='DetailView'}} 
 {{/if}}

@@ -2,7 +2,7 @@
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -66,7 +66,7 @@ class AccountsViewDetail extends ViewDetail {
 		if(ACLController::checkAccess('Contacts', 'edit', true)) {
 			$push_billing = '<span class="id-ff"><button class="button btn_copy" title="' . $mod_strings['LBL_PUSH_CONTACTS_BUTTON_LABEL'] . 
 								 '" type="button" onclick=\'open_contact_popup("Contacts", 600, 600, "&account_name=' .
-								 $this->bean->name . '&html=change_address' .
+								 urlencode($this->bean->name) . '&html=change_address' .
 								 '&primary_address_street=' . str_replace(array("\rn", "\r", "\n"), array('','','<br>'), urlencode($this->bean->billing_address_street)) . 
 								 '&primary_address_city=' . $this->bean->billing_address_city . 
 								 '&primary_address_state=' . $this->bean->billing_address_state . 
@@ -78,7 +78,7 @@ class AccountsViewDetail extends ViewDetail {
 								 
 			$push_shipping = '<span class="id-ff"><button class="button btn_copy" title="' . $mod_strings['LBL_PUSH_CONTACTS_BUTTON_LABEL'] . 
 								 '" type="button" onclick=\'open_contact_popup("Contacts", 600, 600, "&account_name=' .
-								 $this->bean->name . '&html=change_address' .
+								 urlencode($this->bean->name) . '&html=change_address' .
 								 '&primary_address_street=' . str_replace(array("\rn", "\r", "\n"), array('','','<br>'), urlencode($this->bean->shipping_address_street)) .
 								 '&primary_address_city=' . $this->bean->shipping_address_city .
 								 '&primary_address_state=' . $this->bean->shipping_address_state .

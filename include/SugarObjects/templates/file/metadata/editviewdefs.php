@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -67,15 +67,10 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
     array (
       'document_name',
-      array('name'=>'uploadfile',
-            'customCode' => '{if $fields.id.value!=""}
-            				{assign var="type" value="hidden"}
-            		 		{else}
-            		 		{assign var="type" value="file"}
-            		  		{/if}
-            		  		<input name="uploadfile" type = {$type} size="30" maxlength="" onchange="setvalue(this);" value="{$fields.filename.value}">{$fields.filename.value}',
-      						'displayParams'=>array('required'=>true),
-            ),
+      array(
+      		'name'=>'uploadfile',
+            'displayParams' => array('onchangeSetFileNameTo' => 'document_name'),
+      ),
 
 	),
 

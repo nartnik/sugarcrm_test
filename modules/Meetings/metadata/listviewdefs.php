@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -114,5 +114,10 @@ array (
     'link' => false,
     'default' => false,
   ),
+  'DATE_ENTERED' => array (
+	'width' => '10%',
+	'label' => 'LBL_DATE_ENTERED',
+	'default' => true
+  ),  
 );
 ?>

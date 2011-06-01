@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -72,11 +72,23 @@ else{
 	$uids = explode ( ',', $_POST['uids'] );
 }
 
-foreach ( $uids as $id)
-{
-	$focus->retrieve($id);
-	$focus->load_relationship('prospect_lists');
-	$focus->prospect_lists->add( $_REQUEST['prospect_list'] );
+// find the relationship to use
+$relationship = '';
+foreach($focus->get_linked_fields() as $field => $def) {
+    if ($focus->load_relationship($field)) {
+        if ( $focus->$field->getRelatedModuleName() == 'ProspectLists' ) {
+            $relationship = $field;
+            break;
+        }
+    }
+}
+
+if ( $relationship != '' ) {
+    foreach ( $uids as $id) {
+        $focus->retrieve($id);
+        $focus->load_relationship($relationship);
+        $focus->prospect_lists->add( $_REQUEST['prospect_list'] );
+    }
 }
 handleRedirect();
 exit;

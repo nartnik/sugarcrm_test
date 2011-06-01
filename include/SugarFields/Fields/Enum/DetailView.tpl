@@ -1,6 +1,6 @@
 {*
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -38,8 +38,10 @@
 {* This is here so currency fields, who don't really have dropdown
 lists can work. *}
 {if is_string({{sugarvar key='options' string=true}})}
-{ {{sugarvar key='options' string=true}}}
-{else if}
+<input type="hidden" class="sugar_field" id="{{sugarvar key='name'}}" value="{ {{sugarvar key='options' string=true}} }">
+{ {{sugarvar key='options' string=true}} }
+{else}
+<input type="hidden" class="sugar_field" id="{{sugarvar key='name'}}" value="{ {{sugarvar key='value' string=true}} }">
 { {{sugarvar key='options' string=true}}[{{sugarvar key='value' string=true}}]}
 {/if}
 {{if !empty($displayParams.enableConnectors)}}

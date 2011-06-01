@@ -2,7 +2,7 @@
 if (! defined ( 'sugarEntry' ) || ! sugarEntry)
     die ( 'Not A Valid Entry Point' ) ;
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -51,7 +51,7 @@ VardefManager::clearVardef () ;
 
 // loop through all of the modules and create entries in the Relationships table (the relationships metadata) for every standard relationship, that is, relationships defined in the /modules/<module>/vardefs.php
 // SugarBean::createRelationshipMeta just takes the relationship definition in a file and inserts it as is into the Relationships table
-// It does not override or recreate existing relationships 
+// It does not override or recreate existing relationships
 foreach ( $GLOBALS['beanFiles'] as $bean => $file )
 {
     if (strlen ( $file ) > 0 && file_exists ( $file ))
@@ -75,7 +75,7 @@ foreach ( $GLOBALS['beanFiles'] as $bean => $file )
 
 // do the same for custom relationships (true in the last parameter to SugarBean::createRelationshipMeta) - that is, relationships defined in the custom/modules/<modulename>/Ext/vardefs/ area
 foreach ( $GLOBALS['beanFiles'] as $bean => $file )
-{	
+{
 	//skip this file if it does not exist
 	if(!file_exists($file)) continue;
 
@@ -107,7 +107,7 @@ foreach ( $GLOBALS['beanFiles'] as $bean => $file )
     foreach ( $rel_dictionary as $rel_name => $rel_data )
     {
         $table = $rel_data [ 'table' ] ;
-        
+
         if (empty ( $_REQUEST [ 'silent' ] ))
             echo $mod_strings [ 'LBL_REBUILD_REL_PROC_C_META' ] . $rel_name . "..." ;
         SugarBean::createRelationshipMeta ( $rel_name, $db, $table, $rel_dictionary, '' ) ;
@@ -126,7 +126,7 @@ Relationship::delete_cache () ;
 
 if (empty ( $_REQUEST [ 'silent' ] ))
     echo $mod_strings [ 'LBL_REBUILD_REL_UPD_WARNING' ] ;
-    
+
 // clear the database row if it exists (just to be sure)
 $query = "DELETE FROM versions WHERE name='Rebuild Relationships'" ;
 $log->info ( $query ) ;
@@ -134,7 +134,7 @@ $db->query ( $query ) ;
 
 // insert a new database row to show the rebuild relationships is done
 $id = create_guid () ;
-$gmdate = gmdate ($GLOBALS['timedate']->get_db_date_time_format()) ;
+$gmdate = gmdate('Y-m-d H:i:s');
 $date_entered = db_convert ( "'$gmdate'", 'datetime' ) ;
 $query = 'INSERT INTO versions (id, deleted, date_entered, date_modified, modified_user_id, created_by, name, file_version, db_version) ' . "VALUES ('$id', '0', $date_entered, $date_entered, '1', '1', 'Rebuild Relationships', '4.0.0', '4.0.0')" ;
 $log->info ( $query ) ;

@@ -2,7 +2,7 @@
 if (! defined ( 'sugarEntry' ) || ! sugarEntry)
     die ( 'Not A Valid Entry Point' ) ;
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -109,9 +109,11 @@ class GridLayoutMetaDataParser extends AbstractMetaDataParser implements MetaDat
     /*
      * Save a draft layout
      */
-    function writeWorkingFile ()
+    function writeWorkingFile ($populate = true)
     {
-        $this->_populateFromRequest ( $this->_fielddefs ) ;
+        if ($populate)
+            $this->_populateFromRequest ( $this->_fielddefs ) ;
+        
         $viewdefs = $this->_viewdefs ;
         $viewdefs [ 'panels' ] = $this->_convertToCanonicalForm ( $this->_viewdefs [ 'panels' ] , $this->_fielddefs ) ;
         $this->implementation->save ( array ( self::$variableMap [ $this->_view ] => $viewdefs ) ) ;
@@ -449,6 +451,19 @@ class GridLayoutMetaDataParser extends AbstractMetaDataParser implements MetaDat
         	else
         	   $this->setUseTabs( true );
         }
+        
+    	//bug: 38232 - Set the sync detail and editview settings
+        if (isset($_REQUEST['sync_detail_and_edit']))
+        {
+        	if ($_REQUEST['sync_detail_and_edit'] === false || $_REQUEST['sync_detail_and_edit'] === "false")
+            {
+        	   $this->setSyncDetailEditViews( false );
+            }
+            elseif(!empty($_REQUEST['sync_detail_and_edit']))
+            {
+        	   $this->setSyncDetailEditViews( true );
+            }
+        }
 
         $GLOBALS [ 'log' ]->debug ( print_r ( $this->_viewdefs [ 'panels' ], true ) ) ;
 
@@ -726,6 +741,55 @@ class GridLayoutMetaDataParser extends AbstractMetaDataParser implements MetaDat
     public function setUseTabs($useTabs){
         $this->_viewdefs  [ 'templateMeta' ]['useTabs'] = $useTabs;
     }
+    
+    /**
+     * Return whether the Detail & EditView should be in sync.
+     */
+	public function getSyncDetailEditViews(){
+        if (isset($this->_viewdefs  [ 'templateMeta' ]['syncDetailEditViews']))
+           return $this->_viewdefs  [ 'templateMeta' ]['syncDetailEditViews'];
+           
+        return false;
+    }
+    
+    /**
+     * Sync DetailView & EditView. This should only be set on the EditView
+     * @param bool $syncViews
+     */
+    public function setSyncDetailEditViews($syncDetailEditViews){
+        $this->_viewdefs  [ 'templateMeta' ]['syncDetailEditViews'] = $syncDetailEditViews;
+    }
+
+    /**
+     * Getter function to get the implementation method which is a private variable
+     * @return DeployedMetaDataImplementation
+     */
+    public function getImplementation(){
+        return $this->implementation;
+    }
+
+    /**
+     * Public access to _convertFromCanonicalForm
+     * @param  $panels
+     * @param  $fielddefs
+     * @return array
+     */
+    public function convertFromCanonicalForm ( $panels , $fielddefs )
+    {
+        return $this->_convertFromCanonicalForm ( $panels , $fielddefs );
+    }
+
+     /**
+     * Public access to _convertToCanonicalForm
+     * @param  $panels
+     * @param  $fielddefs
+     * @return array
+     */
+    public function convertToCanonicalForm ( $panels , $fielddefs )
+    {
+        return $this->_convertToCanonicalForm ( $panels , $fielddefs );
+    }
+
     
     /**
      * @return Array list of fields in this module that have the calculated property

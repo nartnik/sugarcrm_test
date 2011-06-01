@@ -1,5 +1,5 @@
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -63,10 +63,10 @@ function email2init() {
          mode: tinyConfig.mode,
          strict_loading_mode : true,
 		 force_br_newlines : true,
-         forced_root_block : ''
+         forced_root_block : '',
+         directionality : (typeof(rtl) == "undefined") ? "ltr" : "rtl"
      });
     }
-         //alert('loadedTiny');
 
     // initialze message overlay
     SUGAR.email2.e2overlay = new YAHOO.widget.Dialog("SUGAR.email2.e2overlay", {

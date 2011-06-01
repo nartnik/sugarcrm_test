@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -54,7 +54,7 @@ $mod_strings = array (
   'LNK_CALL_LIST' => 'View Calls',
   'LNK_MEETING_LIST' => 'View Meetings',
   'LNK_TASK_LIST' => 'View Tasks',
-  'LNK_VIEW_CALENDAR' => 'Today',
+  'LNK_VIEW_CALENDAR' => 'View Calendar',
   'LNK_IMPORT_CALLS'=>'Import Calls',
   'LNK_IMPORT_MEETINGS'=>'Import Meetings',
   'LNK_IMPORT_TASKS'=>'Import Tasks',

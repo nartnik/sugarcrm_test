@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -226,8 +226,13 @@ class LayoutManager
 					$widget_def['widget_class'] = 'Fielduser_name';
 					break;
 				default:
-					$widget_def['widget_class'] = 'Field' . $this->DBHelper->getFieldType($widget_def);
-			}
+				    if ( isset($widget_def['type']) ) {
+				        $widget_def['widget_class'] = 'Field' . $widget_def['type'];
+				    }
+				    else {
+				        $widget_def['widget_class'] = 'Field' . $this->DBHelper->getFieldType($widget_def);
+				    }
+            }
 		}
 		
 		if(!empty($widget_def['name']) && $widget_def['name'] == 'team_set_id'){

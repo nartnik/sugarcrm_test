@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,17 +35,21 @@
  ********************************************************************************/
 
 
-class Basic extends SugarBean{
-
-	function Basic(){
+class Basic extends SugarBean
+{
+    /** 
+     * Constructor
+     */
+	public function Basic()
+	{
 		parent::SugarBean();
 	}
-	function get_summary_text()
+
+	/**
+	 * @see SugarBean::get_summary_text()
+	 */
+	public function get_summary_text()
 	{
 		return "$this->name";
 	}
-	
-	function create_export_query($order_by, $where){
-		return $this->create_new_list_query($order_by, $where, array(), array(), 0, '', false, $this, true);
-	}	
 }

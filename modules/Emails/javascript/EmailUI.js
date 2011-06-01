@@ -1,5 +1,5 @@
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -295,8 +295,8 @@ SE.accounts = {
                 var viewH = YAHOO.util.Dom.getViewportHeight();
                 if (this.header && el && viewH - 50 < el.clientHeight) {
                     var body = this.header.nextElementSibling;
-					body.style.overflow = "auto";
-                    body.style.height = (viewH - 50) + "px";
+					body.style.overflow = "hidden";
+                    body.style.height = "100%";
                 }
             }, EAD);
             EAD.setHeader(mod_strings.LBL_EMAIL_ACCOUNTS_INBOUND);
@@ -438,6 +438,17 @@ SE.accounts = {
 		document.getElementById("smtp_auth1").style.display = smtpauth_req.checked ? "" : "none";
 		document.getElementById("smtp_auth2").style.display = smtpauth_req.checked ? "" : "none";
 	},
+	
+	smtp_setDefaultSMTPPort : function() {
+		useSSLPort = !document.getElementById("mail_smtpssl").options[0].selected;
+    
+        if ( useSSLPort && document.getElementById("mail_smtpport").value == '25' ) {
+            document.getElementById("mail_smtpport").value = '465';
+        }
+        if ( !useSSLPort && document.getElementById("mail_smtpport").value == '465' ) {
+            document.getElementById("mail_smtpport").value = '25';
+        }
+	},
 
     /**
      * Changes the display used in the outbound email SMTP dialog to match the
@@ -510,6 +521,7 @@ SE.accounts = {
         }
 
         SUGAR.email2.accounts.smtp_authenticate_field_display();
+        SUGAR.email2.accounts.smtp_setDefaultSMTPPort()
     },
 
     /**

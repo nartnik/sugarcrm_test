@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -187,8 +187,8 @@ $mod_strings = array (
     'LNK_NEW_OPPORTUNITY' => 'Create Opportunity',
     'LNK_NEW_TASK' => 'Create Task',
     'LNK_SELECT_ACCOUNT' => "Select Account",
-    'MSG_DUPLICATE' => 'The contact record you are about to create might be a duplicate of a contact record that already exists. Contact records containing similar names and/or email addresses are listed below.<br>Click Save to continue creating this new contact, or click Cancel to return to the module without creating the contact.',
-    'MSG_SHOW_DUPLICATES' => 'The contact record you are about to create might be a duplicate of a contact record that already exists. Contact records containing similar names and/or email addresses are listed below.<br>Click Save to continue creating this new contact, or click Cancel to return to the module without creating the contact.',
+	'MSG_DUPLICATE' => 'The contact record you are about to create might be a duplicate of a contact record that already exists. Contact records containing similar names are listed below.<br>Click Create Contact to continue creating this new contact, or select an existing contact listed below.',
+	'MSG_SHOW_DUPLICATES' => 'The contact record you are about to create might be a duplicate of a contact record that already exists. Contact records containing similar names are listed below.<br>Click Save to continue creating this new contact, or click Cancel to return to the module without creating the contact.',
     'NTC_COPY_ALTERNATE_ADDRESS' => 'Copy alternate address to primary address',
     'NTC_COPY_PRIMARY_ADDRESS' => 'Copy primary address to alternate address',
     'NTC_DELETE_CONFIRMATION' => 'Are you sure you want to delete this record?',
@@ -200,7 +200,9 @@ $mod_strings = array (
 
 	'LBL_LEADS_SUBPANEL_TITLE' => 'Leads',
 	'LBL_OPPORTUNITIES_SUBPANEL_TITLE' => 'Opportunities',
-	'LBL_COPY_ADDRESS_CHECKED' => 'Copy Address to Checked Contacts',
+	'LBL_DOCUMENTS_SUBPANEL_TITLE' => 'Documents',
+	'LBL_COPY_ADDRESS_CHECKED_PRIMARY' => 'Copy to Primary Address',
+	'LBL_COPY_ADDRESS_CHECKED_ALT' => 'Copy to Other Address',
 
 	'LBL_CASES_SUBPANEL_TITLE' => 'Cases',
 	'LBL_BUGS_SUBPANEL_TITLE' => 'Bugs',

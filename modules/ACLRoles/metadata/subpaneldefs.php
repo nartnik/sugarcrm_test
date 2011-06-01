@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -42,7 +42,7 @@ $layout_defs['ACLRoles'] = array(
 	// sets up which panels to show, in which order, and with what linked_fields
 	'subpanel_setup' => array(
         'users' => array(
-			'top_buttons' => array(	array('widget_class' => 'SubPanelTopSelectButton', 'mode' => 'MultiSelect', 'popup_module' => 'Users'),),
+			'top_buttons' => array(	array('widget_class' => 'SubPanelTopSelectUsersButton', 'mode' => 'MultiSelect', 'popup_module' => 'Users', 'filter_out_is_admin' => true,),),
 			'order' => 20,
 			'module' => 'Users',
 			'sort_by' => 'user_name',
@@ -58,7 +58,7 @@ $layout_defs['UserRoles'] = array(
 	// sets up which panels to show, in which order, and with what linked_fields
 	'subpanel_setup' => array(
         'aclroles' => array(
-			'top_buttons' => array(array('widget_class' => 'SubPanelTopSelectButton', 'mode' => 'MultiSelect','popup_module' => 'ACLRoles'),),
+			'top_buttons' => array(array('widget_class' => 'SubPanelTopSelectUsersButton', 'mode' => 'MultiSelect','popup_module' => 'ACLRoles', 'filter_out_is_admin' => true,),),
 			'order' => 20,
 			'module' => 'ACLRoles',
 			'sort_by' => 'name',

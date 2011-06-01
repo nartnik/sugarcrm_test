@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -57,6 +57,7 @@ $dictionary['Task'] = array('table' => 'tasks',
     'options' => 'task_status_dom',
     'len' => 100,
     'required' => 'true',
+    'default' => 'Not Started',
   ),
   'date_due_flag' =>
   array (
@@ -75,6 +76,8 @@ $dictionary['Task'] = array('table' => 'tasks',
     'dbType' => 'datetime',
     'group'=>'date_due',
     'studio' => array('required' => true, 'no_duplicate' => true),
+    'enable_range_search' => true,
+    'options' => 'date_range_search_dom',
     ),
   'time_due' =>
   array (
@@ -104,6 +107,8 @@ $dictionary['Task'] = array('table' => 'tasks',
     'group'=>'date_start',
     'validation' => array('type' => 'isbefore', 'compareto' => 'date_due', 'blank' => false),
     'studio' => array('required' => true, 'no_duplicate' => true),
+    'enable_range_search' => true,
+    'options' => 'date_range_search_dom',
     ),
  'parent_type'=>
   array(

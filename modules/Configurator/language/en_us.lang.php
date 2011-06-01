@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -66,7 +66,7 @@ $mod_strings = array (
 	'LBL_ALLOW_USER_TABS' => 'Allow users to hide tabs',
 	'LBL_CONFIGURE_SETTINGS_TITLE' => 'System Settings',
 	'LBL_ENABLE_MAILMERGE' => 'Enable mail merge?',
-	'LBL_LOGVIEW' => 'Configure Log Settings',
+	'LBL_LOGVIEW' => 'View Log',
 	'LBL_MAIL_SMTPAUTH_REQ'				=> 'Use SMTP Authentication?',
 	'LBL_MAIL_SMTPPASS'					=> 'SMTP Password:',
 	'LBL_MAIL_SMTPPORT'					=> 'SMTP Port:',
@@ -87,6 +87,8 @@ $mod_strings = array (
     'LBL_ALLOW_DEFAULT_SELECTION_HELP'          => 'When this option is selected, all users will be able to send emails using the same outgoing mail account used to send system notifications and alerts.  If the option is not selected, users can still use the outgoing mail server after providing their own account information.',
 	'LBL_MAILMERGE_DESC' => 'This flag should be checked only if you have the Sugar Plug-in for Microsoft&reg; Word&reg;.',
 	'LBL_MAILMERGE' => 'Mail Merge',
+	'LBL_MIN_AUTO_REFRESH_INTERVAL' => 'Minimum Dashlet Auto-Refresh Interval',
+	'LBL_MIN_AUTO_REFRESH_INTERVAL_HELP' => 'This is the minimum value one can choose to have dashlets auto-refresh. Setting to \'Never\' disables auto-refreshing of dashlets entirely.',
 	'LBL_MODULE_FAVICON'               => 'Display module icon as favicon',
     'LBL_MODULE_FAVICON_HELP'   => 'If you are in a module with an icon, use the module\'s icon as the favicon, instead of the theme\'s favicon, in the browser tab.',
 	'LBL_MODULE_NAME'=>'System Settings',
@@ -107,7 +109,7 @@ $mod_strings = array (
 	'LBL_PROXY_USERNAME'=>'User Name',
 	'LBL_RESTORE_BUTTON_LABEL'=>'Restore',
 	'LBL_SYSTEM_SETTINGS' => 'System Settings',
-	'LBL_SKYPEOUT_ON_DESC' => 'Allows users to click on phone numbers to call using SkypeOut&reg;. The numbers must be formatted properly to make use of this feature. That is, it must be "+"  "The Country Code" "The Number", like +1 (555) 555-1234. For more information, see the Skype FAQ at <a href="http://www.skype.com/help/faq/skypeout.html#calling" target="skype">skype&reg; faq</a>	',
+	'LBL_SKYPEOUT_ON_DESC' => 'Allows users to click on phone numbers to call using SkypeOut&reg;. The numbers must be formatted properly to make use of this feature. That is, it must be "+"  "The Country Code" "The Number", like +1 (555) 555-1234.',
 	'LBL_SKYPEOUT_ON' => 'Enable SkypeOut&reg; integration',
 	'LBL_SKYPEOUT_TITLE' => 'SkypeOut&reg;',
 	'LBL_USE_REAL_NAMES'	=> 'Show Full Names',
@@ -167,6 +169,9 @@ $mod_strings = array (
     'LBL_LDAP_AUTO_CREATE_USERS_DESC'=> 'If an authenticated user does not exist one will be created in Sugar.',
     'LBL_LDAP_ENC_KEY'	=> 'Encryption Key:',
     'DEVELOPER_MODE'=>'Developer Mode',
+	
+	'SHOW_DOWNLOADS_TAB' =>'Display Downloads Tab',
+	'SHOW_DOWNLOADS_TAB_HELP' =>'When selected, the Download tab will appear in the User settings and provide users with access to Sugar plug-ins and other available files',
     'LBL_LDAP_ENC_KEY_DESC'	=> 'For SOAP authentication when using LDAP.',
     'LDAP_ENC_KEY_NO_FUNC_DESC' => 'The php_mcrypt extension must be enabled in your php.ini file.',
     'LBL_ALL' => 'All',
@@ -407,7 +412,7 @@ To configure additional system settings, click <a href="index.php?module=Adminis
     'LBL_WIZARD_SYSTEM_DESC' => 'Provide your organization\'s name and logo in order to brand your Sugar.',
     'LBL_WIZARD_LOCALE_DESC' => 'Specify how you would like data in Sugar to be displayed, based on your geographical location. The settings you provide here will be the default settings. Users will be able set their own preferences.',
     'LBL_WIZARD_SMTP_DESC' => 'Provide the email account that will be used to send emails, such as the assignment notifications and new user passwords. Users will receive emails from Sugar, as sent from the specified email account.',
-    'LBL_MOBILE_MOD_REPORTS_RESTRICTION' => '* The Reports module is only available for the Sugar Mobile iPhone client.',
+    'LBL_MOBILE_MOD_REPORTS_RESTRICTION' => '* The Reports module is only available for the Sugar Mobile native clients',
 );
 
 

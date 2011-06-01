@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -43,7 +43,9 @@ global $current_user;
 $dashletData['MyMeetingsDashlet']['searchFields'] = array('name'             => array('default' => ''),
                                                           'status'           => array('default' => array('Planned')),
                                                           'date_start'       => array('default' => ''),
-                                                          'date_entered'     => array('default' => ''),
+                                                          'date_entered'     => array('default' => ''),                                                         
+
+
                                                           'assigned_user_id' => array('type'    => 'assigned_user_name', 
                                                                                       'default' => $current_user->name,
 																					  'label'   => 'LBL_ASSIGNED_TO'),);

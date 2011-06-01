@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -170,6 +170,18 @@ class MysqliManager extends MysqlManager
         $this->lastmysqlrow = -1;
         $this->query_time = microtime(true) - $this->query_time;
         $GLOBALS['log']->info('Query Execution Time:'.$this->query_time);
+
+        // This is some heavy duty debugging, leave commented out unless you need this:
+        /*
+        $bt = debug_backtrace();
+        for ( $i = count($bt) ; $i-- ; $i > 0 ) {
+            if ( strpos('MysqliManager.php',$bt[$i]['file']) === false ) {
+                $line = $bt[$i];
+            }
+        }
+
+        $GLOBALS['log']->fatal("${line['file']}:${line['line']} ${line['function']} \nQuery: $sql\n");
+        */
 
 
 		$this->checkError($msg.' Query Failed: ' . $sql, $dieOnError);

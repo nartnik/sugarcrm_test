@@ -1,7 +1,7 @@
 {*
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,12 +37,23 @@
 
 *}
 
+
+{if $disable_layout}
+<span class='required'>
+{sugar_translate label="LBL_SYNC_TO_DETAILVIEW_NOTICE" module="ModuleBuilder"}
+</span>
+{/if}
 <table id='layoutEditorButtons' cellspacing='2'>
     <tr>
     {$buttons}
 	{if empty($disable_tabs)}
 	<td><input type="checkbox" {if $displayAsTabs}checked="true"{/if} id="tabsCheckbox" onclick="document.forms.prepareForSave.panels_as_tabs.value=this.checked">
 	   {sugar_translate label="LBL_TAB_PANELS" module="ModuleBuilder"}&nbsp;{sugar_help text=$mod.LBL_TAB_PANELS_HELP}
+	</input></td>
+	{/if}
+	{if $view == 'editview'}
+	<td><input type="checkbox" {if $syncDetailEditViews}checked="true"{/if} id="syncCheckbox" onclick="document.forms.prepareForSave.sync_detail_and_edit.value=this.checked">
+	   {sugar_translate label="LBL_SYNC_TO_DETAILVIEW" module="ModuleBuilder"}&nbsp;{sugar_help text=$mod.LBL_SYNC_TO_DETAILVIEW_HELP}
 	</input></td>
 	{/if}
     </tr>
@@ -67,6 +78,7 @@
 
     {counter name='idCount' assign='idCount' start='1'}
     {foreach from=$available_fields item='col' key='id'}
+        {assign var="field" value=$col.name}
         <div class='le_field' id='{$idCount}'>
             {if ! $fromModuleBuilder && ($col.name != '(filler)')}
                 <img class='le_edit' src="{sugar_getimagepath file='edit_inline.gif'}" style='float:right; cursor:pointer;' onclick="editFieldProperties('{$idCount}', '{$col.label}');" />
@@ -77,6 +89,14 @@
             {if isset($col.type) && ($col.type == 'phone')}
                 {$icon_phone}
             {/if}
+            {* BEGIN SUGARCRM flav=pro ONLY *}
+            {if isset($field_defs.$field.calculated) && $field_defs.$field.calculated}
+                <img src="{sugar_getimagepath file='SugarLogic/icon_calculated.png'}" class="right_icon" />
+            {/if}
+            {if isset($field_defs.$field.dependency) && $field_defs.$field.dependency}
+                <img src="{sugar_getimagepath file='SugarLogic/icon_dependent.png'}" class="right_icon" />
+            {/if}
+            {* END SUGARCRM flav=pro ONLY *}
             <span id='le_label_{$idCount}'>
             {if !empty($translate) && !empty($col.label)}
                 {eval var=$col.label assign='newLabel'}
@@ -133,6 +153,7 @@
             {counter name='idCount' assign='idCount' print=false}
 
             {foreach from=$row item='col' key='cid'}
+                {assign var="field" value=$col.name}
                 <div class='le_field' id='{$idCount}'>
                     {if ! $fromModuleBuilder && ($col.name != '(filler)')}
                         <img class='le_edit' src="{sugar_getimagepath file='edit_inline.gif'}" 
@@ -146,6 +167,14 @@
                     {if isset($col.type) && ($col.type == 'phone')}
                         {$icon_phone}
                     {/if}
+                    {* BEGIN SUGARCRM flav=pro ONLY *}
+                    {if isset($field_defs.$field.calculated) && $field_defs.$field.calculated}
+                        <img src="{sugar_getimagepath file='SugarLogic/icon_calculated.png'}" class="right_icon" />
+                    {/if}
+                    {if isset($field_defs.$field.dependency) && $field_defs.$field.dependency}
+                        <img src="{sugar_getimagepath file='SugarLogic/icon_dependent.png'}" class="right_icon" />
+                    {/if}
+                    {* END SUGARCRM flav=pro ONLY *}
                     <span id='le_label_{$idCount}'>
                     {eval var=$col.label assign='label'}
                     {if !empty($translate) && !empty($col.label)}
@@ -181,6 +210,7 @@
 <input type='hidden' name='view_module' value='{$view_module}'>
 <input type='hidden' name='view' value='{$view}'>
 <input type='hidden' name="panels_as_tabs" value='{$displayAsTabs}'>
+<input type='hidden' name="sync_detail_and_edit" value='{$syncDetailEditViews}'>
 <!-- BEGIN SUGARCRM flav=ent ONLY -->
 {if $fromPortal}
     <input type='hidden' name='PORTAL' value='1'>
@@ -195,14 +225,16 @@
 <script>
 {literal}
 
+
+
 var editPanelProperties = function (panelId, view) {
     panelId = "" + panelId;
 	var key_label = document.getElementById('le_panelid_' + panelId).innerHTML.replace(/^\s+|\s+$/g,'');
 	var value_label = document.getElementById('le_panelname_' + panelId).innerHTML.replace(/^\s+|\s+$/g,'');
-	var params = "module=ModuleBuilder&action=editProperty&view_module=" + ModuleBuilder.module 
-	            + (ModuleBuilder.package ?  "&view_package=" + ModuleBuilder.package : "")
-                + "&view=" + view + "&id_label=le_panelname_" + panelId + "&name_label=label_" + key_label.toUpperCase()
-                + "&title_label=" + SUGAR.language.get("ModuleBuilder", "LBL_LABEL_TITLE") + "&value_label=" + value_label;
+	var params = "module=ModuleBuilder&action=editProperty&view_module=" + encodeURIComponent(ModuleBuilder.module) 
+	            + (ModuleBuilder.package ?  "&view_package=" + encodeURIComponent(ModuleBuilder.package) : "")
+                + "&view=" + encodeURIComponent(view) + "&id_label=le_panelname_" + encodeURIComponent(panelId) + "&name_label=label_" + encodeURIComponent(key_label.toUpperCase())
+                + "&title_label=" + encodeURIComponent(SUGAR.language.get("ModuleBuilder", "LBL_LABEL_TITLE")) + "&value_label=" + encodeURIComponent(value_label);
     ModuleBuilder.getContent(params);
 }; 
 {/literal}
@@ -211,12 +243,12 @@ var editFieldProperties = function (idCount, label) {ldelim}
 	var value_tabindex = document.getElementById('le_tabindex_' + idCount).innerHTML.replace(/^\s+|\s+$/g,'');
 	ModuleBuilder.getContent(
 	  	'module=ModuleBuilder&action=editProperty'
-	  + '&view_module={$view_module}' + '{if $fromModuleBuilder}&view_package={$view_package}{/if}'
-	  +	'&view={$view}&id_label=le_label_' + idCount 
-	  + '&name_label=label_' + label + '&title_label={sugar_translate label="LBL_LABEL_TITLE" module="ModuleBuilder"}' 
-	  + '&value_label=' + value_label + '&id_tabindex=le_tabindex_' + idCount 
+	  + '&view_module={$view_module|escape:'url'}' + '{if $fromModuleBuilder}&view_package={$view_package}{/if}'
+	  +	'&view={$view|escape:'url'}&id_label=le_label_' + encodeURIComponent(idCount) 
+	  + '&name_label=label_' + encodeURIComponent(label) + '&title_label={sugar_translate label="LBL_LABEL_TITLE" module="ModuleBuilder"}' 
+	  + '&value_label=' + encodeURIComponent(value_label) + '&id_tabindex=le_tabindex_' + encodeURIComponent(idCount) 
 	  + '&title_tabindex={sugar_translate label="LBL_TAB_ORDER" module="ModuleBuilder"}' 
-	  + '&name_tabindex=tabindex&value_tabindex=' + value_tabindex );
+	  + '&name_tabindex=tabindex&value_tabindex=' + encodeURIComponent(value_tabindex) );
 	
 {rdelim}
 
@@ -244,4 +276,7 @@ if (typeof new Array().indexOf == "undefined") {
 {/literal}
 ModuleBuilder.module = "{$view_module}";
 ModuleBuilder.package={if $fromModuleBuilder}"{$view_package}"{else}false{/if};
+
+
+ModuleBuilder.disablePopupPrompt = {if $syncDetailEditViews}{$syncDetailEditViews}{else}false{/if};
 </script>

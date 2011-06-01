@@ -1,7 +1,7 @@
 {*
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -45,22 +45,34 @@
 <input type='hidden' name='action' value='ConfigureDashlet'>
 <input type='hidden' name='to_pdf' value='true'>
 <input type='hidden' name='configure' value='true'>
-<table width="100%" cellpadding="0" cellspacing="0" border="0" class="tabForm" align="center">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="edit view" align="center">
 <tr>
-    <td valign='top' nowrap class='dataLabel'>{$titleLBL}</td>
-    <td valign='top' class='dataField'>
+    <td scope='row'>{$titleLBL}</td>
+    <td>
     	<input class="text" name="title" size='20' maxlength='80' value='{$title}'>
     </td>
 </tr>
+{if $isRefreshable}
 <tr>
-    <td valign='top' nowrap class='dataLabel'>{$urlLBL}</td>
-    <td valign='top' class='dataField'>
+    <td scope='row'>
+        {$autoRefresh}
+    </td>
+    <td>
+        <select name='autoRefresh'>
+            {html_options options=$autoRefreshOptions selected=$autoRefreshSelect}
+        </select>
+    </td>
+</tr>
+{/if}
+<tr>
+    <td scope='row'>{$urlLBL}</td>
+    <td>
     	<input class="text" name="url" size='20' maxlength='255' value='{$url}'>
     </td>
 </tr>
 <tr>
-    <td valign='top' nowrap class='dataLabel'>{$heightLBL}</td>
-    <td valign='top' class='dataField'>
+    <td scope='row'>{$heightLBL}</td>
+    <td>
     	<input class="text" name="height" size='20' maxlength='80' value='{$height}'>
     </td>
 </tr>

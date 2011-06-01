@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -522,7 +522,9 @@ class EditViewMerge{
 	 */
 	protected function mergeTemplateMeta()
 	{
-	    if( isset($this->customData[$this->module][$this->viewDefs][$this->templateMetaName]) )
+        //this is to handle the situation in Calls/Meetings where we updated the templateMeta and will fail if we don't update this.
+        //long term we should not do this and should provide a way for calls/meetings to update themselves.
+	    if( isset($this->customData[$this->module][$this->viewDefs][$this->templateMetaName]) && (!$this->module == 'Calls' || !$this->module == 'Meetings') )
 	       $this->newData[$this->module][$this->viewDefs][$this->templateMetaName] = $this->customData[$this->module][$this->viewDefs][$this->templateMetaName];
 	}
 	
@@ -607,6 +609,23 @@ class EditViewMerge{
 					}
 					
 					if(is_string($field_name)) {
+                        // We need to replace all instances of the fake uploadfile field with the real filename field
+                        if ( $field_name == 'uploadfile' && !empty($col['customCode'])) {
+                            $replaceField = false;
+                            if ( !empty($col['customCode']) ) {
+                                $replaceField = true;
+                                unset($col['customCode']);
+                            }
+                            
+                            if( !empty($col['displayParams']) && !empty($col['displayParams']['link']) ) {
+                                $replaceField = true;
+                            } 
+                            
+                            if ( $replaceField ) {
+                                $field_name = 'filename';
+                                $col['name'] = 'filename';
+                            }
+                        }
 						$fields[$field_name] = array('data'=>$col, 'loc'=>array('panel'=>"{$panel_id}", 'row'=>"{$row_id}", 'col'=>"{$col_id}"));
 					}
 				}

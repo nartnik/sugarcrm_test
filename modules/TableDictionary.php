@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -86,6 +86,14 @@ include("metadata/email_marketing_prospect_listsMetaData.php");
 include("metadata/users_signaturesMetaData.php");
 //linked documents.
 include("metadata/linked_documentsMetaData.php");
+
+// Documents, so we can start replacing Notes as the primary way to attach something to something else.
+include("metadata/documents_accountsMetaData.php");
+include("metadata/documents_contactsMetaData.php");
+include("metadata/documents_opportunitiesMetaData.php");
+include("metadata/documents_casesMetaData.php");
+include("metadata/documents_bugsMetaData.php");
+
 if(file_exists('custom/application/Ext/TableDictionary/tabledictionary.ext.php')){
 	include('custom/application/Ext/TableDictionary/tabledictionary.ext.php');	
 }

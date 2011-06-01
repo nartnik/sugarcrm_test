@@ -1,7 +1,7 @@
 {*
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -44,11 +44,9 @@
 		<th  align="center">{$lblTotalOpportunities}</td>
 		<th  align="center">{$lblClosedWonOpportunities}</td>
 	</tr>
-	<tr>
-		<td class="oddListRowS1" valign="top">{$total_opportunities}</td>
-		<td class="oddListRowS1" valign="top"><b>{$total_opportunities_won}</b></td>
+	<tr class="oddListRowS1">
+		<td valign="top">{$total_opportunities}</td>
+		<td valign="top"><b>{$total_opportunities_won}</b></td>
 	</tr>
 </table>
 </div>
-<br />
-

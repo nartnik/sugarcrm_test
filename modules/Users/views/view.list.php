@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -41,12 +41,14 @@ class UsersViewList extends ViewList
 {
  	public function preDisplay()
  	{
- 	    if (   !is_admin($GLOBALS['current_user'])
- 	       && !is_admin_for_module($GLOBALS['current_user'],'Users') ) 
- 	        sugar_die("Unauthorized access to administration.");
- 	    
+ 	    if ( !is_admin($GLOBALS['current_user'])
+                && !is_admin_for_module($GLOBALS['current_user'],'Users') ) {
+            //instead of just dying here with unauthorized access will send the user back to his/her settings
+             SugarApplication::redirect('index.php?module=Users&action=DetailView&record='.$GLOBALS['current_user']->id);
+        }
  	    $this->lv = new ListViewSmarty();
- 		$this->lv->delete = false;
+ 	    $this->lv->delete = false;
+ 	    $this->lv->email = false;
  	}
 
 }

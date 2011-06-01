@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -80,12 +80,7 @@ class SugarFieldAddress extends SugarFieldBase {
            return $this->fetch($tplCode);	
         }
         
-        global $current_language;
-        if(isset($current_language) && file_exists('include/SugarFields/Fields/Address/' . $current_language . '.DetailView.tpl')) {
-          return $this->fetch('include/SugarFields/Fields/Address/' . $current_language . '.DetailView.tpl'); 	
-        } else {
-          return $this->fetch('include/SugarFields/Fields/Address/DetailView.tpl');
-        } //if-else
+        return $this->fetch($this->findTemplate('DetailView'));
     }
     
     function getEditViewSmarty($parentFieldArray, $vardef, $displayParams, $tabindex) {
@@ -103,13 +98,7 @@ class SugarFieldAddress extends SugarFieldBase {
            return $this->fetch($tplCode);	
         }       
 
-        global $current_language;
-        if(isset($current_language) && file_exists('include/SugarFields/Fields/Address/' . $current_language . '.EditView.tpl')) {
-          return $this->fetch('include/SugarFields/Fields/Address/' . $current_language . '.EditView.tpl'); 	
-        } else {
-          return $this->fetch('include/SugarFields/Fields/Address/EditView.tpl');
-        } //if-else
-       
+        return $this->fetch($this->findTemplate('EditView'));      
     }
     
 }

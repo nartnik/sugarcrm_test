@@ -8,7 +8,7 @@
  
  if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -56,12 +56,29 @@ $searchFields[$module_name] =
 		'address_country'=> array('query_type'=>'default','db_field'=>array('billing_address_country','shipping_address_country')),
 		'rating'=> array('query_type'=>'default'),
 		'phone'=> array('query_type'=>'default','db_field'=>array('phone_office')),
-		'email'=> array('query_type'=>'default','db_field'=>array('email1','email2')),
+		'email'=> array(
+			'query_type' => 'default',
+			'operator' => 'subquery',
+			'subquery' => 'SELECT eabr.bean_id FROM email_addr_bean_rel eabr JOIN email_addresses ea ON (ea.id = eabr.email_address_id) WHERE eabr.deleted=0 AND ea.email_address LIKE',
+			'db_field' => array(
+				'id',
+			),
+			'vname' =>'LBL_ANY_EMAIL',
+		),
 		'website'=> array('query_type'=>'default'),
 		'ownership'=> array('query_type'=>'default'),
 		'employees'=> array('query_type'=>'default'),
 		'ticker_symbol'=> array('query_type'=>'default'),
 		'current_user_only'=> array('query_type'=>'default','db_field'=>array('assigned_user_id'),'my_items'=>true, 'vname' => 'LBL_CURRENT_USER_FILTER', 'type' => 'bool'),
 		'assigned_user_id'=> array('query_type'=>'default'),
+		
+		//Range Search Support 
+	   'range_date_entered' => array ('query_type' => 'default', 'enable_range_search' => true, 'is_date_field' => true),
+	   'start_range_date_entered' => array ('query_type' => 'default',  'enable_range_search' => true, 'is_date_field' => true),
+	   'end_range_date_entered' => array ('query_type' => 'default', 'enable_range_search' => true, 'is_date_field' => true),
+	   'range_date_modified' => array ('query_type' => 'default', 'enable_range_search' => true, 'is_date_field' => true),
+	   'start_range_date_modified' => array ('query_type' => 'default',  'enable_range_search' => true, 'is_date_field' => true),
+       'end_range_date_modified' => array ('query_type' => 'default', 'enable_range_search' => true, 'is_date_field' => true),	
+	    //Range Search Support 			
 	);
 ?>

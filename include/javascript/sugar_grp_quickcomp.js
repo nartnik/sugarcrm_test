@@ -1,5 +1,5 @@
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -53,7 +53,7 @@ var urlStandard = 'sugar_body_only=true&to_pdf=true&module=Emails&action=EmailUI
 var lazyLoadFolder = null;// End of File modules/Emails/javascript/vars.js
                                 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -134,7 +134,7 @@ if(recursive)
 return newNode;}}// End of File include/SugarFields/Fields/Collection/SugarFieldCollection.js
                                 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -226,7 +226,7 @@ function hideOverlay() {
 // End of File modules/Emails/javascript/EmailUIShared.js
                                 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -359,6 +359,9 @@ var AjaxObject = {
     handleFailure : function(o) {
 		// Failure handler
 		overlay('Exception occurred...', o.statusText, 'alert');
+		if(document.getElementById('saveButton')) {
+			document.getElementById('saveButton').disabled = false;
+		}
 	},
 
 	handleReplyForward : function(o) {
@@ -1841,7 +1844,7 @@ var callbackCheckEmail2 = {
 }// End of File modules/Emails/javascript/ajax.js
                                 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -2493,7 +2496,7 @@ function AddressSearchResultsGridInit()
 // End of File modules/Emails/javascript/grid.js
                                 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -3781,7 +3784,15 @@ SE.composeLayout = {
         var box_title = mod_strings.LBL_EMAILTEMPLATE_MESSAGE_SHOW_TITLE;
 		var box_msg = mod_strings.LBL_EMAILTEMPLATE_MESSAGE_SHOW_MSG;
 		var box_none_msg = mod_strings.LBL_EMAILTEMPLATE_MESSAGE_CLEAR_MSG;
-
+		
+		//bug #6224
+		var to_addr = document.getElementById('addressTO'+idx);
+		if (to_addr.value.search(/[^;,]{6,}[;,][^;,]{6,}/) != -1) 
+		{
+			box_title = mod_strings.LBL_EMAILTEMPLATE_MESSAGE_WARNING_TITLE;
+			box_msg = mod_strings.LBL_EMAILTEMPLATE_MESSAGE_MULTIPLE_RECIPIENTS + '<br /><br />' + box_msg;
+		}
+		
 		// id is selected index of email template drop-down
 		if(id == '' || id == "0") {
 			YAHOO.SUGAR.MessageBox.show({
@@ -4924,7 +4935,7 @@ SE.util = {
 })();//End namespace// End of File modules/Emails/javascript/EmailUICompose.js
                                 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -5172,7 +5183,7 @@ SUGAR.email2.templates['compose'] = '<div id="composeLayout{idx}" class="ylayout
 // End of File modules/Emails/javascript/composeEmailTemplate.js
                                 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -5352,8 +5363,8 @@ function complexLayoutInit() {
             	{
             		se.complexLayout.getUnitByPosition("left").set("header", app_strings.LBL_EMAIL_SEARCH);
             	   //Setup the calendars if needed
-	               Calendar.setup ({inputField : "searchDateFrom", ifFormat : calFormat, showsTime : false, button : "jscal_trigger_from", singleClick : true, step : 1, weekNumbers:false});
-	               Calendar.setup ({inputField : "searchDateTo", ifFormat : calFormat, showsTime : false, button : "jscal_trigger_to", singleClick : true, step : 1, weekNumbers:false});
+	               Calendar.setup ({inputField : "searchDateFrom", ifFormat : calFormat, showsTime : false, button : "searchDateFrom_trigger", singleClick : true, step : 1, weekNumbers:false});
+	               Calendar.setup ({inputField : "searchDateTo", ifFormat : calFormat, showsTime : false, button : "searchDateTo_trigger", singleClick : true, step : 1, weekNumbers:false});
                    
 	               //Initalize sqs object for assigned user name 
 	               se.e2Layout.initSQSObject('advancedSearchForm','assigned_user_name');  

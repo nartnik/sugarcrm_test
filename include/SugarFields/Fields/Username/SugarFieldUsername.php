@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -40,12 +40,7 @@ class SugarFieldUsername extends SugarFieldBase {
 	function getDetailViewSmarty($parentFieldArray, $vardef, $displayParams, $tabindex) {
         $this->setup($parentFieldArray, $vardef, $displayParams, $tabindex);
  
-        global $current_language;
-        if(isset($current_language) && file_exists('include/SugarFields/Fields/Username/' . $current_language . '.DetailView.tpl')) {
-          return $this->fetch('include/SugarFields/Fields/Username/' . $current_language . '.DetailView.tpl'); 	
-        } else {
-          return $this->fetch('include/SugarFields/Fields/Username/DetailView.tpl');
-        } //if-else 
+        return $this->fetch($this->findTemplate('DetailView'));
     }
 }
 ?>

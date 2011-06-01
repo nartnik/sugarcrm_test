@@ -1,7 +1,7 @@
 <?php
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -38,7 +38,8 @@
 
 require_once('include/SugarFields/Fields/Int/SugarFieldInt.php');
 
-class SugarFieldFloat extends SugarFieldInt {
+class SugarFieldFloat extends SugarFieldInt 
+{
     public function formatField($rawField, $vardef){
         // A null precision uses the user prefs / system prefs by default
         $precision = null;
@@ -60,4 +61,25 @@ class SugarFieldFloat extends SugarFieldInt {
         return (float)unformat_number($formattedField);
     }
 
+    /**
+     * @see SugarFieldBase::importSanitize()
+     */
+    public function importSanitize(
+        $value,
+        $vardef,
+        $focus,
+        ImportFieldSanitize $settings
+        )
+    {
+        $value = str_replace($settings->num_grp_sep,"",$value);
+        $dec_sep = $settings->dec_sep;
+        if ( $dec_sep != '.' ) {
+            $value = str_replace($dec_sep,".",$value);
+        }
+        if ( !is_numeric($value) ) {
+            return false;
+        }
+        
+        return $value;
+    }
 }

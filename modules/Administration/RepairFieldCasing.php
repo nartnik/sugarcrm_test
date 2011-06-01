@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -102,7 +102,13 @@ if(is_admin($current_user)) {
 	       	
 	       $repairClass->module_list[] = $module;
 	       foreach($views as $view) {
-	       		$parser = ParserFactory::getParser($view, $module);
+                try{
+                    $parser = ParserFactory::getParser($view, $module);
+                }
+                catch(Exception $e){
+                    $GLOBALS['log']->fatal("Caught exception in RepairFieldCasing script: ".$e->getMessage());
+                    continue;
+                }
 	       		if(isset($parser->_viewdefs['panels'])) {
 	       		   foreach($parser->_viewdefs['panels'] as $panel_id=>$panel) {
 	       		   	  foreach($panel as $row_id=>$row) {

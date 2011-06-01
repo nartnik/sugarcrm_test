@@ -1,6 +1,6 @@
 <!--
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -71,7 +71,7 @@ function change_state(radiobutton) {
 	<tr>
 
 		<td>
-			<input title="{$APP.LBL_SAVE_BUTTON_TITLE}" accessKey="{$APP.LBL_SAVE_BUTTON_KEY}" class="button" onclick="this.form.action.value='Save';return verify_data(this);" type="submit" name="button" value=" {$APP.LBL_SAVE_BUTTON_LABEL} ">
+			<input title="{$APP.LBL_SAVE_BUTTON_TITLE}" accessKey="{$APP.LBL_SAVE_BUTTON_KEY}" class="button primary" onclick="this.form.action.value='Save';return verify_data(this);" type="submit" name="button" value=" {$APP.LBL_SAVE_BUTTON_LABEL} ">
 			<input title="{$APP.LBL_CANCEL_BUTTON_TITLE}" accessKey="{$APP.LBL_CANCEL_BUTTON_KEY}" class="button" onclick="this.form.action.value='{$RETURN_ACTION}'; this.form.module.value='{$RETURN_MODULE}';" type="submit" name="button" value=" {$APP.LBL_CANCEL_BUTTON_LABEL} ">
 		</td>
 		<td align="right" nowrap>
@@ -80,8 +80,6 @@ function change_state(radiobutton) {
 	</tr>
 </table>
 <table width="100%" border="1" cellspacing="0" cellpadding="0" class="edit view">
-<tr><td>
-	<table width="100%" border="0" cellspacing="0" cellpadding="0">
 		<tr><th align="left" scope="row" colspan="4"><h4>{$MOD.LBL_EMAIL_OUTBOUND_CONFIGURATION}</h4></th>
 		</tr>
 		<tr>
@@ -161,7 +159,7 @@ function change_state(radiobutton) {
 							</td>
 						    <td width="15%" scope="row"><span id="mail_smtpssl_label">{$APP.LBL_EMAIL_SMTP_SSL_OR_TLS}</span></td>
 					        <td width="35%" >
-							<select id="mail_smtpssl" name="mail_smtpssl" tabindex="501">{$MAIL_SSL_OPTIONS}</select>
+							<select id="mail_smtpssl" name="mail_smtpssl" tabindex="501" onchange="setDefaultSMTPPort();" >{$MAIL_SSL_OPTIONS}</select>
 					        </td>
 						</tr>
 						<tr id="smtp_auth1">
@@ -201,14 +199,9 @@ function change_state(radiobutton) {
 		    <td width="15%">&nbsp;</td>
             <td width="40%">&nbsp;</td>
 		    <td width="40%">&nbsp;</td>
-		</tr>
-	</table>
-</td></tr>
+		</tr>		
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="edit view">
-<tr>
-	<td>
-	<table width="100%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<th align="left" scope="row" colspan="4">
 			<h4>{$MOD.LBL_NOTIFY_TITLE}</h4>
@@ -238,26 +231,21 @@ function change_state(radiobutton) {
     	</td>
     	<td width="30%"  valign='top'><input type='hidden' name='notify_send_from_assigning_user' value='0'><input name='notify_send_from_assigning_user' value="2" tabindex='1' class="checkbox" type="checkbox" {$notify_send_from_assigning_user}></td>
     </tr>
-    <tr>
-    	<td colspan='4' scope="row">&nbsp;</td>
-    </tr>
-    </table>
-</td></tr>
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="edit view">
-	<tr><td>
-		<table width="100%" border="0" cellspacing="0" cellpadding="0">
 			<tr>
 				<th align="left" scope="row" colspan="4"><h4>{$MOD.LBL_SECURITY_TITLE}</h4></th>
 			</tr>
 			<tr>
 				<td align="left" scope="row" colspan="4">
 					{$MOD.LBL_SECURITY_DESC}
-					<br />&nbsp;
 				</td>
 			</tr>
 			<tr>
-				<td width="10%" NOWRAP scope="row" valign="top" >
+				<td valign="middle" valign="top" scope="row" colspan="3">
+					{$MOD.LBL_SECURITY_OUTLOOK_DEFAULTS}
+				</td>
+				<td width="10%" NOWRAP valign="top" >
 					<input type="checkbox" value="1" name="set_outlook_defaults" id="set_outlook_defaults" onclick="setOutlookDefaults();">&nbsp;
 					{literal}
 					<script type="text/javascript" language="Javascript">
@@ -306,119 +294,109 @@ function change_state(radiobutton) {
 					</script>
 					{/literal}
 				</td>
-				<td valign="middle" valign="top" scope="row" colspan="3">
-					{$MOD.LBL_SECURITY_OUTLOOK_DEFAULTS}
-				</td>
 			</tr>
 			<tr>
-				<td colspan="4">&nbsp;</td>
-			</tr>
-			<tr>
-				<td width="10%" NOWRAP scope="row" valign="top" >
-					<input type="checkbox" value="1" name="toggle_all" id="toggle_all" onclick="toggleAllSecurityOptions();">&nbsp;
-				</td>
 				<td valign="middle" valign="top" scope="row" colspan="3">
 					{$MOD.LBL_SECURITY_TOGGLE_ALL}
 				</td>
-			</tr>
-			<tr>
-				<td colspan="4">&nbsp;</td>
-			</tr>
-			<tr>
-				<td width="10%" NOWRAP scope="row" valign="middle" >
-					<input type="checkbox" value="1" name="applet" id="applet" {$appletChecked}>&nbsp; &lt;applet&gt;
+				<td width="10%" NOWRAP valign="top" >
+					<input type="checkbox" value="1" name="toggle_all" id="toggle_all" onclick="toggleAllSecurityOptions();">&nbsp;
 				</td>
-				<td width="40%" valign="middle" scope="row">
+			</tr>
+			<tr>
+				<td width="10%" valign="middle" scope="row">
 					{$MOD.LBL_SECURITY_APPLET}
 				</td>
-				<td width="10%" NOWRAP scope="row" valign="middle" >
-					<input type="checkbox" value="1" name="base" id="base" {$baseChecked}>&nbsp; &lt;base&gt;
+				<td width="40%" NOWRAP valign="middle" >
+					<input type="checkbox" value="1" name="applet" id="applet" {$appletChecked}>&nbsp; &lt;applet&gt;
 				</td>
-				<td width="40%" valign="middle" scope="row">
+				<td width="10%" valign="middle" scope="row">
 					{$MOD.LBL_SECURITY_BASE}
 				</td>
+				<td width="40%" NOWRAP valign="middle" >
+					<input type="checkbox" value="1" name="base" id="base" {$baseChecked}>&nbsp; &lt;base&gt;
+				</td>
 			</tr>
 			<tr>
-				<td width="10%" NOWRAP scope="row" valign="middle" >
-					<input type="checkbox" value="1" name="embed" id="embed" {$embedChecked}>&nbsp; &lt;embed&gt;
-				</td>
-				<td width="40%" valign="middle" scope="row">
+				<td width="10%" valign="middle" scope="row">
 					{$MOD.LBL_SECURITY_EMBED}
 				</td>
-				<td width="10%" NOWRAP scope="row" valign="middle" >
-					<input type="checkbox" value="1" name="form" id="form" {$formChecked}>&nbsp; &lt;form&gt;
+				<td width="40%" NOWRAP valign="middle" >
+					<input type="checkbox" value="1" name="embed" id="embed" {$embedChecked}>&nbsp; &lt;embed&gt;
 				</td>
-				<td width="40%" valign="middle" scope="row">
+				<td width="10%" valign="middle" scope="row">
 					{$MOD.LBL_SECURITY_FORM}
 				</td>
+				<td width="40%" NOWRAP valign="middle" >
+					<input type="checkbox" value="1" name="form" id="form" {$formChecked}>&nbsp; &lt;form&gt;
+				</td>
 			</tr>
 			<tr>
-				<td width="10%" NOWRAP scope="row" valign="middle" >
-					<input type="checkbox" value="1" name="frame" id="frame" {$frameChecked}>&nbsp; &lt;frame&gt;
-				</td>
-				<td width="40%" valign="middle" scope="row">
+				<td width="10%" valign="middle" scope="row">
 					{$MOD.LBL_SECURITY_FRAME}
 				</td>
-				<td width="10%" NOWRAP scope="row" valign="middle" >
-					<input type="checkbox" value="1" name="frameset" id="frameset" {$framesetChecked}>&nbsp; &lt;frameset&gt;
+				<td width="40%" NOWRAP valign="middle" >
+					<input type="checkbox" value="1" name="frame" id="frame" {$frameChecked}>&nbsp; &lt;frame&gt;
 				</td>
-				<td width="40%" valign="middle" scope="row">
+				<td width="10%" valign="middle" scope="row">
 					{$MOD.LBL_SECURITY_FRAMESET}
 				</td>
+				<td width="40%" NOWRAP valign="middle" >
+					<input type="checkbox" value="1" name="frameset" id="frameset" {$framesetChecked}>&nbsp; &lt;frameset&gt;
+				</td>
 			</tr>
 			<tr>
-				<td width="10%" NOWRAP scope="row" valign="middle" >
-					<input type="checkbox" value="1" name="iframe" id="iframe" {$iframeChecked}>&nbsp; &lt;iframe&gt;
-				</td>
-				<td width="40%" valign="middle" scope="row">
+				<td width="10%" valign="middle" scope="row">
 					{$MOD.LBL_SECURITY_IFRAME}
 				</td>
-				<td width="10%" NOWRAP scope="row" valign="middle" >
-					<input type="checkbox" value="1" name="import" id="import" {$importChecked}>&nbsp; &lt;import&gt;
+				<td width="40%" NOWRAP valign="middle" >
+					<input type="checkbox" value="1" name="iframe" id="iframe" {$iframeChecked}>&nbsp; &lt;iframe&gt;
 				</td>
-				<td width="40%" valign="middle" scope="row">
+				<td width="10%" valign="middle" scope="row">
 					{$MOD.LBL_SECURITY_IMPORT}
 				</td>
+				<td width="40%" NOWRAP valign="middle" >
+					<input type="checkbox" value="1" name="import" id="import" {$importChecked}>&nbsp; &lt;import&gt;
+				</td>
 			</tr>
 			<tr>
-				<td width="10%" NOWRAP scope="row" valign="middle" >
-					<input type="checkbox" value="1" name="layer" id="layer" {$layerChecked}>&nbsp; &lt;layer&gt;
-				</td>
-				<td width="40%" valign="middle" scope="row">
+				<td width="10%" valign="middle" scope="row">
 					{$MOD.LBL_SECURITY_LAYER}
 				</td>
-				<td width="10%" NOWRAP scope="row" valign="middle" >
-					<input type="checkbox" value="1" name="link" id="link" {$linkChecked}>&nbsp; &lt;link&gt;
+				<td width="40%" NOWRAP valign="middle" >
+					<input type="checkbox" value="1" name="layer" id="layer" {$layerChecked}>&nbsp; &lt;layer&gt;
 				</td>
-				<td width="40%" valign="middle" scope="row">
+				<td width="10%" valign="middle" scope="row">
 					{$MOD.LBL_SECURITY_LINK}
 				</td>
+				<td width="40%" NOWRAP valign="middle" >
+					<input type="checkbox" value="1" name="link" id="link" {$linkChecked}>&nbsp; &lt;link&gt;
+				</td>
 			</tr>
 			<tr>
-				<td width="10%" NOWRAP scope="row" valign="middle" >
-					<input type="checkbox" value="1" name="object" id="object" {$objectChecked}>&nbsp; &lt;object&gt;
-				</td>
-				<td width="40%" valign="middle" scope="row">
+				<td width="10%" valign="middle" scope="row">
 					{$MOD.LBL_SECURITY_OBJECT}
 				</td>
-				<td width="10%" NOWRAP scope="row" valign="middle" >
-					<input type="checkbox" value="1" name="style" id="style" {$styleChecked}>&nbsp; &lt;style&gt;
+				<td width="40%" NOWRAP valign="middle" >
+					<input type="checkbox" value="1" name="object" id="object" {$objectChecked}>&nbsp; &lt;object&gt;
 				</td>
-				<td width="40%" valign="middle" scope="row">
+				<td width="10%" valign="middle" scope="row">
 					{$MOD.LBL_SECURITY_STYLE}
+				</td>
+				<td width="40%" NOWRAP valign="middle" >
+					<input type="checkbox" value="1" name="style" id="style" {$styleChecked}>&nbsp; &lt;style&gt;
 				</td>
 			</tr>
 			<tr>
-				<td width="10%" NOWRAP scope="row" valign="middle" >
-					<input type="checkbox" value="1" name="xmp" id="xmp" {$xmpChecked}>&nbsp; &lt;xmp&gt;
-				</td>
-				<td width="40%" valign="middle" scope="row">
+				<td width="10%" valign="middle" scope="row">
 					{$MOD.LBL_SECURITY_XMP}
 				</td>
-				<td></td>
-				<td></td>
-		</table>
-	</td></tr>
+				<td width="40%" NOWRAP valign="middle" >
+					<input type="checkbox" value="1" name="xmp" id="xmp" {$xmpChecked}>&nbsp; &lt;xmp&gt;
+				</td>
+				<td scope="row">&nbsp;</td>
+				<td>&nbsp;</td>
+		</tr>
 </table>
 </td>
 </tr>
@@ -449,7 +427,7 @@ function change_state(radiobutton) {
 </div>
 
 <div style="padding-top:2px;">
-			<input title="{$APP.LBL_SAVE_BUTTON_TITLE}" class="button" onclick="this.form.action.value='Save';return verify_data(this);" type="submit" name="button" value=" {$APP.LBL_SAVE_BUTTON_LABEL} ">
+			<input title="{$APP.LBL_SAVE_BUTTON_TITLE}" class="button primary" onclick="this.form.action.value='Save';return verify_data(this);" type="submit" name="button" value=" {$APP.LBL_SAVE_BUTTON_LABEL} ">
 			<input title="{$APP.LBL_CANCEL_BUTTON_TITLE}" class="button" onclick="this.form.action.value='{$RETURN_ACTION}'; this.form.module.value='{$RETURN_MODULE}';" type="submit" name="button" value=" {$APP.LBL_CANCEL_BUTTON_LABEL} ">
 </div>
 
@@ -602,6 +580,20 @@ function notify_setrequired(f) {
 
 	return true;
 }
+
+function setDefaultSMTPPort() 
+{
+    useSSLPort = !document.getElementById("mail_smtpssl").options[0].selected;
+    
+    if ( useSSLPort && document.getElementById("mail_smtpport").value == '25' ) {
+        document.getElementById("mail_smtpport").value = '465';
+    }
+    if ( !useSSLPort && document.getElementById("mail_smtpport").value == '465' ) {
+        document.getElementById("mail_smtpport").value = '25';
+    }
+        
+}
+
 /**
 *  If the outlook options are all set on page load then enable the outlook field so that the user has an indication
 *  that that filter has been applied.
@@ -692,6 +684,7 @@ function changeEmailScreenDisplay(smtptype, clear)
         document.getElementById("mail_smtpuser_label").innerHTML = '{/literal}{$MOD.LBL_EXCHANGE_SMTPUSER}{literal}';
         break;
     }
+    setDefaultSMTPPort();
     notify_setrequired(document.ConfigureSettings);
 }
 var oButtonGroup = new YAHOO.widget.ButtonGroup("smtpButtonGroup");

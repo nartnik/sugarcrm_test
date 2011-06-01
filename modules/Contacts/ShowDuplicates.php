@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -51,7 +51,7 @@ $error_msg = '';
 global $current_language;
 $mod_strings = return_module_language($current_language, 'Contacts');
 
-echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_MODULE_NAME'].": ".$mod_strings['LBL_SAVE_CONTACT'], true);
+echo getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_MODULE_NAME'],$mod_strings['LBL_SAVE_CONTACT']), true);
 $xtpl=new XTemplate ('modules/Contacts/ShowDuplicates.html');
 $xtpl->assign("MOD", $mod_strings);
 $xtpl->assign("APP", $app_strings);
@@ -113,6 +113,14 @@ foreach ($contact->additional_column_fields as $field)
 	if (!empty($_POST['Contacts'.$field])) {
 		$input .= "<input type='hidden' name='$field' value='${_POST['Contacts'.$field]}'>\n";
 	}
+}
+
+// Bug 25311 - Add special handling for when the form specifies many-to-many relationships
+if(!empty($_POST['Contactsrelate_to'])) {
+    $input .= "<input type='hidden' name='relate_to' value='{$_POST['Contactsrelate_to']}'>\n";
+}
+if(!empty($_POST['Contactsrelate_id'])) {
+    $input .= "<input type='hidden' name='relate_id' value='{$_POST['Contactsrelate_id']}'>\n";
 }
 
 

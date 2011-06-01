@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -79,7 +79,7 @@ if(isset($runSilent) && $runSilent == true) {
 	$options = get_select_options_with_id($options, '');
 	$beanDropDown = "<select onchange='SUGAR.Administration.RepairXSS.refreshEstimate(this);' id='repairXssDropdown'>{$options}</select>";
 	
-	echo get_module_title('Administration', $mod_strings['LBL_REPAIRXSS_TITLE'].":", true);
+	echo getClassicModuleTitle('Administration', array($mod_strings['LBL_REPAIRXSS_TITLE']), false);
 	echo "<script>var done = '{$mod_strings['LBL_DONE']}';</script>";
 	
 	$smarty = new Sugar_Smarty(); 

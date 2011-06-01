@@ -1,7 +1,7 @@
 <?php
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -38,3 +38,9 @@
 $action_view_map['themesettings'] = 'themesettings';
 $action_view_map['repair'] = 'repair';
 $action_view_map['configuretabs'] = 'configuretabs';
+$action_view_map['enablewirelessmodules'] = 'enablewirelessmodules';
+$action_view_map['configureshortcutbar'] = 'configureshortcutbar';
+$action_view_map['viewofflineclients'] = 'viewofflineclients';
+$action_view_map['backups'] = 'backups';
+$action_view_map['globalsearchsettings'] = 'globalsearchsettings';
+$action_view_map['languages'] = 'languages';

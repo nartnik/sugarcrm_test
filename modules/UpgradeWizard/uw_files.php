@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -91,7 +91,6 @@ $uw_files = array(
     'include/Pear/Crypt_Blowfish/Blowfish.php',
     'include/Pear/Crypt_Blowfish/Blowfish/DefaultKey.php',
     'include/utils.php',
-    'include/utils/external_cache.php',
     'include/language/en_us.lang.php',
     'include/modules.php',
     'include/Localization/Localization.php',

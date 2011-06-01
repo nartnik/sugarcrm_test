@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -96,7 +96,7 @@ if($_REQUEST['category_name'] == 'All'){
 	echo $sugar_smarty->fetch('modules/ACLRoles/EditAllBody.tpl');	
 }else{
 //WDong Bug 23195: Strings not localized in Role Management.
-echo get_module_title($_REQUEST['category_name'],$app_list_strings['moduleList'][$_REQUEST['category_name']], false);
+echo getClassicModuleTitle($_REQUEST['category_name'],array($app_list_strings['moduleList'][$_REQUEST['category_name']]), false);
 echo $sugar_smarty->fetch('modules/ACLRoles/EditRole.tpl');
 echo '</form>';
 }

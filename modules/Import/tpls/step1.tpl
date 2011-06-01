@@ -1,7 +1,7 @@
 {*
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -108,6 +108,13 @@
               &nbsp;{$MOD.LBL_ACT}</td>
           </tr>
           {/if}
+          {foreach from=$custom_mappings item=item name=custommappings}
+          {capture assign=mapping_label}{$MOD.LBL_CUSTOM_MAPPING_}{$item|upper}{/capture}
+          <tr>
+            <td colspan="3" scope="row"><input class="radio" type="radio" name="source" value="{$item}" />
+              &nbsp;{$mapping_label}</td>
+          </tr>
+          {/foreach}
           {foreach from=$custom_imports key=key item=item name=saved}
           {if $smarty.foreach.saved.first}
           <tr>

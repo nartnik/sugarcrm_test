@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -91,13 +91,20 @@ class ImportViewStep2 extends SugarView
 	 */
 	protected function _getModuleTitleParams()
 	{
-	    global $mod_strings;
+	    global $mod_strings, $app_list_strings;
 	    
-    	return array(
-           "<a href='index.php?module={$_REQUEST['import_module']}&action=index'><img src='".SugarThemeRegistry::current()->getImageURL('icon_'.$_REQUEST['import_module'].'_32.png')."' alt='".$_REQUEST['import_module']."' title='".$_REQUEST['import_module']."' align='absmiddle'></a>",
-        	"<a href='index.php?module=Import&action=Step1&import_module={$_REQUEST['import_module']}'>".$mod_strings['LBL_MODULE_NAME']."</a>",
-    	   $mod_strings['LBL_STEP_2_TITLE'],
-    	   );
+	    $iconPath = $this->getModuleTitleIconPath($this->module);
+	    $returnArray = array();
+	    if (!empty($iconPath) && !$browserTitle) {
+	        $returnArray[] = "<a href='index.php?module={$_REQUEST['import_module']}&action=index'><img src='{$iconPath}' alt='{$app_list_strings['moduleList'][$_REQUEST['import_module']]}' title='{$app_list_strings['moduleList'][$_REQUEST['import_module']]}' align='absmiddle'></a>";
+    	}
+    	else {
+    	    $returnArray[] = $app_list_strings['moduleList'][$_REQUEST['import_module']];
+    	}
+	    $returnArray[] = "<a href='index.php?module=Import&action=Step1&import_module={$_REQUEST['import_module']}'>".$mod_strings['LBL_MODULE_NAME']."</a>";
+	    $returnArray[] = $mod_strings['LBL_STEP_2_TITLE'];
+    	
+	    return $returnArray;
     }
     
  	/** 
@@ -109,8 +116,6 @@ class ImportViewStep2 extends SugarView
         global $import_mod_strings;
         
         $this->ss->assign("MODULE_TITLE", $this->getModuleTitle());
-        $this->ss->assign("MOD", $mod_strings);
-        $this->ss->assign("APP", $app_strings);
         $this->ss->assign("IMP", $import_mod_strings);
         $this->ss->assign("TYPE",( !empty($_REQUEST['type']) ? $_REQUEST['type'] : "import" ));
         $this->ss->assign("CUSTOM_DELIMITER",
@@ -124,13 +129,6 @@ class ImportViewStep2 extends SugarView
         $this->ss->assign("IMPORT_MODULE", $_REQUEST['import_module']);
         $this->ss->assign("HEADER", $app_strings['LBL_IMPORT']." ". $mod_strings['LBL_MODULE_NAME']);
         $this->ss->assign("JAVASCRIPT", $this->_getJS());
-        
-        // load bean
-        $focus = loadImportBean($_REQUEST['import_module']);
-        if ( !$focus ) {
-            showImportError($mod_strings['LBL_ERROR_IMPORTS_NOT_SET_UP'],$_REQUEST['import_module']);
-            return;
-        }
         
         // special for importing from Outlook
         if ($_REQUEST['source'] == "outlook") {
@@ -157,15 +155,25 @@ class ImportViewStep2 extends SugarView
         }
         else {
             $classname = 'ImportMap' . ucfirst($_REQUEST['source']);
-            require("modules/Import/{$classname}.php");
-            $import_map_seed = new $classname;
-            if (isset($import_map_seed->delimiter)) 
-                $this->ss->assign("CUSTOM_DELIMITER", $import_map_seed->delimiter);
-            if (isset($import_map_seed->enclosure)) 
-                $this->ss->assign("CUSTOM_ENCLOSURE", htmlentities($import_map_seed->enclosure));
-            if ($import_map_seed->has_header)
-                $this->ss->assign("HAS_HEADER_CHECKED"," CHECKED");
-            $this->ss->assign("SOURCE", $_REQUEST['source']);
+            if ( file_exists("modules/Import/{$classname}.php") )
+                require_once("modules/Import/{$classname}.php");
+            elseif ( file_exists("custom/modules/Import/{$classname}.php") )
+                require_once("custom/modules/Import/{$classname}.php");
+            else {
+                require_once("custom/modules/Import/ImportMapOther.php");
+                $classname = 'ImportMapOther';
+                $_REQUEST['source'] = 'other';
+            }
+            if ( class_exists($classname) ) {
+                $import_map_seed = new $classname;
+                if (isset($import_map_seed->delimiter)) 
+                    $this->ss->assign("CUSTOM_DELIMITER", $import_map_seed->delimiter);
+                if (isset($import_map_seed->enclosure)) 
+                    $this->ss->assign("CUSTOM_ENCLOSURE", htmlentities($import_map_seed->enclosure));
+                if ($import_map_seed->has_header)
+                    $this->ss->assign("HAS_HEADER_CHECKED"," CHECKED");
+                $this->ss->assign("SOURCE", $_REQUEST['source']);
+            }
         }
         
         // add instructions for anything other than custom_delimited
@@ -188,6 +196,11 @@ class ImportViewStep2 extends SugarView
                     break;
                 case "csv":
                     $lang_key = "CUSTOM";
+                    break;
+                case "other":
+                    break;
+                default:
+                    $lang_key = "CUSTOM_MAPPING_".strtoupper($import_map_seed->name);
                     break;
             }
             if ( $lang_key != '' ) {

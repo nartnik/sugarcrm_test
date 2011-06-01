@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -82,24 +82,38 @@ class SugarModule
      *
      * @return object
      */
-    public function loadBean()
+    public function loadBean($beanList = null, $beanFiles = null, $returnObject = true)
     {
-        global $beanList, $beanFiles;
-        
-        if ( !isset($beanList) || !isset($beanFiles) )
+        // Populate these reference arrays
+        if ( empty($beanList) ) {
+            global $beanList;
+        }
+        if ( empty($beanFiles) ) {
+            global $beanFiles;
+        }
+        if ( !isset($beanList) || !isset($beanFiles) ) {
             require('include/modules.php');
-    
+        }
+        
         if ( isset($beanList[$this->_moduleName]) ) {
             $bean = $beanList[$this->_moduleName];
             if (isset($beanFiles[$bean])) {
+                if ( !$returnObject ) {
+                    return true;
+                }
+                if ( !sugar_is_file($beanFiles[$bean]) ) {
+                    return false;
+                }
                 require_once($beanFiles[$bean]);
                 $focus = new $bean;
             }
-            else
+            else {
                 return false;
+            }
         }
-        else
+        else {
             return false;
+        }
     
         return $focus;
     }

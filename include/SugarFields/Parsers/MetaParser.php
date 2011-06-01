@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -687,9 +687,6 @@ function mergeTemplateMeta($templateMeta, $moduleDir, $masterCopy) {
    if(isset($masterTemplateMeta['javascript'])) {
    	  //Insert the getJSPath code back into src value
    	  $masterTemplateMeta['javascript'] = preg_replace('/src\s*=\s*[\'\"].*?(modules\/|include\/)([^\.]*?\.js)([^\'\"]*?)[\'\"]/i', 'src="@sq . getJSPath(@sq${1}${2}@sq) . @sq"', $masterTemplateMeta['javascript']);
-   	  // BEGIN SUGAR INT
-   	  //$GLOBALS['log']->fatal(var_export($masterTemplateMeta['javascript'], true));
-   	  // END SUGAR INT
    }
    
    return $masterTemplateMeta;	

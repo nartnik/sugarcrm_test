@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -528,7 +528,7 @@ eoq;
 $smarty->assign('UW_MAIN', $uwMain);
 $smarty->assign('UW_JS', $js);
 $smarty->assign('CHECKLIST', getChecklist($steps, $step));
-$smarty->assign('UW_TITLE', get_module_title($mod_strings['LBL_UW_TITLE'], $mod_strings['LBL_UW_TITLE'].": ".$steps['desc'][$_REQUEST['step']], true));
+$smarty->assign('UW_TITLE', getClassicModuleTitle($mod_strings['LBL_UW_TITLE'], array($mod_strings['LBL_UW_TITLE'],$steps['desc'][$_REQUEST['step']]), false));
 $smarty->assign('MOD', $mod_strings);
 $smarty->assign('APP', $app_strings);
 $smarty->assign('GRIDLINE', $current_user->getPreference('gridline'));

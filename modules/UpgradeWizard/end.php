@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -53,27 +53,44 @@ if($unzip_dir == null ) {
 //First repair the databse to ensure it is up to date with the new vardefs/tabledefs
 logThis('About to repair the database.', $path);
 //Use Repair and rebuild to update the database.
-global $dictionary, $beanFiles; 
+global $dictionary, $beanFiles;
+
+require_once('modules/Trackers/TrackerManager.php');
+$trackerManager = TrackerManager::getInstance();
+$trackerManager->pause();
+$trackerManager->unsetMonitors();
+
 require_once("modules/Administration/QuickRepairAndRebuild.php");
 $rac = new RepairAndClear();
 $rac->clearVardefs();
 $rac->rebuildExtensions();
+$rac->clearExternalAPICache();
 
 $repairedTables = array();
-		
+
 foreach ($beanFiles as $bean => $file) {
 	if(file_exists($file)){
 		require_once ($file);
 		unset($GLOBALS['dictionary'][$bean]);
 		$focus = new $bean ();
-		if (($focus instanceOf SugarBean) && !isset($repairedTables[$focus->table_name])) {
-			$sql = $db->repairTable($focus, true);
-			logThis('Running sql:' . $sql, $path);
-			$repairedTables[$focus->table_name] = true;
+		if (($focus instanceOf SugarBean))
+		{
+			if(!isset($repairedTables[$focus->table_name]))
+			{
+				$sql = $GLOBALS['db']->repairTable($focus, true);
+				logThis('Running sql:' . $sql, $path);
+				$repairedTables[$focus->table_name] = true;
+			}
+
+			//Check to see if we need to create the audit table
+		    if($focus->is_AuditEnabled() && !$focus->db->tableExists($focus->get_audit_table_name())){
+		       logThis('Creating audit table:' . $focus->get_audit_table_name(), $path);
+               $focus->create_audit_table();
+            }
 		}
 	}
 }
-		
+
 $olddictionary = $dictionary;
 
 unset ($dictionary);
@@ -94,16 +111,6 @@ logThis('database repaired', $path);
 
 $ce_to_pro_ent = isset($_SESSION['upgrade_from_flavor']) && ($_SESSION['upgrade_from_flavor'] == 'SugarCE to SugarPro' || $_SESSION['upgrade_from_flavor'] == 'SugarCE to SugarEnt');
 
-if(isset($_SESSION['current_db_version']) && $_SESSION['current_db_version'] < '550')
-{
-    include("install/seed_data/Advanced_Password_SeedData.php");
-}
-
-if(isset($_SESSION['current_db_version']) && $_SESSION['current_db_version'] < '550' && $sugar_config['dbconfig']['db_type'] == 'mssql' && !is_freetds())
-{
-     convertImageToText('import_maps', 'content');
-     convertImageToText('import_maps', 'default_values');
-}
 
 logThis(" Start Rebuilding the config file again", $path);
 
@@ -135,9 +142,9 @@ if(isset($_SESSION['current_db_version']) && isset($_SESSION['target_db_version'
 	if($_SESSION['current_db_version'] != $_SESSION['target_db_version']){
 		logThis("Upgrading multienum data", $path);
         require_once("$unzip_dir/scripts/upgrade_multienum_data.php");
-        upgrade_multienum_data();	
+        upgrade_multienum_data();
 	 }
-	 
+
 
 	 //keeping separate. making easily visible and readable
 	 if($_SESSION['current_db_version'] == $_SESSION['target_db_version']){
@@ -176,17 +183,37 @@ if(file_exists('modules/Configurator/Configurator.php')){
 }
 //unset the logger previously instantiated
 if(file_exists('include/SugarLogger/LoggerManager.php')){
-	
+
 	unset($GLOBALS['log']);
 	$GLOBALS['log'] = LoggerManager::getLogger('SugarCRM');
 }
 
 
 //Upgrade connectors
-if(function_exists('upgrade_connectors'))
+if($_SESSION['current_db_version'] < '610' && function_exists('upgrade_connectors'))
 {
    upgrade_connectors($path);
 }
+
+if ($_SESSION['current_db_version'] < '620' && ($sugar_config['dbconfig']['db_type'] == 'mssql' || $sugar_config['dbconfig']['db_type'] == 'oci8'))
+{
+    repair_long_relationship_names($path);
+}
+
+//Global search support
+if($_SESSION['current_db_version'] < '620' && function_exists('add_unified_search_to_custom_modules_vardefs'))
+{
+   logThis('Add global search for custom modules start .', $path);
+   add_unified_search_to_custom_modules_vardefs();
+   logThis('Add global search for custom modules finished .', $path);
+}
+
+//Upgrade system displayed tabs and subpanels
+if(function_exists('upgradeDisplayedTabsAndSubpanels'))
+{
+	upgradeDisplayedTabsAndSubpanels($_SESSION['current_db_version']);
+}
+
 
 //Unlink files that have been removed
 if(function_exists('unlinkUpgradeFiles'))
@@ -197,10 +224,17 @@ if(function_exists('unlinkUpgradeFiles'))
 require_once('modules/Administration/upgrade_custom_relationships.php');
 upgrade_custom_relationships();
 
+require_once('modules/UpgradeWizard/uw_utils.php');
+if($_SESSION['current_db_version'] < '620')
+{
+	upgradeDateTimeFields($path);
+	upgradeDocumentTypeFields($path);
+}
+
 //Update the license
 logThis('Start Updating the license ', $path);
 ob_start();
-   
+
    check_now(get_sugarbeat());
 ob_end_clean();
 logThis('End Updating the license ', $path);
@@ -216,7 +250,7 @@ $_SESSION['upgrade_complete'] = true;
 
 //add the clean vardefs here
 if(!class_exists('VardefManager')){
-	
+
 }
 VardefManager::clearVardef();
 
@@ -303,5 +337,5 @@ $stepCancel	= 0;
 $stepRecheck	= 0;
 
 $_SESSION['step'][$steps['files'][$_REQUEST['step']]] = ($stop) ? 'failed' : 'success';
-
-?>
+unset($_SESSION['current_db_version']);
+unset($_SESSION['target_db_version']);

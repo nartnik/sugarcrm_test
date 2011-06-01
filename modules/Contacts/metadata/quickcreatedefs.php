@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -57,8 +57,8 @@ $viewdefs = array (
             '<input type="hidden" name="bug_id" value="{$smarty.request.bug_id}">',
             '<input type="hidden" name="email_id" value="{$smarty.request.email_id}">',
             '<input type="hidden" name="inbound_email_id" value="{$smarty.request.inbound_email_id}">',
-            '<input type="hidden" name="reports_to_id" value="{$smarty.request.contact_id}">',
-            '<input type="hidden" name="report_to_name" value="{$smarty.request.contact_name}">',
+            '{if !empty($smarty.request.contact_id)}<input type="hidden" name="reports_to_id" value="{$smarty.request.contact_id}">{/if}',
+            '{if !empty($smarty.request.contact_name)}<input type="hidden" name="report_to_name" value="{$smarty.request.contact_name}">{/if}',
           ),
         ),
         'maxColumns' => '2',

@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -53,11 +53,15 @@ $dictionary['ProjectTask'] = array('audited'=>true,
 			'name' => 'date_entered',
 			'vname' => 'LBL_DATE_ENTERED',
 			'type' => 'datetime',
+		    'enable_range_search' => true,
+		    'options' => 'date_range_search_dom',
 		),
 		'date_modified' => array(
 			'name' => 'date_modified',
 			'vname' => 'LBL_DATE_MODIFIED',
 			'type' => 'datetime',
+		    'enable_range_search' => true,
+		    'options' => 'date_range_search_dom',
 		),
         'project_id' => array(
             'name' => 'project_id',
@@ -71,7 +75,7 @@ $dictionary['ProjectTask'] = array('audited'=>true,
         'project_task_id' => array(
             'name' => 'project_task_id',
             'vname' => 'LBL_PROJECT_TASK_ID',
-            'required' => true,
+            'required' => false,
             'type' => 'int',
             'reportable' => false,
 
@@ -113,6 +117,7 @@ $dictionary['ProjectTask'] = array('audited'=>true,
             'type' => 'date',
             'validation'=>array('type' => 'isbefore', 'compareto'=>'date_finish', 'blank' => true),
             'audited'=>true,
+            'enable_range_search' => true,
         ),
         'time_start' => array(
             'name' => 'time_start',
@@ -136,7 +141,7 @@ $dictionary['ProjectTask'] = array('audited'=>true,
             'type' => 'date',
             'validation'=>array('type' => 'isafter', 'compareto'=>'date_start', 'blank' => true),
             'audited'=>true,
-
+            'enable_range_search' => true,
         ),
         'duration' => array(
             'name' => 'duration',

@@ -1,6 +1,6 @@
 <!--
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -55,6 +55,15 @@ var ERR_REENTER_PASSWORDS = '{$MOD.ERR_REENTER_PASSWORDS}';
 </script>
 <script type='text/javascript' src='{sugar_getjspath file='modules/Users/PasswordRequirementBox.js'}'></script>
 {$ERROR_STRING}
+<!-- This is here for the external API forms -->
+<form name="DetailView" id="DetailView" method="POST" action="index.php">
+	<input type="hidden" name="record" id="record" value="{$ID}">
+	<input type="hidden" name="module" value="Users">
+	<input type="hidden" name="return_module" value="Users">
+	<input type="hidden" name="return_id" value="{$ID}">
+	<input type="hidden" name="return_action" value="EditView">
+</form>
+
 <form name="EditView" enctype="multipart/form-data" id="EditView" method="POST" action="index.php">
 	<input type="hidden" name="display_tabs_def">
 	<input type="hidden" name="hide_tabs_def">
@@ -87,6 +96,18 @@ SUGAR.EmailAddressWidget.prototype.forceSubmit = function() { document.getElemen
 
 EditView_tabs.on('contentReady', function(e){
 {/literal}
+{if $ID}
+{literal}
+    var eapmTabIndex = 4;
+    {/literal}{if !$SHOW_THEMES}{literal}eapmTabIndex = 3;{/literal}{/if}{literal}
+    EditView_tabs.getTab(eapmTabIndex).set('dataSrc','index.php?sugar_body_only=1&module=Users&subpanel=eapm&action=SubPanelViewer&inline=1&record={/literal}{$ID}{literal}&layout_def_key=UserEAPM&inline=1&ajaxSubpanel=true');
+    EditView_tabs.getTab(eapmTabIndex).set('cacheData',true);
+
+    if ( document.location.hash == '#tab5' ) {
+        EditView_tabs.selectTab(eapmTabIndex);
+    }
+{/literal}
+{/if}
 });
 </script>
 
@@ -115,6 +136,9 @@ EditView_tabs.on('contentReady', function(e){
         <li><a id="tab3" href="#tab3"><em>{$MOD.LBL_THEME}</em></a></li>
         {/if}
         <li><a id="tab4" href="#tab4" style='display:{$HIDE_FOR_GROUP_AND_PORTAL};'><em>{$MOD.LBL_ADVANCED}</em></a></li>
+        {if $ID}
+        <li><a id="tab5" href="#tab5"><em>{$MOD.LBL_EAPM_SUBPANEL_TITLE}</em></a></li>
+        {/if}
     </ul>
     <div class="yui-content">
         <div>
@@ -533,7 +557,7 @@ EditView_tabs.on('contentReady', function(e){
                         </tr>
                         <tr>
                             <td scope="row"><slot>{$MOD.LBL_TIMEZONE}:</slot>&nbsp;{sugar_help text=$MOD.LBL_TIMEZONE_TEXT }</td>
-                            <td ><slot><select tabindex='14' name='timezone'>{$TIMEZONEOPTIONS}</select></slot></td>
+                            <td ><slot><select tabindex='14' name='timezone'>{html_options options=$TIMEZONEOPTIONS selected=$TIMEZONE_CURRENT}</select></slot></td>
                             <!-- BEGIN: currency -->
                             <td width="17%" scope="row"><slot>
                                 <i>{$MOD.LBL_LOCALE_EXAMPLE_NAME_FORMAT}</i>:
@@ -590,6 +614,11 @@ EditView_tabs.on('contentReady', function(e){
                     </table>
         </div>
     </div>
+    {if $ID}
+    <div id="eapm_area">
+        <div style="text-align:center; width: 100%">{sugar_image name="loading"}</div>
+    </div>
+    {/if}
 </div>
 
 

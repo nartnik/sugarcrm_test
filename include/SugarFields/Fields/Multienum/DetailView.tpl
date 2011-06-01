@@ -1,6 +1,6 @@
 {*
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -36,12 +36,12 @@
 
 *}
 {if !empty({{sugarvar key='value' string=true}}) && ({{sugarvar key='value' string=true}} != '^^')}
+<input type="hidden" class="sugar_field" id="{{sugarvar key='name'}}" value="{{sugarvar key='value'}}">
 {multienum_to_array string={{sugarvar key='value' string=true}} assign="vals"}
 {foreach from=$vals item=item}
 <li style="margin-left:10px;">{ {{sugarvar key='options' string=true}}.$item }</li>
 {/foreach}
-{/if}
 {{if !empty($displayParams.enableConnectors)}}
-{{sugarvar_connector view='DetailView'}} 
+{{sugarvar_connector view='DetailView'}}
 {{/if}}
-
+{/if}

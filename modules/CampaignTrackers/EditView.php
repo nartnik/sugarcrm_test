@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -88,8 +88,10 @@ if (!empty($_REQUEST['campaign_id'])) {
 	$xtpl->assign("CAMPAIGN_ID", $focus->campaign_id);
 	$campaignId = $focus->campaign_id;
 }
-$middleText = "<a href='index.php?module=Campaigns&action=DetailView&record={$campaignId}'>{$campaignName}</a><span class='pointer'>&raquo;</span>{$mod_strings['LBL_MODULE_NAME']}";
-echo get_module_title($focus->module_dir, $middleText, true);
+$params = array();
+$params[] = "<a href='index.php?module=Campaigns&action=DetailView&record={$campaignId}'>{$campaignName}</a>";
+$params[] = $mod_strings['LBL_MODULE_NAME'];
+echo getClassicModuleTitle($focus->module_dir, $params, true);
 
 if (isset($_REQUEST['return_module'])) $xtpl->assign("RETURN_MODULE", $_REQUEST['return_module']);
 if (isset($_REQUEST['return_action'])) $xtpl->assign("RETURN_ACTION", $_REQUEST['return_action']);

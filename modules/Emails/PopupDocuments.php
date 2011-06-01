@@ -2,7 +2,7 @@
 //_pp($_REQUEST);
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -59,7 +59,11 @@ $where = '';
 
 $where = $popup->_get_where_clause();
 
-
+// We can't attach remote documents to emails because we can't necessarialy fetch a copy of them to include.
+if ( ! empty($where) ) {
+    $where .= ' AND ';
+}
+$where .= "documents.doc_type IN ( '', 'Sugar')";
 
 $name = empty($_REQUEST['name']) ? '' : $_REQUEST['name'];
 $document_name = empty($_REQUEST['document_name']) ? '' : $_REQUEST['document_name'];

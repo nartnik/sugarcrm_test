@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -55,10 +55,9 @@ class SugarEmailAddress extends SugarBean {
     //bug 40068, According to rules in page 6 of http://www.apps.ietf.org/rfc/rfc3696.html#sec-3,
 	//allowed special characters ! # $ % & ' * + - / = ?  ^ _ ` . { | } ~ in local part
     var $regex = "/^(['\.\-\+&'#!\$\*=\?\^_`\{\}~\/\w]+)*@((\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})|\w+([\.-]?\w+)*(\.[\w-]{2,})+)\$/";
-
+    var $disable_custom_fields = true;
     var $db;
     var $smarty;
-
     var $addresses = array(); // array of emails
     var $view = '';
 
@@ -196,7 +195,8 @@ class SugarEmailAddress extends SugarBean {
 
                         unset($current_links[$emailId]);
                     } else {
-                        $upd_eabr = "INSERT INTO email_addr_bean_rel (id, email_address_id,bean_id, bean_module,primary_address,reply_to_address,date_created,date_modified,deleted) VALUES('{$guid}', '{$emailId}', '{$id}', '{$module}', {$address['primary_address']}, {$address['reply_to_address']}, '".gmdate($GLOBALS['timedate']->get_db_date_time_format())."', '".gmdate($GLOBALS['timedate']->get_db_date_time_format())."', 0)";
+                        $now = TimeDate::getInstance()->nowDb();
+                        $upd_eabr = "INSERT INTO email_addr_bean_rel (id, email_address_id,bean_id, bean_module,primary_address,reply_to_address,date_created,date_modified,deleted) VALUES('{$guid}', '{$emailId}', '{$id}', '{$module}', {$address['primary_address']}, {$address['reply_to_address']}, '$now', '$now', 0)";
                     }
 
                     if (!empty($upd_eabr)) {
@@ -359,15 +359,15 @@ class SugarEmailAddress extends SugarBean {
                    break;
                 }
             }
+            $widget_id = $_REQUEST[$module .'_email_widget_id'];
 
-        	$widget_id = $_REQUEST[$module .'_email_widget_id'];
 
             //Iterate over the widgets for this module, in case there are multiple email widgets for this module
             while(isset($_REQUEST[$module . $widget_id . "emailAddress" . $widgetCount]))
             {
                 if (empty($_REQUEST[$module . $widget_id . "emailAddress" . $widgetCount])) {
-                	$widgetCount++;
-                	continue;
+                    $widgetCount++;
+                    continue;
                 }
 
                 $hasEmailValue = true;
@@ -536,7 +536,7 @@ class SugarEmailAddress extends SugarBean {
 
                     if(!empty($a)) {
                         if(isset($a['invalid_email']) && isset($addressMeta['invalid_email']) && isset($addressMeta['opt_out']) && $a['invalid_email'] != $addressMeta['invalid_email'] || $a['opt_out'] != $addressMeta['opt_out']) {
-                            $qUpdate = "UPDATE email_addresses SET invalid_email = {$addressMeta['invalid_email']}, opt_out = {$addressMeta['opt_out']}, date_modified = '".gmdate($GLOBALS['timedate']->get_db_date_time_format())."' WHERE id = '{$a['id']}'";
+                            $qUpdate = "UPDATE email_addresses SET invalid_email = {$addressMeta['invalid_email']}, opt_out = {$addressMeta['opt_out']}, date_modified = '".TimeDate::getInstance()->nowDb()."' WHERE id = '{$a['id']}'";
                             $rUpdate = $this->db->query($qUpdate);
                         }
                     }
@@ -594,8 +594,9 @@ class SugarEmailAddress extends SugarBean {
                 $guid = create_guid();
                 $address = $GLOBALS['db']->quote($address);
                 $addressCaps = $GLOBALS['db']->quote($addressCaps);
+                $now = TimeDate::getInstance()->nowDb();
                 $qa = "INSERT INTO email_addresses (id, email_address, email_address_caps, date_created, date_modified, deleted)
-                        VALUES('{$guid}', '{$address}', '{$addressCaps}', '".gmdate($GLOBALS['timedate']->get_db_date_time_format())."', '".gmdate($GLOBALS['timedate']->get_db_date_time_format())."', 0)";
+                        VALUES('{$guid}', '{$address}', '{$addressCaps}', '$now', '$now', 0)";
                 $ra = $this->db->query($qa);
             }
             return $guid;
@@ -612,8 +613,9 @@ class SugarEmailAddress extends SugarBean {
         $a = $this->db->fetchByAssoc($r);
         if(!empty($a) && !empty($a['id'])) {
             //verify the opt out and invalid flags.
-            if ($a['invalid_email'] != $invalid or $a['opt_out'] != $opt_out) {
-                $upd_q="update email_addresses set invalid_email={$invalid}, opt_out={$opt_out},date_modified = '".gmdate($GLOBALS['timedate']->get_db_date_time_format())."' where id='{$a['id']}'";
+           //bug# 39378- did not allow change of case of an email address
+            if ($a['invalid_email'] != $invalid or $a['opt_out'] != $opt_out or strcasecmp(trim($a['email_address']), trim($address))==0) {
+                $upd_q="update email_addresses set email_address='{$address}', invalid_email={$invalid}, opt_out={$opt_out},date_modified = '".gmdate($GLOBALS['timedate']->get_db_date_time_format())."' where id='{$a['id']}'";
                 $upd_r= $this->db->query($upd_q);
             }
             return $a['id'];
@@ -623,8 +625,9 @@ class SugarEmailAddress extends SugarBean {
                 $guid = create_guid();
                 $address = $GLOBALS['db']->quote($address);
                 $addressCaps = $GLOBALS['db']->quote($addressCaps);
+                $now = TimeDate::getInstance()->nowDb();
                 $qa = "INSERT INTO email_addresses (id, email_address, email_address_caps, date_created, date_modified, deleted, invalid_email, opt_out)
-                        VALUES('{$guid}', '{$address}', '{$addressCaps}', '".gmdate($GLOBALS['timedate']->get_db_date_time_format())."', '".gmdate($GLOBALS['timedate']->get_db_date_time_format())."', 0 , $invalid, $opt_out)";
+                        VALUES('{$guid}', '{$address}', '{$addressCaps}', '$now', '$now', 0 , $invalid, $opt_out)";
                 $this->db->query($qa);
             }
             return $guid;
@@ -682,8 +685,9 @@ class SugarEmailAddress extends SugarBean {
         $return = array();
         $module = $this->getCorrectedModule($module);
 
-        $q = "SELECT ea.*, ear.* FROM email_addresses ea
-                LEFT JOIN email_addr_bean_rel ear ON ea.id = ear.email_address_id
+        $q = "SELECT ea.email_address, ea.email_address_caps, ea.invalid_email, ea.opt_out, ea.date_created, ea.date_modified,
+                ear.id, ear.email_address_id, ear.bean_id, ear.bean_module, ear.primary_address, ear.reply_to_address, ear.deleted
+                FROM email_addresses ea LEFT JOIN email_addr_bean_rel ear ON ea.id = ear.email_address_id
                 WHERE ear.bean_module = '{$module}'
                 AND ear.bean_id = '{$id}'
                 AND ear.deleted = 0
@@ -711,7 +715,8 @@ class SugarEmailAddress extends SugarBean {
 
         global $app_strings, $dictionary, $beanList;
 
-		$prefill = 'false';
+        $prefill = 'false';
+
         $prefillData = 'new Object()';
         $passedModule = $module;
         $module = $this->getCorrectedModule($module);
@@ -724,10 +729,10 @@ class SugarEmailAddress extends SugarBean {
         if(!empty($id)) {
             $prefillDataArr = $this->getAddressesByGUID($id, $module);
             //When coming from convert leads, sometimes module is Contacts while the id is for a lead.
-			if (empty($prefillDataArr) && $module == "Contacts")
-			    $prefillDataArr = $this->getAddressesByGUID($id, "Leads");
-		} else if(isset($_REQUEST['full_form']) && !empty($_REQUEST['emailAddressWidget'])){
-			$widget_id = isset($_REQUEST[$module . '_email_widget_id']) ? $_REQUEST[$module . '_email_widget_id'] : '0';
+            if (empty($prefillDataArr) && $module == "Contacts")
+                $prefillDataArr = $this->getAddressesByGUID($id, "Leads");
+        } else if(isset($_REQUEST['full_form']) && !empty($_REQUEST['emailAddressWidget'])){
+            $widget_id = isset($_REQUEST[$module . '_email_widget_id']) ? $_REQUEST[$module . '_email_widget_id'] : '0';
             $count = 0;
             $key = $module . $widget_id . 'emailAddress'.$count;
             while(isset($_REQUEST[$key])) {
@@ -763,10 +768,10 @@ class SugarEmailAddress extends SugarBean {
         //Set addDefaultAddress flag (do not add if it's from the Email module)
         $this->smarty->assign('addDefaultAddress', (isset($_REQUEST['module']) && $_REQUEST['module'] == 'Emails') ? 'false' : 'true');
         $form = $this->view;
-		if ($this->view == "QuickCreate")
-		  $form = 'form_'.$this->view .'_'.$module;
-		$this->smarty->assign('emailView', $form);
 
+        if ($this->view == "QuickCreate")
+        $form = 'form_'.$this->view .'_'.$module;
+        $this->smarty->assign('emailView', $form);
 
         if($module == 'Users') {
             $this->smarty->assign('useReplyTo', true);
@@ -813,6 +818,7 @@ class SugarEmailAddress extends SugarBean {
             $key = ($addressItem['reply_to_address'] == 1) ? 'reply_to' : $key;
             $key = ($addressItem['opt_out'] == 1) ? 'opt_out' : $key;
             $key = ($addressItem['invalid_email'] == 1) ? 'invalid' : $key;
+            $key = ($addressItem['opt_out'] == 1) && ($addressItem['invalid_email'] == 1) ? 'opt_out_invalid' : $key;
 
             $assign[] = array('key' => $key, 'address' => $current_user->getEmailLink2($addressItem['email_address'], $focus).$addressItem['email_address']."</a>");
         }

@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -106,7 +106,7 @@ class LanguageManager{
 		include($file);
 		
 		// put the item in the sugar cache.
-		$key = "LanguageManager.$module.$lang";
+		$key = self::getLanguageCacheKey($module,$lang);
 		sugar_cache_put($key,$loaded_mod_strings);
 	}
 	
@@ -152,7 +152,7 @@ class LanguageManager{
 			$file = $GLOBALS['sugar_config']['cache_dir'].'modules/'.$module_dir.'/language/'.$lang.'.lang.php';
 			if(file_exists($file)){
 				unlink($file);
-				$key = "LanguageManager.$module_dir.$lang";
+				$key = self::getLanguageCacheKey($module_dir,$lang);
 				sugar_cache_clear($key);
 			}
 		}
@@ -224,7 +224,7 @@ class LanguageManager{
 		//if either our session or the system is set to developerMode then refresh is set to true
 		
 		// Retrieve the vardefs from cache.
-		$key = "LanguageManager.$module.$lang";
+		$key = self::getLanguageCacheKey($module,$lang);
 		
 		if(!$refresh)
 		{
@@ -254,6 +254,19 @@ class LanguageManager{
 			}
 			return $mod_strings;
 		}
+	}
+
+    /**
+     * Return the cache key for the module language definition
+     *
+     * @static
+     * @param  $module
+     * @param  $lang
+     * @return string
+     */
+    public static function getLanguageCacheKey($module, $lang)
+	{
+         return "LanguageManager.$module.$lang";
 	}
 }
 

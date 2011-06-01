@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -51,6 +51,128 @@ $layout_defs['Documents'] = array(
 			'get_subpanel_data' => 'revisions',
 			'fill_in_additional_fields'=>true,
 		),
+        'accounts' => array(
+            'order' => 30,
+            'module' => 'Accounts',
+            'subpanel_name' => 'default',
+            'sort_order' => 'asc',
+            'sort_by' => 'id',
+            'title_key' => 'LBL_ACCOUNTS_SUBPANEL_TITLE',
+            'get_subpanel_data' => 'accounts',
+            'top_buttons' => 
+            array (
+                0 => 
+                array (
+                    'widget_class' => 'SubPanelTopButtonQuickCreate',
+                    ),
+                1 => 
+                array (
+                    'widget_class' => 'SubPanelTopSelectButton',
+                    'mode' => 'MultiSelect',
+                    ),
+                ),
+        ),
+        'contacts' => array(
+            'order' => 40,
+            'module' => 'Contacts',
+            'subpanel_name' => 'default',
+            'sort_order' => 'asc',
+            'sort_by' => 'id',
+            'title_key' => 'LBL_CONTACTS_SUBPANEL_TITLE',
+            'get_subpanel_data' => 'contacts',
+            'top_buttons' => 
+            array (
+                0 => 
+                array (
+                    'widget_class' => 'SubPanelTopButtonQuickCreate',
+                    ),
+                1 => 
+                array (
+                    'widget_class' => 'SubPanelTopSelectButton',
+                    'mode' => 'MultiSelect',
+                    ),
+                ),
+        ),
+        'opportunities' => array(
+            'order' => 40,
+            'module' => 'Opportunities',
+            'subpanel_name' => 'default',
+            'sort_order' => 'asc',
+            'sort_by' => 'id',
+            'title_key' => 'LBL_OPPORTUNITIES_SUBPANEL_TITLE',
+            'get_subpanel_data' => 'opportunities',
+            'top_buttons' => 
+            array (
+                0 => 
+                array (
+                    'widget_class' => 'SubPanelTopButtonQuickCreate',
+                    ),
+                1 => 
+                array (
+                    'widget_class' => 'SubPanelTopSelectButton',
+                    'mode' => 'MultiSelect',
+                    ),
+                ),
+        ),
+        'cases' => array(
+            'order' => 50,
+            'module' => 'Cases',
+            'subpanel_name' => 'default',
+            'sort_order' => 'asc',
+            'sort_by' => 'id',
+            'title_key' => 'LBL_CASES_SUBPANEL_TITLE',
+            'get_subpanel_data' => 'cases',
+            'top_buttons' => 
+            array (
+                0 => 
+                array (
+                    'widget_class' => 'SubPanelTopButtonQuickCreate',
+                    ),
+                1 => 
+                array (
+                    'widget_class' => 'SubPanelTopSelectButton',
+                    'mode' => 'MultiSelect',
+                    ),
+                ),
+        ),
+        'bugs' => array(
+            'order' => 60,
+            'module' => 'Bugs',
+            'subpanel_name' => 'default',
+            'sort_order' => 'asc',
+            'sort_by' => 'id',
+            'title_key' => 'LBL_BUGS_SUBPANEL_TITLE',
+            'get_subpanel_data' => 'bugs',
+            'top_buttons' => 
+            array (
+                0 => 
+                array (
+                    'widget_class' => 'SubPanelTopButtonQuickCreate',
+                    ),
+                1 => 
+                array (
+                    'widget_class' => 'SubPanelTopSelectButton',
+                    'mode' => 'MultiSelect',
+                    ),
+                ),
+        ),
+        'quotes' => array(
+            'order' => 70,
+            'module' => 'Quotes',
+            'subpanel_name' => 'default',
+            'sort_order' => 'asc',
+            'sort_by' => 'id',
+            'title_key' => 'LBL_QUOTES_SUBPANEL_TITLE',
+            'get_subpanel_data' => 'quotes',
+            'top_buttons' => 
+            array (
+                0 => 
+                array (
+                    'widget_class' => 'SubPanelTopSelectButton',
+                    'mode' => 'MultiSelect',
+                    ),
+                ),
+        ),
 	),
 );
 ?>

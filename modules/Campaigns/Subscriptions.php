@@ -1,7 +1,7 @@
  <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -74,7 +74,6 @@ if(isset($_REQUEST['record'])) {
 }
 
 
-//echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_MODULE_NAME']." ".$mod_strings['LBL_STEP_3_TITLE'], true);
 $this->ss->assign("MOD", $mod_strings);
 $this->ss->assign("APP", $app_strings);
 
@@ -87,8 +86,11 @@ if(isset($_REQUEST['record'])){$this->ss->assign("RECORD", $_REQUEST['record']);
 if(isset($_REQUEST['subs_action'])){manageSubscriptions($focus);}
 
 //$title = $GLOBALS['app_strings']['LBL_MANAGE_SUBSCRIPTIONS_FOR'].$focus->name;
-$middleText = "<a href='index.php?module={$focus->module_dir}&action=index'>{$focus->module_dir}</a><span class='pointer'>&raquo;</span><a href='index.php?module={$focus->module_dir}&action=DetailView&record={$focus->id}'>{$focus->name}</a><span class='pointer'>&raquo;</span>{$mod_strings['LBL_MANAGE_SUBSCRIPTIONS_TITLE']}";
-$title = get_module_title($focus->module_dir, $middleText, true);
+$params = array();
+$params[]  = "<a href='index.php?module={$focus->module_dir}&action=index'>{$focus->module_dir}</a>";
+$params[] = "<a href='index.php?module={$focus->module_dir}&action=DetailView&record={$focus->id}'>{$focus->name}</a>";
+$params[] = $mod_strings['LBL_MANAGE_SUBSCRIPTIONS_TITLE'];
+$title = getClassicModuleTitle($focus->module_dir, $params, true);
 $orig_vals_str = printOriginalValues($focus);    
 $orig_vals_array = constructDDSubscriptionList($focus);
 

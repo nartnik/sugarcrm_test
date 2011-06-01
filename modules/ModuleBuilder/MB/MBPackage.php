@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -98,7 +98,7 @@ class MBPackage{
 function getManifest($version_specific = false, $for_export = false){
     //If we are exporting the package, we must ensure a different install key
     $pre = $for_export ? MB_EXPORTPREPEND : "";
-    $date = gmdate($GLOBALS['timedate']->get_db_date_time_format());
+    $date = TimeDate::getInstance()->nowDb();
     $time = time();
     $this->description = to_html($this->description);
     $is_uninstallable = ($this->is_uninstallable ? 'true' : 'false');

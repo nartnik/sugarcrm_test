@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -43,6 +43,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  * Contributor(s): ______________________________________..
  ********************************************************************************/
 
+
+
 $sugar_smarty = new Sugar_Smarty();
 require_once('include/export_utils.php');
 require_once('modules/Configurator/Configurator.php');
@@ -60,9 +62,9 @@ $focus = new User();
 $is_current_admin=is_admin($current_user)
                 ||is_admin_for_module($GLOBALS['current_user'],'Users');
 $is_super_admin = is_admin($current_user);
-if(!$is_current_admin && $_REQUEST['record'] != $current_user->id) sugar_die("Unauthorized access to administration.");
 
 if(isset($_REQUEST['record'])) {
+    if(!$is_current_admin && $_REQUEST['record'] != $current_user->id) sugar_die("Unauthorized access to administration.");
     $focus->retrieve($_REQUEST['record']);
 }
 
@@ -72,7 +74,9 @@ if(isset($_REQUEST['isDuplicate']) && $_REQUEST['isDuplicate'] == 'true') {
 	$focus->id = "";
 	$focus->user_name = "";
 }else if(!isset($_REQUEST['record'])){
-    define('SUGARPDF_USE_DEFAULT_SETTINGS', true);
+    if ( !defined('SUGARPDF_USE_DEFAULT_SETTINGS') ) {
+        define('SUGARPDF_USE_DEFAULT_SETTINGS', true);
+    }
 }
 
 
@@ -104,12 +108,14 @@ if (isset($buttons)) $sugar_smarty->assign("BUTTONS", $buttons);
 echo "\n<p>\n";
 $params = array();
 if(empty($focus->id)){
-	$params[] = "<span class='pointer'>&raquo;</span>".$GLOBALS['app_strings']['LBL_CREATE_BUTTON_LABEL'];
+	$params[] = $GLOBALS['app_strings']['LBL_CREATE_BUTTON_LABEL'];
 }else{
-	$params[] = "<span class='pointer'>&raquo;</span><a href='index.php?module=Users&action=DetailView&record={$focus->id}'>".$locale->getLocaleFormattedName($focus->first_name,$focus->last_name)."</a>";
+	$params[] = "<a href='index.php?module=Users&action=DetailView&record={$focus->id}'>".$locale->getLocaleFormattedName($focus->first_name,$focus->last_name)."</a>";
 	$params[] = $GLOBALS['app_strings']['LBL_EDIT_BUTTON_LABEL'];
 }
-echo getClassicModuleTitle("Users", $params, true);
+
+$index_url = ($is_current_admin) ? "index.php?module=Users&action=index" : "index.php?module=Users&action=DetailView&record={$focus->id}"; 
+echo getClassicModuleTitle("Users", $params, true,$index_url);
 
 $GLOBALS['log']->info('User edit view');
 $sugar_smarty->assign('MOD', $mod_strings);
@@ -198,6 +204,9 @@ if($focus->getPreference('no_opps') == 'on') {
 }
 
 
+
+
+
 // check if the user has access to the User Management
 $sugar_smarty->assign('USER_ADMIN',is_admin_for_module($current_user,'Users')&& !is_admin($current_user));
 
@@ -237,34 +246,19 @@ $sugar_smarty->assign('DATEOPTIONS', $dateOptions);
 if(empty($focus->id)) { // remove default timezone for new users(set later)
     $focus->user_preferences['timezone'] = '';
 }
-require_once('include/timezone/timezones.php');
-global $timezones;
 
 $userTZ = $focus->getPreference('timezone');
-if(empty($userTZ) && !$focus->is_group && !$focus->portal_only) {
-	$focus->setPreference('timezone', date('T'));
-}
 
-if(empty($userTZ) && !$focus->is_group && !$focus->portal_only)
-	$userTZ = lookupTimezone();
+if(empty($userTZ) && !$focus->is_group && !$focus->portal_only) {
+	$userTZ = TimeDate::guessTimezone();
+	$focus->setPreference('timezone', $userTZ);
+}
 
 if(!$focus->getPreference('ut')) {
 	$sugar_smarty->assign('PROMPTTZ', ' checked');
 }
-
-$timezoneOptions = '';
-ksort($timezones);
-foreach($timezones as $key => $value) {
-	$selected =($userTZ == $key) ? ' SELECTED="true"' : '';
-	$dst = !empty($value['dstOffset']) ? '(+DST)' : '';
-	$gmtOffset =($value['gmtOffset'] / 60);
-
-	if(!strstr($gmtOffset,'-')) {
-		$gmtOffset = '+'.$gmtOffset;
-	}
-  $timezoneOptions .= "<option value='$key'".$selected.">".str_replace(array('_','North'), array(' ', 'N.'),translate('timezone_dom','',$key)). "(GMT".$gmtOffset.") ".$dst."</option>";
-}
-$sugar_smarty->assign('TIMEZONEOPTIONS', $timezoneOptions);
+$sugar_smarty->assign('TIMEZONE_CURRENT', $userTZ);
+$sugar_smarty->assign('TIMEZONEOPTIONS', TimeDate::getTimezoneList());
 
 //// Numbers and Currency display
 require_once('modules/Currencies/ListCurrency.php');
@@ -327,7 +321,7 @@ $sugar_smarty->assign('getNameJs', $locale->getNameJs());
 
 
 // Grouped tabs?
-$useGroupTabs = $current_user->getPreference('navigation_paradigm');
+$useGroupTabs = $focus->getPreference('navigation_paradigm');
 if ( ! isset($useGroupTabs) ) {
     if ( ! isset($GLOBALS['sugar_config']['default_navigation_paradigm']) ) {
         $GLOBALS['sugar_config']['default_navigation_paradigm'] = 'gm';
@@ -344,7 +338,7 @@ if(isset($user_max_tabs) && $user_max_tabs > 0) {
 } else {
     $sugar_smarty->assign("MAX_TAB", $GLOBALS['sugar_config']['default_max_tabs']);
 }
-$sugar_smarty->assign("MAX_TAB_OPTIONS", range(1, 10));
+$sugar_smarty->assign("MAX_TAB_OPTIONS", range(1, ((!empty($GLOBALS['sugar_config']['default_max_tabs']) && $GLOBALS['sugar_config']['default_max_tabs'] > 10 ) ? $GLOBALS['sugar_config']['default_max_tabs'] : 10)));
 
 $user_subpanel_tabs = $focus->getPreference('subpanel_tabs');
 if(isset($user_subpanel_tabs)) {
@@ -477,7 +471,7 @@ else
     $sugar_smarty->assign('REQUIRED_PASSWORD','0');
 
 // If my account page or portal only user or regular user without system generated password or a duplicate user
-if((($current_user->id == $focus->id) || $usertype=='PORTAL_ONLY' || (($usertype=='REGULAR' || (isset($_REQUEST['isDuplicate']) && $_REQUEST['isDuplicate'] == 'true' && $usertype!='GROUP')) && !$enable_syst_generate_pwd)) && !$focus->external_auth_only )
+if((($current_user->id == $focus->id) || $usertype=='PORTAL_ONLY' || (($usertype=='REGULAR' || $usertype == 'ADMIN' || (isset($_REQUEST['isDuplicate']) && $_REQUEST['isDuplicate'] == 'true' && $usertype!='GROUP')) && !$enable_syst_generate_pwd)) && !$focus->external_auth_only )
    $sugar_smarty->assign('CHANGE_PWD', '1');
 else
    $sugar_smarty->assign('CHANGE_PWD', '0');
@@ -506,14 +500,24 @@ else{
 
 $sugar_smarty->assign('IS_FOCUS_ADMIN', is_admin($focus));
 
-$disable_download_tab = !isset($sugar_config['disable_download_tab']) ? false : $sugar_config['disable_download_tab'];
-
-if($edit_self && !$disable_download_tab) {
+if($edit_self) {
 	$sugar_smarty->assign('EDIT_SELF','1');
 }
 if($admin_edit_self) {
 	$sugar_smarty->assign('ADMIN_EDIT_SELF','1');
 }
+
+
+if (isset($sugar_config['show_download_tab']))
+{
+	$enable_download_tab = $sugar_config['show_download_tab'];
+}else{
+	
+	$enable_download_tab = true;
+}	
+
+$sugar_smarty->assign('SHOW_DOWNLOADS_TAB', $enable_download_tab);
+	
 
 
 /////////////////////////////////////////////

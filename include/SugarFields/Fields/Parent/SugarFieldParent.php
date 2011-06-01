@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,9 +34,9 @@
  * "Powered by SugarCRM".
  ********************************************************************************/
 
-require_once('include/SugarFields/Fields/Base/SugarFieldBase.php');
+require_once('include/SugarFields/Fields/Relate/SugarFieldRelate.php');
 
-class SugarFieldParent extends SugarFieldBase {
+class SugarFieldParent extends SugarFieldRelate {
    
 	function getDetailViewSmarty($parentFieldArray, $vardef, $displayParams, $tabindex) {
 		$nolink = array('Users', 'Teams');
@@ -46,7 +46,7 @@ class SugarFieldParent extends SugarFieldBase {
 			$this->ss->assign('nolink', false);
 		}
         $this->setup($parentFieldArray, $vardef, $displayParams, $tabindex);
-        return $this->fetch('include/SugarFields/Fields/Parent/DetailView.tpl');
+        return $this->fetch($this->findTemplate('DetailView'));
     }
     
     function getEditViewSmarty($parentFieldArray, $vardef, $displayParams, $tabindex) {
@@ -80,7 +80,7 @@ class SugarFieldParent extends SugarFieldBase {
     	$displayParams['disabled_parent_types'] = '<script>var disabledModules='. $json->encode($disabled_parent_types).';</script>';
     	$this->ss->assign('quickSearchCode', $this->createQuickSearchCode($form_name, $vardef));
     	$this->setup($parentFieldArray, $vardef, $displayParams, $tabindex);        
-        return $this->fetch('include/SugarFields/Fields/Parent/EditView.tpl');
+        return $this->fetch($this->findTemplate('EditView'));
     }
  	
     function getSearchViewSmarty($parentFieldArray, $vardef, $displayParams, $tabindex) {
@@ -115,7 +115,33 @@ class SugarFieldParent extends SugarFieldBase {
 		$displayParams['popupData'] = '{literal}'.$json->encode($popup_request_data).'{/literal}';
     	$displayParams['disabled_parent_types'] = '<script>var disabledModules='. $json->encode($disabled_parent_types).';</script>';
     	$this->setup($parentFieldArray, $vardef, $displayParams, $tabindex);        
-        return $this->fetch('include/SugarFields/Fields/Parent/SearchView.tpl');
+        return $this->fetch($this->findTemplate('SearchView'));
+    }
+    
+    /**
+     * @see SugarFieldBase::importSanitize()
+     */
+    public function importSanitize(
+        $value,
+        $vardef,
+        $focus,
+        ImportFieldSanitize $settings
+        )
+    {
+        global $beanList;
+        
+        if ( isset($vardef['type_name']) ) {
+            $moduleName = $vardef['type_name'];
+            if ( isset($focus->$moduleName) && isset($beanList[$focus->$moduleName]) ) {
+                $vardef['module'] = $focus->$moduleName;
+                $vardef['rname'] = 'name';
+                $relatedBean = loadBean($focus->$moduleName);
+                $vardef['table'] = $relatedBean->table_name;
+                return parent::importSanitize($value,$vardef,$focus,$settings);
+            }
+        }
+        
+        return false;
     }
     
     function createQuickSearchCode($formName = 'EditView', $vardef){

@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -42,21 +42,21 @@ class SugarFieldHtml extends SugarFieldBase {
         $vardef['value'] = $this->getVardefValue($vardef);
         
         $this->setup($parentFieldArray, $vardef, $displayParams, $tabindex);
-        return $this->fetch('include/SugarFields/Fields/Html/DetailView.tpl');
+        return $this->fetch($this->findTemplate('DetailView'));
     }
     
     function getEditViewSmarty($parentFieldArray, $vardef, $displayParams, $tabindex){
     	$vardef['value'] = $this->getVardefValue($vardef);
 				
         $this->setup($parentFieldArray, $vardef, $displayParams, $tabindex);
-        return $this->fetch('include/SugarFields/Fields/Html/DetailView.tpl');
+        return $this->fetch($this->findTemplate('DetailView'));
     }
     
 	function getSearchViewSmarty($parentFieldArray, $vardef, $displayParams, $tabindex) {
 		$vardef['value'] = $this->getVardefValue($vardef);
 				
         $this->setup($parentFieldArray, $vardef, $displayParams, $tabindex);
-        return $this->fetch('include/SugarFields/Fields/Html/DetailView.tpl');    
+        return $this->fetch($this->findTemplate('DetailView'));    
     }
     
     function getVardefValue($vardef){

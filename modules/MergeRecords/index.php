@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -45,6 +45,16 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 if (isset($_REQUEST['uid'])) {
 	$merge_ids = explode(',',$_REQUEST['uid']);
+	// Bug 18852 - Check to make sure we have ACL Edit privledges on both records involved in the merge before proceeding
+	if ( ($bean1 = SugarModule::get($_REQUEST['action_module'])->loadBean()) !== false
+    	    && ($bean2 = SugarModule::get($_REQUEST['action_module'])->loadBean()) !== false ) {
+        $bean1->retrieve($merge_ids[0]);
+        $bean2->retrieve($merge_ids[1]);
+        if ( !$bean1->ACLAccess('edit') || !$bean2->ACLAccess('edit') ) {
+            ACLController::displayNoAccess();
+            sugar_die('');
+        }
+    }
 	
 	 //redirect to step3.
 	$_REQUEST['record']=$merge_ids[0];

@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -60,8 +60,8 @@ echo <<<EOQ
 EOQ;
 if(!empty($portal_name)){
 $portal_password = md5($portal_password);
-require_once('../include/nusoap/nusoap.php');  //must also have the nusoap code on the ClientSide.
-$soapclient = new nusoapclient('http://localhost/sugarcrm/soap.php');  //define the SOAP Client an
+require_once('include/nusoap/nusoap.php');  //must also have the nusoap code on the ClientSide.
+$soapclient = new nusoapclient($GLOBALS['sugar_config']['site_url'].'/soap.php');  //define the SOAP Client an
 
 echo '<b>LOGIN:</b><BR>';
 $result = $soapclient->call('portal_login',array('portal_auth'=>array('user_name'=>$portal_name,'password'=>$portal_password, 'version'=>'.01'),'user_name'=>$user_name, 'application_name'=>'SoapTestPortal'));

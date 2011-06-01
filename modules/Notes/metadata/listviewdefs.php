@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -73,18 +73,22 @@ array (
       1 => 'parent_type',
     ),
   ),
+  
   'FILENAME' => 
   array (
     'width' => '20%',
     'label' => 'LBL_LIST_FILENAME',
-    'link' => false,
     'default' => true,
+    'type' => 'file',
     'related_fields' => 
     array (
       0 => 'file_url',
       1 => 'id',
     ),
-    'customCode' => '<a href="index.php?entryPoint=download&id={$ID}&type=Notes" >{$FILENAME}</a>',
+    'displayParams' =>
+    array(
+      'module' => 'Notes',
+    ),
   ),
   'CREATED_BY_NAME' => 
   array (
@@ -94,13 +98,6 @@ array (
     'default' => true,
 	'related_fields' =>  array ( 'created_by' ),
   ),
-  'DATE_ENTERED' => 
-  array (
-    'type' => 'datetime',
-    'label' => 'LBL_DATE_ENTERED',
-    'width' => '10%',
-    'default' => false,
-  ),
   'DATE_MODIFIED' => 
   array (
     'width' => '20%',
@@ -108,5 +105,12 @@ array (
     'link' => false,
     'default' => false,
   ),
+  'DATE_ENTERED' => 
+  array (
+    'type' => 'datetime',
+    'label' => 'LBL_DATE_ENTERED',
+    'width' => '10%',
+    'default' => true,
+  ),  
 );
 ?>

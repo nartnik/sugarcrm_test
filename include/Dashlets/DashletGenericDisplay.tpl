@@ -1,7 +1,7 @@
 {*
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -124,7 +124,9 @@
 	                    <img border='0' src='{sugar_getimagepath file=$imageName}' width='{$arrowWidth}' height='{$arrowHeight}' align='absmiddle' alt='{$arrowAlt}'>
 	                {/if}
 	           {else}
-	           		{sugar_translate label=$params.label module=$pageData.bean.moduleDir}
+                    {if !isset($params.noHeader) || $params.noHeader == false} 
+	           		  {sugar_translate label=$params.label module=$pageData.bean.moduleDir}
+                    {/if}
 	           {/if}
 			   </div>
             </th>

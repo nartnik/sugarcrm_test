@@ -2,7 +2,7 @@
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -272,7 +272,7 @@ class TemplateDragDropChooser extends Template {
         global $sugar_version, $sugar_config;
     	$j_str =   "  
         <link rel='stylesheet' type='text/css' href='include/javascript/yui/build/datatable/assets/skins/sam/datatable.css'/>
-        <script type='text/javascript' src='include/javascript/sugar_grp_yui_widgets.js'></script>";
+        <script type='text/javascript' src='".getJSPath("include/javascript/sugar_grp_yui_widgets.js")."'></script>";
             
         return $j_str;
     }

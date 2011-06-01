@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -93,7 +93,6 @@ $javascript->setSugarBean($focus);
 $javascript->setFormName('EditView');
 $javascript->addAllFields('');
 $javascript->addFieldGeneric('mins', 'alpha', 'Mins', true, $prefix='');
-$javascript->addFieldGeneric('hours', 'alpha', 'Hours', true, $prefix='');
 $javascript->addFieldGeneric('day_of_month', 'alpha', 'Days of Month', true, $prefix='');
 $javascript->addFieldGeneric('months', 'alpha', 'Months', true, $prefix='');
 $javascript->addFieldGeneric('day_of_week', 'alpha', 'Days of Week', true, $prefix='');
@@ -112,7 +111,7 @@ if(!empty($dtStart)) {
 	$time_start = $exStart[1];
 } else {
 	$prefDate = $current_user->getUserDateTimePreferences();
-	$date_start = date($prefDate['date'], strtotime('2005-01-01'));
+	$date_start =  $timedate->asUserDate($timedate->fromString('2005-01-01'));
 	$time_start = '';
 }
 

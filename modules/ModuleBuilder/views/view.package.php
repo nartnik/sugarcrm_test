@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -41,13 +41,13 @@ class Viewpackage extends SugarView
  	/**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
-	protected function _getModuleTitleParams()
+	protected function _getModuleTitleParams($browserTitle = false)
 	{
 	    global $mod_strings;
 	    
     	return array(
     	   translate('LBL_MODULE_NAME','Administration'),
-    	   $mod_strings['LBL_MODULEBUILDER'],
+    	   ModuleBuilderController::getModuleTitle(),
     	   );
     }
 
@@ -72,8 +72,29 @@ class Viewpackage extends SugarView
 			echo $ajax->getJavascript();
  		}
  		else {
+ 			
  			$name = (!empty($_REQUEST['package']))?$_REQUEST['package']:'';
 			$mb->getPackage($name);
+			
+            require_once ('modules/ModuleBuilder/MB/MBPackageTree.php') ;
+            $mbt = new MBPackageTree();
+            $nodes = $mbt->fetchNodes();
+            
+			$package_labels = array();
+			if(!empty($nodes['tree_data']['nodes']))
+			{
+				foreach($nodes['tree_data']['nodes'] as $entry) 
+				{
+					if(!empty($entry['data']['label']) && $name != $entry['data']['label'])
+					{
+						$package_labels[] = strtoupper($entry['data']['label']);
+					}
+				}
+			}
+			
+			$json = getJSONobj();
+			$smarty->assign('package_labels', $json->encode($package_labels));            	
+			
 	 		$this->package =& $mb->packages[$name];
 	 		$this->loadModuleTypes();
 	 		$this->loadPackageHelp($name);

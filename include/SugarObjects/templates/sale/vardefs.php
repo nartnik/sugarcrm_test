@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -150,8 +150,9 @@ $vardefs = array(
 		    'type' => 'date',
 		    'audited'=>true,
 		    'required' => true,
-		    'comment' => 'Expected or actual date the sale will close'
-
+		    'comment' => 'Expected or actual date the sale will close',
+		    'enable_range_search' => true,
+		    'options' => 'date_range_search_dom',
 		  ),
 		  'next_step' =>
 		  array (

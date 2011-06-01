@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -208,15 +208,18 @@ class Employee extends Person {
 		return $query;
 	}
 	
+	//use parent class
 	/**
 	 * Generate the name field from the first_name and last_name fields.
 	 */
+	/*
 	function _create_proper_name_field() {
         global $locale;
         $full_name = $locale->getLocaleFormattedName($this->first_name, $this->last_name);
         $this->name = $full_name;
         $this->full_name = $full_name; 
 	}
+	*/
 	
 	function preprocess_fields_on_save(){		
 		parent::preprocess_fields_on_save();	

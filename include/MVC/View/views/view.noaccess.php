@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,16 +34,16 @@
  * "Powered by SugarCRM".
  ********************************************************************************/
 
-require_once('include/vCard.php');
 
-class ViewNoaccess extends SugarView{
-	var $type ='noaccess';
-	function ViewNoaccess(){
- 		parent::SugarView();
- 	}
- 	
-	function display(){
+class ViewNoaccess extends SugarView
+{
+	public $type = 'noaccess';
+	
+	/**
+	 * @see SugarView::display()
+	 */
+	public function display()
+	{
 		echo '<p class="error">Warning: You do not have permission to access this module.</p>';
  	}
 }
-?>

@@ -2,7 +2,7 @@
 if (! defined ( 'sugarEntry' ) || ! sugarEntry)
 die ( 'Not A Valid Entry Point' ) ;
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -178,6 +178,12 @@ class ParserModifyListView extends ModuleBuilderParser
 
 		return $this->availableFields ;
 	}
+
+    function getFieldDefs()
+    {
+        return $this->module->field_defs;
+    }
+
 	
 	function isValidField($key, $def) {
 	    //Allow fields that are studio visible  

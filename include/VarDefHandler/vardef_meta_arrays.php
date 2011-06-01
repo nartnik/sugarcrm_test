@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -153,7 +153,7 @@ $vardef_meta_array = array (
 		
 		'inc_override' => array(
 			'type' => array('team_list'),
-			'name' => array('assigned_user_id', 'time_start', 'date_start', 'email1', 'email2', 'date_due'),
+			'name' => array('assigned_user_id', 'time_start', 'date_start', 'email1', 'email2', 'date_due', 'is_optout'),
 		//end inc_override
 		),
 		'ex_override' => array(

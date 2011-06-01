@@ -2,7 +2,7 @@
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -47,30 +47,30 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 require_once('include/MVC/View/views/view.edit.php');
 
-class TasksViewEdit extends ViewEdit 
+class TasksViewEdit extends ViewEdit
 {
     /**
  	 * @see SugarView::preDisplay()
  	 */
- 	public function preDisplay() 
+ 	public function preDisplay()
  	{
  		if($_REQUEST['module'] != 'Tasks' && isset($_REQUEST['status']) && empty($_REQUEST['status'])) {
 	       $this->bean->status = '';
  		} //if
  		if(!empty($_REQUEST['status']) && ($_REQUEST['status'] == 'Completed')) {
 	       $this->bean->status = 'Completed';
- 		} 		
+ 		}
  		parent::preDisplay();
  	}
-    
+
  	/**
  	 * @see SugarView::display()
  	 */
- 	public function display() 
- 	{		
+ 	public function display()
+ 	{
  		if($this->ev->isDuplicate){
-	       $this->bean->status = $GLOBALS['mod_strings']['LBL_DEFAULT_STATUS'];
- 		} //if	
+	       $this->bean->status = $this->bean->getDefaultStatus();
+ 		} //if
  		parent::display();
  	}
 }

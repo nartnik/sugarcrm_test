@@ -2,7 +2,7 @@
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -39,7 +39,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 require_once('include/MVC/View/views/view.detail.php');
 
-class ContactsViewDetail extends ViewDetail 
+class ContactsViewDetail extends ViewDetail
 {
  	/**
  	 * @see SugarView::display()
@@ -47,7 +47,7 @@ class ContactsViewDetail extends ViewDetail
  	 * We are overridding the display method to manipulate the portal information.
  	 * If portal is not enabled then don't show the portal fields.
  	 */
- 	public function display() 
+ 	public function display()
  	{
         $admin = new Administration();
         $admin->retrieveSettings();

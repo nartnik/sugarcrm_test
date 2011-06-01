@@ -1,6 +1,6 @@
 {*
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -40,7 +40,7 @@
 {else}
 {assign var="checked" value=""}
 {/if}
-<input type="checkbox" class="checkbox" name="{{sugarvar key='name'}}" disabled="true" {$checked}>
+<input type="checkbox" class="checkbox" name="{{sugarvar key='name'}}" id="{{sugarvar key='name'}}" value="{{sugarvar key='value' stringFormat='false'}}" disabled="true" {$checked}>
 {{if !empty($displayParams.enableConnectors)}}
 {{sugarvar_connector view='DetailView'}} 
 {{/if}}

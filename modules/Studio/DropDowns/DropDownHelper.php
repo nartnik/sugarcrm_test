@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -156,8 +156,12 @@ class DropDownHelper{
         	//add the new ones
         	$contents .= "\n\$app_list_strings['$dropdown_name']=" . var_export_helper($dropdown) . ";";
         }
-        save_custom_app_list_strings_contents($contents, $selected_lang);
-    	sugar_cache_reset();
+       
+        // Bug 40234 - If we have no contents, we don't write the file. Checking for "<?php" because above it's set to that if empty
+        if($contents != "<?php"){
+            save_custom_app_list_strings_contents($contents, $selected_lang);
+            sugar_cache_reset();
+        }
     }
     
 

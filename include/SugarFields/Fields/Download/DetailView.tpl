@@ -1,6 +1,6 @@
 {*
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,8 +35,12 @@
  ********************************************************************************/
 
 *}
+<span class="sugar_field" id="{{if empty($displayParams.idName)}}{{sugarvar key='name'}}{{else}}{{$displayParams.idName}}{{/if}}">
 <a href="index.php?entryPoint=download&id={{$vardef.value}}&type={$module}">{$fields.filename.value}</a>
+</span>
 {{if !empty($displayParams.enableConnectors)}}
-{{sugarvar_connector view='DetailView'}} 
+{if !empty($fields.filename.value)}
+{{sugarvar_connector view='DetailView'}}
+{/if}
 {{/if}}
 

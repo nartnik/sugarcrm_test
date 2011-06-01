@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -150,6 +150,16 @@ class SugarWidgetSubPanelTopScheduleMeetingButton extends SugarWidgetSubPanelTop
 		$button .='<script type="text/javascript" src="modules/Meetings/jsclass_scheduler.js"></script>'."\n";
 		
 		return $button;
+	}
+	
+	function display($defines, $additionalFormFields = null)
+	{
+	    $focus = new Meeting;
+		if ( !$focus->ACLAccess('EditView') ) {
+		    return '';
+	    }
+		
+		return parent::display($defines, $additionalFormFields);
 	}
 }
 ?>

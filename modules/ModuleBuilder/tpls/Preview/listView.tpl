@@ -1,7 +1,7 @@
 {*
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -63,7 +63,16 @@
     <table width='100%'>
     	<tr>
     		<td style="font-weight: bold;">{if !empty($value.label)}{sugar_translate label=$value.label module=$language}{else}{$key}{/if}</td>
-    		<td></td>
+    		<td>
+                {* BEGIN SUGARCRM flav=pro ONLY *}
+                {if isset($field_defs.$key.calculated) && $field_defs.$key.calculated}
+                    <img src="{sugar_getimagepath file='SugarLogic/icon_calculated.png'}" />
+                {/if}
+                {if isset($field_defs.$key.dependency) && $field_defs.$key.dependency}
+                    <img src="{sugar_getimagepath file='SugarLogic/icon_dependent.png'}" />
+                {/if}
+                {* END SUGARCRM flav=pro ONLY *}
+    		</td>
     	</tr>
     	<tr class='fieldValue' style='cursor:default;'>
     		{if empty($hideKeys)}<td>[{$key}]</td>{/if}

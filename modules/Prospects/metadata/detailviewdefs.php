@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -51,10 +51,10 @@ $viewdefs['Prospects']['DetailView'] = array(
 'panels' =>array (
   'lbl_prospect_information' => array(
   array (
-    'full_name',
-    
-    
+    array (
+    'name'=>'full_name',
     ),
+  ),
 
   array (
     'title',
@@ -70,7 +70,9 @@ $viewdefs['Prospects']['DetailView'] = array(
   ),
   
   array (
-    'account_name',
+    array (
+        'name' => 'account_name',
+    ),  
   	'phone_fax',
   ),
   

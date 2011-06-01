@@ -1,7 +1,7 @@
 {*
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -128,9 +128,13 @@
 		</td>
 	</tr>
 	<tr>
-		<td  scope="row" width='15%' nowrap>{$MOD.SYSTEM_NAME} </td>
-		<td   width='35%'>
+		<td scope="row" width='15%' nowrap>{$MOD.SYSTEM_NAME} </td>
+		<td width='35%'>
 			<input type='text' name='system_name' value='{$settings.system_name}'>
+		</td>
+		<td scope="row" width='15%' nowrap>{$MOD.LBL_MIN_AUTO_REFRESH_INTERVAL} &nbsp;{sugar_help text=$MOD.LBL_MIN_AUTO_REFRESH_INTERVAL_HELP} </td>
+		<td width='35%'>
+		    <select name='dashlet_auto_refresh_min' id='dashlet_auto_refresh_min'>{$AUTO_REFRESH_INTERVAL_OPTIONS}</select>
 		</td>
     </tr>
     <tr>
@@ -143,7 +147,7 @@
     </tr>
     <tr>
         <td  scope="row" width='12%' nowrap>
-            {$MOD.NEW_LOGO}:&nbsp{sugar_help text=$MOD.NEW_LOGO_HELP}
+            {$MOD.NEW_LOGO}&nbsp;{sugar_help text=$MOD.NEW_LOGO_HELP}
         </td>
         <td  width='35%'>
             <div id="container_upload"></div>
@@ -299,6 +303,9 @@
 			<input type='text' size='4' name='vcal_time' value='{$config.vcal_time}'>
 		</td>
 	</tr>
+
+
+
 </table>
 
 

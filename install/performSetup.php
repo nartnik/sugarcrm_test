@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -503,11 +503,17 @@ FP;
     $enabled_tabs[] = 'Contacts';
     $enabled_tabs[] = 'Opportunities';    
     $enabled_tabs[] = 'Leads';
-    $enabled_tabs[] = 'Activities';
+    $enabled_tabs[] = 'Calendar';
     $enabled_tabs[] = 'Documents';
     $enabled_tabs[] = 'Emails';
     $enabled_tabs[] = 'Campaigns';
+    $enabled_tabs[] = 'Calls';
+    $enabled_tabs[] = 'Meetings';
+    $enabled_tabs[] = 'Tasks';
+    $enabled_tabs[] = 'Notes';
     $enabled_tabs[] = 'Cases';
+    $enabled_tabs[] = 'Prospects';
+    $enabled_tabs[] = 'ProspectLists';
     
     
     require_once('modules/MySettings/TabController.php');

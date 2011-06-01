@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -57,7 +57,7 @@ $mod_strings = array (
   'LBL_LIST_DESCRIPTION' => 'Description',
   'LBL_LIST_TYPE_NO' => 'Type',
   'LBL_LIST_END_DATE' => 'End Date',
-  'LBL_DATE_ENTERED' => 'Date Entered',
+  'LBL_DATE_ENTERED' => 'Date Created',
   'LBL_DATE_MODIFIED' => 'Date Modified',
   'LBL_MODIFIED' => 'Modified by',
   'LBL_CREATED' => 'Created by',
@@ -67,7 +67,7 @@ $mod_strings = array (
   'LNK_NEW_CAMPAIGN' => 'Create Campaign',
   'LNK_CAMPAIGN_LIST' => 'Campaigns',
   'LNK_NEW_PROSPECT_LIST' => 'Create Target List',
-  'LNK_PROSPECT_LIST_LIST' => 'Target Lists',
+  'LNK_PROSPECT_LIST_LIST' => 'View Target Lists',
   'LBL_MODIFIED_BY' => 'Modified by',
   'LBL_CREATED_BY' => 'Created by',
   'LBL_DATE_CREATED' => 'Created date',
@@ -86,6 +86,7 @@ $mod_strings = array (
   'LBL_LIST_TYPE' => 'Type',
   'LBL_LIST_TYPE_LIST_NAME'=>'Type',
   'LBL_NEW_FORM_TITLE'=>'New Target List',
+  'LBL_MARKETING_NAME'=>'Marketing Name',
   'LBL_MARKETING_MESSAGE'=>'Email Marketing Message',
   'LBL_DOMAIN_NAME'=>'Domain Name',
   'LBL_DOMAIN'=>'No emails to Domain',

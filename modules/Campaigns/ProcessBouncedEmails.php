@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -141,7 +141,7 @@ function campaign_process_bounced_emails(&$email, &$email_header)
 {
 	global $sugar_config;
 	$emailFromAddress = $email_header->fromaddress;
-	$email_description = $email->description;
+	$email_description = $email->raw_source;
     $email_description .= retrieveErrorReportAttachment($email);
 
 	if (preg_match('/MAILER-DAEMON|POSTMASTER/i',$emailFromAddress)) 

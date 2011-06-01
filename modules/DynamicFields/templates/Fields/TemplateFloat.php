@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,8 +35,10 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  * "Powered by SugarCRM".
  ********************************************************************************/
 
+require_once('modules/DynamicFields/templates/Fields/TemplateRange.php');
 
-class TemplateFloat extends TemplateText{
+class TemplateFloat extends TemplateRange
+{
 	var $type = 'float';
 	var $default = null;
 	var $default_value = null;
@@ -44,13 +46,14 @@ class TemplateFloat extends TemplateText{
 	var $precision = '8';
 	
 	function TemplateFloat(){
+		parent::__construct();
 		$this->vardef_map['precision']='ext1';
 		//$this->vardef_map['precision']='precision';
 	}
 
     function get_field_def(){
     	$def = parent::get_field_def();
-		$def['precision'] = !empty($this->ext1) ? $this->ext1 : $this->precision;
+		$def['precision'] = isset($this->ext1) && $this->ext1 != '' ? $this->ext1 : $this->precision;
     	return $def;
     }
 
@@ -94,8 +97,7 @@ class TemplateFloat extends TemplateText{
 	
 	function populateFromRow($row=array()) {
 	   parent::populateFromRow($row);
-	   
-	}
+	}	
 }
 
 ?>

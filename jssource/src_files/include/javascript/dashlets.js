@@ -1,5 +1,5 @@
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -80,3 +80,14 @@ SUGAR.dashlets = function() {
 		}
 	 };
 }();
+
+if(SUGAR.util.isTouchScreen() && typeof iScroll == 'undefined') {
+
+	with (document.getElementsByTagName("head")[0].appendChild(document.createElement("script")))
+	{
+		setAttribute("id", "newScript", 0);
+		setAttribute("type", "text/javascript", 0);
+		setAttribute("src", "include/javascript/iscroll.js", 0);
+	}
+
+}

@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -93,7 +93,7 @@ $mod_strings = array (
     'LBL_CONVERTLEAD_WARNING' => 'Warning: The status of the Lead you are about to convert is "Converted". Contact and/or Account records may already have been created from the Lead. If you wish to continue with converting the Lead, click Save. To go back to the Lead without converting it, click Cancel.',
     'LBL_CONVERTLEAD_WARNING_INTO_RECORD' => ' Possible Contact: ',
     'LBL_COUNTRY' => 'Country:',
-    'LBL_CREATED_NEW' => 'Created a new ',
+    'LBL_CREATED_NEW' => 'Created a new',
 	'LBL_CREATED_ACCOUNT' => 'Created a new account',
     'LBL_CREATED_CALL' => 'Created a new call',
     'LBL_CREATED_CONTACT' => 'Created a new contact',

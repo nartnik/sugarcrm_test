@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -40,14 +40,10 @@ class TemplateDecimal extends TemplateFloat{
 	var $type = 'decimal';
 	var $default = null;
 	var $default_value = null;
+	
 	function TemplateDecimal(){
-		$this->vardef_map['precision']='ext1';
+    	parent::__construct();
 	}
-
-    function get_field_def(){
-    	$def = parent::get_field_def();
-    	return $def;
-    }
 
     function get_db_type(){
 //    	$GLOBALS['log']->debug('TemplateFloat:get_db_type()'.print_r($this,true));

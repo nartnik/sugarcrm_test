@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -60,15 +60,16 @@ class ViewImportvcard extends SugarView
 	public function display()
     {
         global $mod_strings, $app_strings, $app_list_strings;
-        
+
         $this->ss->assign("ERROR_TEXT", $app_strings['LBL_EMPTY_VCARD']);
         $this->ss->assign("HEADER", $app_strings['LBL_IMPORT_VCARD']);
         $this->ss->assign("MODULE", $_REQUEST['module']);
-        
-        $middleText = "<a href='index.php?module={$_REQUEST['module']}&action=index'>{$mod_strings['LBL_MODULE_NAME']}</a><span class='pointer'>&raquo;</span>{$app_strings['LBL_IMPORT_VCARD_BUTTON_LABEL']}";
-		echo get_module_title($mod_strings['LBL_MODULE_NAME'], $middleText, true);
-       
-        
+        $params = array();
+        $params[] = "<a href='index.php?module={$_REQUEST['module']}&action=index'>{$mod_strings['LBL_MODULE_NAME']}</a>";
+        $params[] = $app_strings['LBL_IMPORT_VCARD_BUTTON_LABEL'];
+		echo getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], $params, true);
+
+
         if ( file_exists('custom/include/MVC/View/tpls/Importvcard.tpl') )
             $this->ss->display('custom/include/MVC/View/tpls/Importvcard.tpl');
         else

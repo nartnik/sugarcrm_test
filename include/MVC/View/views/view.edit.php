@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -53,8 +53,7 @@ require_once('include/EditView/EditView2.php');
  	}
 
  	function preDisplay(){
- 		
- 	    $metadataFile = $this->getMetaDataFile();
+ 		$metadataFile = $this->getMetaDataFile();
  		$this->ev = new EditView();
  		$this->ev->ss =& $this->ss;
  		$this->ev->setup($this->module, $this->bean, $metadataFile, 'include/EditView/EditView.tpl');
@@ -65,7 +64,5 @@ require_once('include/EditView/EditView2.php');
 		$this->ev->process();
 		echo $this->ev->display($this->showTitle);
  	}
-
-
  }
 ?>

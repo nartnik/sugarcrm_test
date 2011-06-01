@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -147,6 +147,16 @@ class ConfiguratorController extends SugarController
         $configurator->handleOverride();
 	    $configurator->parseLoggerSettings();
         $configurator->saveConfig();
+        
+        // Bug 37310 - Delete any existing currency that matches the one we've just set the default to during the admin wizard
+        $currency = new Currency;
+        $currency->retrieve($currency->retrieve_id_by_name($_REQUEST['default_currency_name']));
+        if ( !empty($currency->id) 
+                && $currency->symbol == $_REQUEST['default_currency_symbol']
+                && $currency->iso4217 == $_REQUEST['default_currency_iso4217'] ) {
+            $currency->deleted = 1;
+            $currency->save();
+        }
         
         SugarApplication::redirect('index.php?module=Users&action=Wizard&skipwelcome=1');
     }

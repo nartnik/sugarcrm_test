@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -171,7 +171,8 @@ EOHTML;
 function get_module_title(
     $module, 
     $module_title, 
-    $show_help
+    $show_create,
+    $count=0
     )
 {
     global $sugar_version, $sugar_flavor, $server_unique_key, $current_language, $action;
@@ -188,34 +189,34 @@ function get_module_title(
         $iconPath = SugarThemeRegistry::current()->getImageURL('icon_'.ucfirst($module).'_32.png');
     }
     if (!empty($iconPath)) {
-        $the_title .= "<a href='index.php?module={$module}&action=index'><img src='{$iconPath}' " 
-                    . "alt='".$module."' title='".$module."' align='absmiddle'></a>".$module_title;	
+    	if (SugarThemeRegistry::current()->directionality == "ltr") {
+	        $the_title .= "<a href='index.php?module={$module}&action=index'><img src='{$iconPath}' " 
+	                    . "alt='".$module."' title='".$module."' align='absmiddle'></a>";
+	        $the_title .= ($count >= 1) ? SugarView::getBreadCrumbSymbol() : "";
+	        $the_title .=  $module_title;	
+    	} else {
+    		$the_title .= $module_title;
+    		$the_title .= ($count > 1) ? SugarView::getBreadCrumbSymbol() : "";
+    		$the_title .= "<a href='index.php?module={$module}&action=index'><img src='{$iconPath}' " 
+	                    . "alt='".$module."' title='".$module."' align='absmiddle'></a>";
+    	}
     } else {
 		$the_title .= $module_title;
 	}
     $the_title .= "</h2>\n";
     
-    if ($show_help) {
+    if ($show_create) {
         $the_title .= "<span class='utils'>";
-        if (isset($action) && $action != "EditView") {
-            $printImageURL = SugarThemeRegistry::current()->getImageURL('print.gif');
-            $the_title .= <<<EOHTML
-<a href="javascript:void window.open('index.php?{$GLOBALS['request_string']}','printwin','menubar=1,status=0,resizable=1,scrollbars=1,toolbar=0,location=1')" class='utilsLink'>
-<img src="{$printImageURL}" alt="{$GLOBALS['app_strings']['LNK_PRINT']}"></a>
-<a href="javascript:void window.open('index.php?{$GLOBALS['request_string']}','printwin','menubar=1,status=0,resizable=1,scrollbars=1,toolbar=0,location=1')" class='utilsLink'>
-{$GLOBALS['app_strings']['LNK_PRINT']}
-</a>
-EOHTML;
-        }
-        $helpImageURL = SugarThemeRegistry::current()->getImageURL('help.gif');
+        $createRecordURL = SugarThemeRegistry::current()->getImageURL('create-record.gif');
         $the_title .= <<<EOHTML
 &nbsp;
-<a href="index.php?module=Administration&action=SupportPortal&view=documentation&version={$sugar_version}&edition={$sugar_flavor}&lang={$current_language}&help_module={$module}&help_action={$action}&key={$server_unique_key}" class="utilsLink" target="_blank">
-<img src='{$helpImageURL}' alt='{$GLOBALS['app_strings']['LNK_HELP']}'></a>
-<a href="index.php?module=Administration&action=SupportPortal&view=documentation&version={$sugar_version}&edition={$sugar_flavor}&lang={$current_language}&help_module={$module}&help_action={$action}&key={$server_unique_key}" class="utilsLink" target="_blank">
-{$GLOBALS['app_strings']['LNK_HELP']}
+<a href="index.php?module={$module}&action=EditView&return_module={$module}&return_action=DetailView" class="utilsLink">
+<img src='{$createRecordURL}' alt='{$GLOBALS['app_strings']['LNK_CREATE']}'></a>
+<a href="index.php?module={$module}&action=EditView&return_module={$module}&return_action=DetailView" class="utilsLink">
+{$GLOBALS['app_strings']['LNK_CREATE']}
 </a>
 EOHTML;
+
         $the_title .= '</span>';
     }
     
@@ -245,19 +246,74 @@ EOHTML;
 function getClassicModuleTitle(
     $module, 
     $params, 
-    $show_help)
+    $show_create,
+    $index_url_override="")
 {
+	global $sugar_version, $sugar_flavor, $server_unique_key, $current_language, $action;
+    global $app_strings;
+    
 	$module_title = '';
 	$count = count($params);
 	$index = 0;
-	foreach($params as $parm){
-		$index++;
-	   	$module_title .= $parm;
-	   	if($index < $count){
-	    	$module_title .= "<span class='pointer'>&raquo;</span>";
-	    }
+
+
+
+    $module = preg_replace("/ /","",$module);
+    $iconPath = "";
+    $the_title = "<div class='moduleTitle'>\n<h2>";
+    
+    
+    if(is_file(SugarThemeRegistry::current()->getImageURL('icon_'.$module.'_32.png',false)))
+    {
+    	$iconPath = SugarThemeRegistry::current()->getImageURL('icon_'.$module.'_32.png');
+    } else if (is_file(SugarThemeRegistry::current()->getImageURL('icon_'.ucfirst($module).'_32.png',false)))
+    {
+        $iconPath = SugarThemeRegistry::current()->getImageURL('icon_'.ucfirst($module).'_32.png');
+    }
+    if (!empty($iconPath)) {
+    	$url = (!empty($index_url_override)) ? $index_url_override : "index.php?module={$module}&action=index";
+    	array_unshift ($params,"<a href='{$url}'><img src='{$iconPath}' " 
+	                    . "alt='".$module."' title='".$module."' align='absmiddle'></a>");
 	}
-	return get_module_title($module, $module_title, $show_help, true);
+	
+	$new_params = array();
+	$i = 0;
+	foreach ($params as $value) {
+	  if ((!is_null($value)) && ($value !== "")) {
+	    $new_params[$i] = $value;
+	    $i++;
+	  }
+	} 
+
+
+	if(SugarThemeRegistry::current()->directionality == "rtl") {
+		$new_params = array_reverse($new_params);
+	}
+	
+	$module_title = join(SugarView::getBreadCrumbSymbol(),$new_params);
+	
+	
+	
+    $the_title .= $module_title."</h2>\n";
+    
+    if ($show_create) {
+        $the_title .= "<span class='utils'>";
+        $createRecordURL = SugarThemeRegistry::current()->getImageURL('create-record.gif');
+        $the_title .= <<<EOHTML
+&nbsp;
+<a href="index.php?module={$module}&action=EditView&return_module={$module}&return_action=DetailView" class="utilsLink">
+<img src='{$createRecordURL}' alt='{$GLOBALS['app_strings']['LNK_CREATE']}'></a>
+<a href="index.php?module={$module}&action=EditView&return_module={$module}&return_action=DetailView" class="utilsLink">
+{$GLOBALS['app_strings']['LNK_CREATE']}
+</a>
+EOHTML;
+
+        $the_title .= '</span>';
+    }
+    
+    $the_title .= "</div>\n";
+    return $the_title;
+    
 }
 
 /**
@@ -291,7 +347,7 @@ EOHTML;
     echo '<script type="text/javascript" src="' . getJSPath('include/javascript/sugar_grp1.js') . '"></script>';
     echo <<<EOHTML
 </head>
-<body style="margin: 10px">
+<body class="popupBody">
 EOHTML;
 }
 

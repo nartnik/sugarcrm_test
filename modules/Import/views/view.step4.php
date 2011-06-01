@@ -2,7 +2,7 @@
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -66,7 +66,7 @@ class ImportViewStep4 extends SugarView
         TrackerManager::getInstance()->pause();
         
         // use our own error handler
-        set_error_handler('handleImportErrors',E_ALL);
+        set_error_handler(array('ImportViewStep4','handleImportErrors'),E_ALL);
         
         global $mod_strings, $app_strings, $current_user, $import_bean_map;
         global $app_list_strings, $timedate;
@@ -77,14 +77,8 @@ class ImportViewStep4 extends SugarView
         // All the Look Up Caches are initialized here
         $enum_lookup_cache=array();
         
-        // Let's try and load the import bean
-        $focus = loadImportBean($_REQUEST['import_module']);
-        if ( !$focus ) {
-            trigger_error($mod_strings['LBL_ERROR_IMPORTS_NOT_SET_UP'],E_USER_ERROR);
-        }
-        
         // setup the importable fields array.
-        $importable_fields = $focus->get_importable_fields();
+        $importable_fields = $this->bean->get_importable_fields();
         
         // loop through all request variables
         $importColumns = array();
@@ -135,12 +129,10 @@ class ImportViewStep4 extends SugarView
             trigger_error($mod_strings['LBL_CANNOT_OPEN'],E_USER_ERROR);
         }
         
-        $fieldDefs = $focus->getFieldDefinitions();
-        
-        unset($focus);
+        $fieldDefs = $this->bean->getFieldDefinitions();
         
         while ( $row = $importFile->getNextRow() ) {
-            $focus = loadImportBean($_REQUEST['import_module']);
+            $focus = clone $this->bean;
             $focus->unPopulateDefaultValues();
             $focus->save_from_post = false;
             $focus->team_id = null;
@@ -153,7 +145,7 @@ class ImportViewStep4 extends SugarView
                 if ( !isset($importColumns[$fieldNum]) ) {
                     continue;
                 }
-				
+                
                 // get this field's properties
                 $field           = $importColumns[$fieldNum];
                 $fieldDef        = $focus->getFieldDefinition($field);
@@ -267,7 +259,7 @@ class ImportViewStep4 extends SugarView
                 
                 // Handle email1 and email2 fields ( these don't have the type of email )
                 if ( $field == 'email1' || $field == 'email2' ) {
-                    $returnValue = $ifs->email($rowValue, $fieldDef);
+                    $returnValue = $ifs->email($rowValue, $fieldDef, $focus);
                     // try the default value on fail
                     if ( !$returnValue && !empty($defaultRowValue) )
                         $returnValue = $ifs->email(
@@ -363,23 +355,24 @@ class ImportViewStep4 extends SugarView
                     case 'fullname':
                         break;
                     default:
-                        if ( method_exists('ImportFieldSanitize',$fieldDef['type']) ) {
-                            $fieldtype = $fieldDef['type'];
-                            $returnValue = $ifs->$fieldtype($rowValue, $fieldDef);
-                            // try the default value on fail
-                            if ( !$returnValue && !empty($defaultRowValue) )
-                                $returnValue = $ifs->$fieldtype(
-                                    $defaultRowValue, 
-                                    $fieldDef);
-                            if ( !$returnValue ) {
-                                $do_save=0;
-                                $importFile->writeError(
-                                    $mod_strings['LBL_ERROR_INVALID_'.strtoupper($fieldDef['type'])],
-                                    $fieldTranslated,
-                                    $rowValue);
-                            }
-                            else
-                                $rowValue = $returnValue;
+                        $fieldtype = $fieldDef['type'];
+                        $returnValue = $ifs->$fieldtype($rowValue, $fieldDef, $focus);
+                        // try the default value on fail
+                        if ( !$returnValue && !empty($defaultRowValue) )
+                            $returnValue = $ifs->$fieldtype(
+                                $defaultRowValue, 
+                                $fieldDef, 
+                                $focus);
+                        if ( !$returnValue ) {
+                            $do_save=0;
+                            $importFile->writeError(
+                                $mod_strings['LBL_ERROR_INVALID_'.strtoupper($fieldDef['type'])],
+                                $fieldTranslated,
+                                $rowValue, 
+                                $focus);
+                        }
+                        else {
+                            $rowValue = $returnValue;
                         }
                     }
                 }
@@ -451,7 +444,7 @@ class ImportViewStep4 extends SugarView
                             $this->_undoCreatedBeans($ifs->createdBeans);
                             continue;
                         }
-                        $existing_focus = loadImportBean($_REQUEST['import_module']);
+                        $existing_focus = clone $this->bean;
                         $newRecord = false;
                         if ( !( $existing_focus->retrieve($dbrow['id']) instanceOf SugarBean ) ) {
                             $do_save = 0;
@@ -529,6 +522,8 @@ class ImportViewStep4 extends SugarView
             }
             else
                 $this->_undoCreatedBeans($ifs->createdBeans);
+                
+            unset($defaultRowValue);
         }
         
         // save mapping if requested
@@ -635,5 +630,57 @@ class ImportViewStep4 extends SugarView
             'return ord($matches[0]);'
                  ) ,
             $string);
+    }
+    
+    /**
+     * Replaces PHP error handler in Step4
+     *
+     * @param int    $errno
+     * @param string $errstr
+     * @param string $errfile
+     * @param string $errline
+     */
+    public static function handleImportErrors(
+        $errno, 
+        $errstr, 
+        $errfile, 
+        $errline
+        )
+    {
+        if ( !defined('E_DEPRECATED') )
+            define('E_DEPRECATED','8192');
+        if ( !defined('E_USER_DEPRECATED') )
+            define('E_USER_DEPRECATED','16384');
+        
+        // check to see if current reporting level should be included based upon error_reporting() setting, if not
+        // then just return
+        if ( !(error_reporting() & $errno) )
+            return true;
+    
+        switch ($errno) {
+        case E_USER_ERROR:
+            echo "ERROR: [$errno] $errstr on line $errline in file $errfile<br />\n";
+            exit(1);
+            break;
+        case E_USER_WARNING:
+        case E_WARNING:
+            echo "WARNING: [$errno] $errstr on line $errline in file $errfile<br />\n";
+            break;
+        case E_USER_NOTICE:
+        case E_NOTICE:
+            echo "NOTICE: [$errno] $errstr on line $errline in file $errfile<br />\n";
+            break;
+        case E_STRICT: 
+        case E_DEPRECATED:
+        case E_USER_DEPRECATED:   
+            // don't worry about these
+            //echo "STRICT ERROR: [$errno] $errstr on line $errline in file $errfile<br />\n";
+            break;
+        default:
+            echo "Unknown error type: [$errno] $errstr on line $errline in file $errfile<br />\n";
+            break;
+        }
+    
+        return true;
     }
 }

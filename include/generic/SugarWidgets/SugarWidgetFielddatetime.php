@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -68,13 +68,18 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField {
 
 	function queryFilterOn(& $layout_def) {
 		global $timedate;
+
+        $begin = $layout_def['input_name0'];
+     	$end = $begin;
+        $hasTime = $this->hasTime($begin);
+        if(!$hasTime){
+            $begin .= " 00:00:00";
+            $end .= " 23:59:59";
+        }
+        
 		if($this->getAssignedUser()) {
-			$begin = $timedate->handle_offset($layout_def['input_name0'] . ' 00:00:00', $timedate->get_db_date_time_format(), false, $this->assigned_user);
-			$end = $timedate->handle_offset($layout_def['input_name0'] . ' 23:59:59', $timedate->get_db_date_time_format(), false, $this->assigned_user);
-		}
-		else {
-			$begin = $layout_def['input_name0']." 00:00:00";
-     		$end = $layout_def['input_name0']." 23:59:59";
+			$begin = $timedate->handle_offset($begin, $timedate->get_db_date_time_format(), false, $this->assigned_user);
+			$end = $timedate->handle_offset($end, $timedate->get_db_date_time_format(), false, $this->assigned_user);
 		}
 
 			return $this->_get_column_select($layout_def).">='".$this->reporter->db->quote($begin)."' AND ".$this->_get_column_select($layout_def)."<='".$this->reporter->db->quote($end)."'\n";
@@ -83,11 +88,14 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField {
 	function queryFilterBefore(& $layout_def) {
 		global $timedate;
 
+        $begin = $layout_def['input_name0'];
+        $hasTime = $this->hasTime($begin);
+        if(!$hasTime){
+            $begin .= " 00:00:00";
+        }
+        
 		if($this->getAssignedUser()) {
-			$begin = $timedate->handle_offset($layout_def['input_name0'] . ' 00:00:00', $timedate->get_db_date_time_format(), false, $this->assigned_user);
-		}
-		else {
-			$begin = $layout_def['input_name0']." 00:00:00";
+			$begin = $timedate->handle_offset($begin, $timedate->get_db_date_time_format(), false, $this->assigned_user);
 		}
 
 			return $this->_get_column_select($layout_def)."<'".$this->reporter->db->quote($begin)."'\n";
@@ -97,11 +105,14 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField {
 	function queryFilterAfter(& $layout_def) {
 		global $timedate;
 
+        $begin = $layout_def['input_name0'];
+        $hasTime = $this->hasTime($begin);
+        if(!$hasTime){
+            $begin .= ' 23:59:59';
+        }
+
 		if($this->getAssignedUser()) {
-			$begin = $timedate->handle_offset($layout_def['input_name0'] . ' 23:59:59', $timedate->get_db_date_time_format(), false, $this->assigned_user);
-		}
-		else {
-			$begin = $layout_def['input_name0']." 23:59:59";
+            $begin = $timedate->handle_offset($begin, $timedate->get_db_date_time_format(), false, $this->assigned_user);
 		}
 
 			return $this->_get_column_select($layout_def).">'".$this->reporter->db->quote($begin)."'\n";
@@ -110,14 +121,22 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField {
 	function queryFilterBetween_Dates(& $layout_def) {
 		global $timedate;
 
+        $begin = $layout_def['input_name0'];
+     	$end = $layout_def['input_name1'];
+        $beginHasTime = $this->hasTime($begin);
+        $endHasTime = $this->hasTime($end);
+        if(!$beginHasTime){
+            $begin .= " 00:00:00";
+        }
+        if(!$endHasTime){
+            $end .= " 23:59:59";
+        }
+
 		if($this->getAssignedUser()) {
-			$begin = $timedate->handle_offset($layout_def['input_name0'] . ' 00:00:00', $timedate->get_db_date_time_format(), false, $this->assigned_user);
-			$end = $timedate->handle_offset($layout_def['input_name1'] . ' 23:59:59', $timedate->get_db_date_time_format(), false, $this->assigned_user);
+			$begin = $timedate->handle_offset($begin, $timedate->get_db_date_time_format(), false, $this->assigned_user);
+            $end = $timedate->handle_offset($end, $timedate->get_db_date_time_format(), false, $this->assigned_user);
 		}
-		else {
-			$begin = $layout_def['input_name0']." 00:00:00";
-			$end = $layout_def['input_name1']." 23:59:59";
-		}
+		
 
 			return "(".$this->_get_column_select($layout_def).">='".$this->reporter->db->quote($begin)."' AND \n".$this->_get_column_select($layout_def)."<='".$this->reporter->db->quote($end)."')\n";
 	}
@@ -125,13 +144,17 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField {
 	function queryFilterNot_Equals_str(& $layout_def) {
 		global $timedate;
 
+        $begin = $layout_def['input_name0'];
+     	$end = $begin;
+        $hasTime = $this->hasTime($begin);
+        if(!$hasTime){
+            $begin .= " 00:00:00";
+            $end .= " 23:59:59";
+        }
+
 		if($this->getAssignedUser()) {
-			$begin = $timedate->handle_offset($layout_def['input_name0'] . ' 00:00:00', $timedate->get_db_date_time_format(), false, $this->assigned_user);
-			$end = $timedate->handle_offset($layout_def['input_name0'] . ' 23:59:59', $timedate->get_db_date_time_format(), false, $this->assigned_user);
-		}
-		else {
-			$begin = $layout_def['input_name0']." 00:00:00";
-			$end = $layout_def['input_name0']." 23:59:59";
+			$begin = $timedate->handle_offset($begin, $timedate->get_db_date_time_format(), false, $this->assigned_user);
+			$end = $timedate->handle_offset($end, $timedate->get_db_date_time_format(), false, $this->assigned_user);
 		}
 
 		if ($this->reporter->db->dbType == 'oci8') {
@@ -154,7 +177,7 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField {
         //kbrill bug #13884
         //$begin = $timedate->to_display_date_time($begin);
 		$begin = $timedate->handle_offset($begin, $timedate->get_db_date_time_format(), true, $this->assigned_user);
-        
+
         $begin_parts = explode(' ', $begin);
 
         $be = $begin_parts[0] . ' 00:00:00';
@@ -195,13 +218,13 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField {
 	}
 	function queryFilterTP_today(& $layout_def) {
 		global $timedate, $current_user;
-        
+
         $begin_timestamp = time();
 		$begin = gmdate($GLOBALS['timedate']->get_db_date_time_format(), $begin_timestamp); // get GMT today
 		//kbrill bug #13884
         //$begin = $timedate->to_display_date_time($begin); // convert and handle offset to user's 'display' today
 		$begin = $timedate->handle_offset($begin, $timedate->get_db_date_time_format(), true, $this->assigned_user);
-        
+
         $begin_parts = explode(' ', $begin);
 
         $be = $begin_parts[0] . ' 00:00:00';
@@ -247,7 +270,7 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField {
         //kbrill bug #13884
         //$begin = $timedate->to_display_date_time($begin);
 		$begin = $timedate->handle_offset($begin, $timedate->get_db_date_time_format(), true, $this->assigned_user);
-        
+
         $begin_parts = explode(' ', $begin);
 
         $be = $begin_parts[0] . ' 00:00:00';
@@ -276,7 +299,7 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField {
 	 	global $current_user;
         global $timedate;
 
-        $begin = gmdate($GLOBALS['timedate']->get_db_date_time_format());
+        $begin = TimeDate::getInstance()->nowDb();
         //kbrill bug #13884
        	//$begin = $timedate->to_display_date_time($begin,true,true,$this->assigned_user);
 		$begin = $timedate->handle_offset($begin, $timedate->get_db_date_time_format(), false, $this->assigned_user);
@@ -304,7 +327,7 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField {
         //kbrill bug #13884
         //$begin = $timedate->to_display_date_time($begin,true,true,$this->assigned_user);
 		$begin = $timedate->handle_offset($begin, $timedate->get_db_date_time_format(), false, $this->assigned_user);
-        
+
         if ($time=='start') {
             $begin_parts = explode(' ', $begin);
             $be = $begin_parts[0] . ' 00:00:00';
@@ -584,7 +607,7 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField {
             $time=false;
         }
         return $time;
-    
+
     }
     function displayList($layout_def) {
         global $timedate;
@@ -612,7 +635,7 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField {
 	function & displayListday(& $layout_def) {
 		return parent:: displayListPlain($layout_def);
 	}
-	
+
 	function & displayListyear(& $layout_def) {
 		global $app_list_strings;
         //if ($this->reporter->db->dbType == 'oci8' || $this->reporter->db->dbType == 'mssql') {
@@ -655,7 +678,7 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField {
 		}elseif($this->reporter->db->dbType == 'mssql') {
             //return "LEFT(".$this->_get_column_select($layout_def).", 6) \n";
             return "LEFT(CONVERT (varchar(20), ". $this->_get_column_select($layout_def). ", 121),7) \n";
-            
+
         }else {
 			return "LEFT(".$this->_get_column_select($layout_def).", 7) \n";
 		}
@@ -666,30 +689,30 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField {
 		}elseif($this->reporter->db->dbType == 'mssql') {
             //return "LEFT(".$this->_get_column_select($layout_def).", 6) \n";
         	return "LEFT(CONVERT (varchar(20), ". $this->_get_column_select($layout_def). ",121),10)".$this->_get_column_alias($layout_def)." \n";
-            
+
         }else {
 			return "LEFT(".$this->_get_column_select($layout_def).", 10)".$this->_get_column_alias($layout_def)." \n";
 		}
 	}
-		
+
 	function queryGroupByDay($layout_def) {
 		if ($this->reporter->db->dbType == 'oci8') {
 		}elseif($this->reporter->db->dbType == 'mssql') {
             //return "LEFT(".$this->_get_column_select($layout_def).", 6) \n";
             return "LEFT(CONVERT (varchar(20), ". $this->_get_column_select($layout_def). ", 121),10) \n";
-            
+
         }else {
 			return "LEFT(".$this->_get_column_select($layout_def).", 10) \n";
 		}
 	}
-	
+
 
 	function querySelectyear(& $layout_def) {
 		if ($this->reporter->db->dbType == 'oci8') {
 		}elseif($this->reporter->db->dbType == 'mssql') {
             //return "LEFT( ".$this->_get_column_select($layout_def).",5 ) ".$this->_get_column_alias($layout_def)." \n";
             return "LEFT(CONVERT (varchar(20), ". $this->_get_column_select($layout_def). ",121),4) ".$this->_get_column_alias($layout_def)." \n";
-            
+
         } else {
 			return "LEFT( ".$this->_get_column_select($layout_def).",4 ) ".$this->_get_column_alias($layout_def)." \n";
 		}
@@ -719,7 +742,7 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField {
 		{
 			//return "LEFT(".$this->_get_column_select($layout_def).", 4) +  '-' + convert(varchar(20), DatePart(q," . $this->_get_column_select($layout_def).") ) ".$this->_get_column_alias($layout_def)."\n";
             return "LEFT(CONVERT (varchar(20), ". $this->_get_column_select($layout_def). ",121),4)+  '-' + convert(varchar(20), DatePart(q," . $this->_get_column_select($layout_def).") ) ".$this->_get_column_alias($layout_def)."\n";
-			
+
 		}
 
 
@@ -754,7 +777,7 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField {
 	}
 
     function displayInput(&$layout_def) {
-        global $timedate, $current_language, $app_strings;
+    	global $timedate, $current_language, $app_strings;
         $home_mod_strings = return_module_language($current_language, 'Home');
         $filterTypes = array(' '                 => $app_strings['LBL_NONE'],
                              'TP_today'         => $home_mod_strings['LBL_TODAY'],
@@ -783,6 +806,13 @@ class SugarWidgetFieldDateTime extends SugarWidgetReportField {
 
         return $str;
     }
-}
-?>
 
+    /**
+     * @param  $date
+     * @return bool false if the date is a only a date, true if the date includes time.
+     */
+    protected function hasTime($date)
+    {
+        return strlen(trim($date)) < 11 ? false : true;
+    }
+}

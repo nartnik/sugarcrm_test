@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,29 +35,29 @@
  ********************************************************************************/
 
 $viewdefs['Cases']['EditView'] = array(
-    'templateMeta' => array('maxColumns' => '2', 
+    'templateMeta' => array('maxColumns' => '2',
                             'widths' => array(
-                                            array('label' => '10', 'field' => '30'), 
+                                            array('label' => '10', 'field' => '30'),
                                             array('label' => '10', 'field' => '30')
                                             ),
                            ),
     'panels' => array (
-                         
-  'lbl_case_information' => 
+
+  'lbl_case_information' =>
   array(
 	  array (
 	    array('name'=>'case_number', 'type'=>'readonly') ,
 	  ),
-	  
+
 	  array (
 	    'priority',
 	  ),
-	  
+
 	  array (
 	    'status',
 	    'account_name',
 	  ),
-	  
+
 	  array (
 	      'type',
 	  ),
@@ -67,33 +67,33 @@ $viewdefs['Cases']['EditView'] = array(
 	      'displayParams' => array ('size'=>75)
 	    ),
 	  ),
-	  
+
 	  array (
-	    
+
 	    array (
 	      'name' => 'description',
 	      'nl2br' => true,
 	    ),
 	  ),
-	  
+
 	  array (
-	    
+
 	    array (
 	      'name' => 'resolution',
 	      'nl2br' => true,
 	    ),
 	  ),
-	
+
 	),
-	
-	'LBL_PANEL_ASSIGNMENT' => 
+
+	'LBL_PANEL_ASSIGNMENT' =>
 	array(
 	   array (
-		    'assigned_user_name',	   
+		    'assigned_user_name',
 	   ),
 	),
 ),
 
-  
+
 );
 ?>

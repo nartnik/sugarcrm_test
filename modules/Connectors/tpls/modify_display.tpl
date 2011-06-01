@@ -1,6 +1,6 @@
 {*
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -116,7 +116,7 @@ YAHOO.util.Event.onDOMReady(SourceTabs.init);
 <input type="hidden" name="display_sources" value="">
 <input type="hidden" name="reset_to_default" value="">
 
-<table border="0">
+<table border="0" class="actionsContainer">
 <tr><td>
 <input title="{$APP.LBL_SAVE_BUTTON_LABEL}" accessKey="{$APP.LBL_SAVE_BUTTON_TITLE}" class="button" onclick="calculateValues();" type="submit" name="button" value="{$APP.LBL_SAVE_BUTTON_LABEL}">
 <input title="{$APP.LBL_CANCEL_BUTTON_LABEL}" accessKey="{$APP.LBL_CANCEL_BUTTON_KEY}" class="button" onclick="document.ModifyDisplay.action.value='ConnectorSettings'; document.ModifyDisplay.module.value='Connectors';" type="submit" name="button" value="{$APP.LBL_CANCEL_BUTTON_LABEL}">
@@ -130,7 +130,7 @@ YAHOO.util.Event.onDOMReady(SourceTabs.init);
 </div>
 </td></tr>
 </table>
-<table border="0">
+<table border="0" class="actionsContainer">
 <tr><td>
 <input title="{$APP.LBL_SAVE_BUTTON_LABEL}" accessKey="{$APP.LBL_SAVE_BUTTON_TITLE}" class="button" onclick="calculateValues();" type="submit" name="button" value="{$APP.LBL_SAVE_BUTTON_LABEL}">
 <input title="{$APP.LBL_CANCEL_BUTTON_LABEL}" accessKey="{$APP.LBL_CANCEL_BUTTON_KEY}" class="button" onclick="document.ModifyDisplay.action.value='ConnectorSettings'; document.ModifyDisplay.module.value='Connectors';" type="submit" name="button" value="{$APP.LBL_CANCEL_BUTTON_LABEL}">

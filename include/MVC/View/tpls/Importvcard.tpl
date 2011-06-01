@@ -1,7 +1,7 @@
 {*
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -41,8 +41,8 @@
 *}
 
 <b>{$MOD.LBL_IMPORT_VCARDTEXT}</b>
+<script type="text/javascript" src="{sugar_getjspath file='include/javascript/sugar_grp_yui_widgets.js'}"></script>
 {literal}
-<script type="text/javascript" src="include/javascript/sugar_grp_yui_widgets.js"></script>
 <script type="text/javascript">
 <!--
 function validate_vcard()

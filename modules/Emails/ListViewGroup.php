@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -209,7 +209,7 @@ $display_title = $mod_strings['LBL_LIST_TITLE_GROUP_INBOX'];
 ////	OUTPUT
 ///////////////////////////////////////////////////////////////////////////////
 
-echo get_module_title("Emails", $mod_strings['LBL_MODULE_TITLE'].$display_title, true); 
+echo getClassicModuleTitle("Emails", array($mod_strings['LBL_MODULE_TITLE'].$display_title), true); 
 // admin-edit
 if(is_admin($current_user) && $_REQUEST['module'] != 'DynamicLayout' && !empty($_SESSION['editinplace'])){	
 	$header_text = "&nbsp;<a href='index.php?action=index&module=DynamicLayout&from_action=SearchForm&from_module=".$_REQUEST['module'] ."'>".SugarThemeRegistry::current()->getImage("EditLayout","border='0' alt='Edit Layout' align='bottom'")."</a>";

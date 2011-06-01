@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -43,6 +43,7 @@
   $searchdefs['EmailTemplates'] = array(
 					'templateMeta' => array(
 							'maxColumns' => '2', 
+  							'maxColumnsBasic' => '2',
                             'widths' => array('label' => '10', 'field' => '30'),                 
                            ),
                     'layout' => array(  					

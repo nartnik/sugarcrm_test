@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -73,8 +73,15 @@ class SugarWidgetSubPanelRemoveButton extends SugarWidgetField
 			if($layout_def['fields']['UPLINE'] != translate('LBL_TEAM_UPLINE_EXPLICIT', 'Users')) {
 				$hideremove = true;
 			}	
+			
+			//We also cannot remove the user whose private team is set to the parent_record_id value
+			$user = new User();
+			$user->retrieve($layout_def['fields']['ID']);
+			if($parent_record_id == $user->getPrivateTeamID())
+			{
+			    $hideremove = true;
+			}
 		}
-		
 		
 		
 		$return_module = $_REQUEST['module'];

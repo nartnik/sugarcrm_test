@@ -1,7 +1,7 @@
 {*
 
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -165,7 +165,7 @@ textarea { width: 20em }
                     </tr>
                     <tr>
                         <td scope="row"><slot>{$MOD.LBL_TIMEZONE}</slot></td>
-                        <td ><slot><select tabindex='4' name='importlocale_timezone'>{$TIMEZONEOPTIONS}</select></slot></td>
+                        <td ><slot><select tabindex='4' name='importlocale_timezone'>{html_options options=$TIMEZONEOPTIONS selected=$TIMEZONE_CURRENT}</select></slot></td>
                     </tr>
                     <tr>
                         <td scope="row"><slot>{$MOD.LBL_CURRENCY}</slot></td>

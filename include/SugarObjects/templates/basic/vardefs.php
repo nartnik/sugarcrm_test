@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -63,6 +63,8 @@ $vardefs = array(
 	    'type' => 'datetime',
 	    'group'=>'created_by_name',
 	    'comment' => 'Date record created',
+	    'enable_range_search' => true,
+	  	'options' => 'date_range_search_dom',
 	  ),
 	  'date_modified' =>
 	  array (
@@ -71,6 +73,8 @@ $vardefs = array(
 	    'type' => 'datetime',
 	    'group'=>'modified_by_name',
 	    'comment' => 'Date record last modified',
+	    'enable_range_search' => true,
+	    'options' => 'date_range_search_dom',
 	  ),
 		'modified_user_id' =>
 	  array (

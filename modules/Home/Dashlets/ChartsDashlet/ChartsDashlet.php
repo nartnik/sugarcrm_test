@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -73,7 +73,7 @@ class ChartsDashlet extends Dashlet {
     	require_once("modules/Reports/Report.php");
 			
 	
-		ini_set('display_errors', 'false');
+//		ini_set('display_errors', 'false');
 		
 		$chartReport = new SavedReport();
 		$chartExists = $chartReport->retrieve($this->report_id, false);
@@ -124,21 +124,17 @@ class ChartsDashlet extends Dashlet {
 	        $this->title = $chartReport->name;
 				
 			require_once("modules/Reports/templates/templates_chart.php");
-			        
+			require_once('include/SugarCharts/SugarChartFactory.php');
+
+			$sugarChart = SugarChartFactory::getInstance();
+		
+		
 			$reporter = new Report($chartReport->content);
 			$reporter->is_saved_report = true;
 			$reporter->saved_report_id = $chartReport->id;
 			$xmlFile = get_cache_file_name($reporter);
-			
-	    	$ss = new Sugar_Smarty();
-	        $ss->assign('chartName', $this->id);
-	        $ss->assign('chartXMLFile', $xmlFile);
-	        
-	        $ss->assign('chartStyleCSS', SugarThemeRegistry::current()->getCSSURL('chart.css'));
-	        $ss->assign('chartColorsXML', SugarThemeRegistry::current()->getImageURL('sugarColors.xml'));
-	        $ss->assign('chartLangFile', $GLOBALS['sugar_config']['tmp_dir'].'chart_strings.' . $GLOBALS['current_language'] .'.lang.xml');
-	        
-	        $str = $ss->fetch('modules/Home/Dashlets/ChartsDashlet/ChartsDashletScript.tpl');
+
+	        $str = $sugarChart->getDashletScript($this->id,$xmlFile);
 	        return $str;
 		}
     }

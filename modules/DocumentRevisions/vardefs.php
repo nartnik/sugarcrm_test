@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -65,7 +65,36 @@ $dictionary['DocumentRevision'] = array('table' => 'document_revisions'
     'required'=>false,
     'reportable'=>false,
   ),
-
+'doc_id' =>
+  array (
+  	'name' => 'doc_id',
+  	'vname' => 'LBL_DOC_ID',
+  	'type' => 'varchar',
+  	'len' => '100',
+  	'comment' => 'Document ID from documents web server provider',
+  	'importable' => false,
+  	'studio' => 'false',
+  ),
+  'doc_type' =>
+  array (
+  	'name' => 'doc_type',
+  	'vname' => 'LBL_DOC_TYPE',
+  	'type' => 'enum',
+    'function' => 'getDocumentsExternalApiDropDown',
+  	'len' => '100',
+  	'comment' => 'Document type (ex: Google, box.net, LotusLive)',
+	'studio' => 'false',
+  ),
+'doc_url' =>
+  array (
+  	'name' => 'doc_url',
+  	'vname' => 'LBL_DOC_URL',
+  	'type' => 'varchar',
+  	'len' => '255',
+  	'comment' => 'Document URL from documents web server provider',
+  	'importable' => false,
+  	'studio' => 'false',
+  ),
    'date_entered' =>
   array (
     'name' => 'date_entered',
@@ -88,9 +117,12 @@ $dictionary['DocumentRevision'] = array('table' => 'document_revisions'
   array (
     'name' => 'filename',
     'vname' => 'LBL_FILENAME',
-    'type' => 'varchar',
+    'type' => 'file',
+  	'dbType' => 'varchar',
     'required'=>true,
     'len' => '255',
+    'allowEapm' => true,
+    'linkModuleOverride' => 'Documents',
   ),
   'file_ext' =>
   array (
@@ -175,6 +207,23 @@ $dictionary['DocumentRevision'] = array('table' => 'document_revisions'
     'len' => '36',
     'source'=>'non-db',
   ),
+  'document_name' =>
+  array (
+      'name' => 'document_name',
+      'vname' => 'LBL_DOC_NAME',
+      'type' => 'varchar',
+      'len' => '255',
+      'source' => 'non-db',
+  ),
+  'latest_revision' =>
+  array (
+      'name' => 'latest_revision',
+      'vname' => 'LBL_CURRENT_DOC_VERSION',
+      'type' => 'varchar',
+      'len' => '255',
+      'source' => 'non-db',
+  ),
+  
 ),
 'relationships'=>array(
    'revisions_created_by' => array('lhs_module'=> 'Users', 'lhs_table'=> 'users', 'lhs_key' => 'id',
@@ -183,7 +232,8 @@ $dictionary['DocumentRevision'] = array('table' => 'document_revisions'
 ),
 
 'indices' => array (
-       array('name' =>'documentrevisionspk', 'type' =>'primary', 'fields'=>array('id'))
-)
+       array('name' =>'documentrevisionspk', 'type' =>'primary', 'fields'=>array('id')),
+       array('name' =>'documentrevision_mimetype', 'type' =>'index', 'fields'=>array('file_mime_type')),
+       )
 );
 ?>

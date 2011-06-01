@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -40,6 +40,9 @@ $dictionary['{{$class.name}}'] = array(
 	'fields'=>{{$class.fields_string}},
 	'relationships'=>{{$class.relationships}},
 	'optimistic_locking'=>true,
+	{{if !empty($class.table_name) && !empty($class.templates)}}
+	'unified_search'=>true,
+	{{/if}}
 );
 if (!class_exists('VardefManager')){
         require_once('include/SugarObjects/VardefManager.php');

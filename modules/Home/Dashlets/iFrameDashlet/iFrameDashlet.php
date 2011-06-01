@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -71,6 +71,7 @@ class iFrameDashlet extends Dashlet {
             $this->height = (int)$options['height'];
         }
 
+        if(isset($options['autoRefresh'])) $this->autoRefresh = $options['autoRefresh'];
     }
 
     protected function checkURL()
@@ -92,8 +93,14 @@ class iFrameDashlet extends Dashlet {
         $ss->assign('id', $this->id);
         $ss->assign('height', $this->height);
         $ss->assign('saveLBL', $app_strings['LBL_SAVE_BUTTON_LABEL']);
-
-        return  $ss->fetch('modules/Home/Dashlets/iFrameDashlet/configure.tpl');
+        if($this->isAutoRefreshable()) {
+       		$ss->assign('isRefreshable', true);
+			$ss->assign('autoRefresh', $GLOBALS['app_strings']['LBL_DASHLET_CONFIGURE_AUTOREFRESH']);
+			$ss->assign('autoRefreshOptions', $this->getAutoRefreshOptions());
+			$ss->assign('autoRefreshSelect', $this->autoRefresh);
+		}
+        
+        return  $ss->fetch('modules/Home/Dashlets/iFrameDashlet/configure.tpl');        
     }
 
     function saveOptions($req) {
@@ -108,6 +115,7 @@ class iFrameDashlet extends Dashlet {
         if ( isset($req['height']) ) {
             $options['height'] = (int)$req['height'];
         }
+        $options['autoRefresh'] = empty($req['autoRefresh']) ? '0' : $req['autoRefresh'];
 
         return $options;
     }

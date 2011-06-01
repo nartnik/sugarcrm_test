@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -168,7 +168,6 @@ class SugarApplication
 
 	function ACLFilter(){
 		ACLController :: filterModuleList($GLOBALS['moduleList']);
-		ACLController :: filterModuleList($GLOBALS['modInvisListActivities']);
 	}
 
 	/**
@@ -196,7 +195,11 @@ class SugarApplication
 		   {
 		       foreach ($val as $k => $v)
 		       {
-		           $GLOBALS['request_string'] .= urlencode($key).'[]='.urlencode($v).'&';
+                           //If an array, then skip the urlencoding. This should be handled with stringify instead.
+                           if(is_array($v))
+                                continue;
+
+                           $GLOBALS['request_string'] .= urlencode($key).'['.$k.']='.urlencode($v).'&';
 		       }
 		   }
 		   else
@@ -288,6 +291,16 @@ class SugarApplication
 			$this->controller->hasAccess = false;
 			return;
 		}
+
+		// Bug 20916 - Special case for check ACL access rights for Subpanel QuickCreates
+		if(isset($_POST['action']) && $_POST['action'] == 'SubpanelCreates') {
+            $actual_module = $_POST['target_module'];
+            if(!empty($GLOBALS['modListHeader']) && !in_array($actual_module,$GLOBALS['modListHeader'])) {
+                $this->controller->hasAccess = false;
+            }
+            return;
+        }
+
 
 		if(!empty($GLOBALS['current_user']) && empty($GLOBALS['modListHeader']))
 			$GLOBALS['modListHeader'] = query_module_access_list($GLOBALS['current_user']);
@@ -494,77 +507,57 @@ class SugarApplication
 	 *
 	 * Checks a request to ensure the request is coming from a valid source or it is for one of the white listed actions
 	 */
-	function checkHTTPReferer(){
+	protected function checkHTTPReferer($dieIfInvalid = true)
+	{
 		global $sugar_config;
-		$whiteListActions = (!empty($sugar_config['http_referer']['actions']))?$sugar_config['http_referer']['actions']:array('index', 'ListView', 'DetailView', 'Authenticate', 'Login');
+		$whiteListActions = (!empty($sugar_config['http_referer']['actions']))?$sugar_config['http_referer']['actions']:array('index', 'ListView', 'DetailView', 'EditView','oauth', 'Authenticate', 'Login');
+
 		$strong = empty($sugar_config['http_referer']['weak']);
+
 		// Bug 39691 - Make sure localhost and 127.0.0.1 are always valid HTTP referers
 		$whiteListReferers = array('127.0.0.1','localhost');
 		if(!empty($_SERVER['SERVER_ADDR']))$whiteListReferers[]  = $_SERVER['SERVER_ADDR'];
 		if ( !empty($sugar_config['http_referer']['list']) ) {
 			$whiteListReferers = array_merge($whiteListReferers,$sugar_config['http_referer']['list']);
 		}
-		if($strong && empty($_SERVER['HTTP_REFERER']) && !in_array($this->controller->action, $whiteListActions) && $this->isModifyAction()){
+
+		if($strong && empty($_SERVER['HTTP_REFERER']) && !in_array($this->controller->action, $whiteListActions) && $this->isModifyAction()) {
+		    $http_host = explode(':', $_SERVER['HTTP_HOST']);
+
 			$whiteListActions[] = $this->controller->action;
 			$whiteListString = "'" . implode("', '", $whiteListActions) . "'";
-			header("Cache-Control: no-cache, must-revalidate");
-			echo <<<EOQ
-					<div align='center' style='background:lightgray'>
-					<h3 style='color:red'>Possible Cross Site Request Forgery (XSRF) Attack Detected</h3>
-					<h4>You've made a request to {$this->controller->action} but your HTTP Referer header is blank.</h4>
-					<h4><a href='javascript:void(0);' onclick='document.getElementById("directions").style.display="";'>Click here for directions to allow the HTTP Referer to not be set</a></h4>
-					</div>
-					<div id='directions' style='display:none'>
-						<h3>Directions to allow HTTP Referer to not be set. This will cause your system to be insecure:</h3>
-						<ol>
-							<li>On your file system go to the root of your SugarCRM instance
-							<li>Open the file config_override.php. If it does not exist, create it. (it should be at the same level as index.php and config.php)
-							<li>Make sure the file starts with <pre>&lt;?php</pre> followed by a new line
-							<li>Add the following line to your config_override.php file<br> <pre>\$sugar_config['http_referer']['weak']= true;</pre>
-							<li>Save the file and it should work
-						</ol>
-						<h3>Attempted action ({$this->controller->action}):</h3>
-						If you feel this is a valid action that should be allowed with or without an HTTP Referer, add the following to your config_override.php file
-						<ul><li><pre>\$sugar_config['http_referer']['actions'] =array( $whiteListString ); </pre></ul>
-					</div>
-
-
-EOQ;
-			sugar_cleanup(true);
-		}else if(!empty($_SERVER['HTTP_REFERER']) && !empty($_SERVER['SERVER_NAME'])){
+            if ( $dieIfInvalid ) {
+                header("Cache-Control: no-cache, must-revalidate");
+                $ss = new Sugar_Smarty;
+                $ss->assign('host', $http_host[0]);
+                $ss->assign('action',$this->controller->action);
+                $ss->assign('whiteListString',$whiteListString);
+                $ss->display('include/MVC/View/tpls/xsrf.tpl');
+                sugar_cleanup(true);
+            }
+            return false;
+		} else
+		if(!empty($_SERVER['HTTP_REFERER']) && !empty($_SERVER['SERVER_NAME'])){
 			$http_ref = parse_url($_SERVER['HTTP_REFERER']);
 			if($http_ref['host'] !== $_SERVER['SERVER_NAME']  && !in_array($this->controller->action, $whiteListActions) &&
+
 				(empty($whiteListReferers) || !in_array($http_ref['host'], $whiteListReferers))){
-				header("Cache-Control: no-cache, must-revalidate");
-				$whiteListActions[] = $this->controller->action;
-				$whiteListString = "'" . implode("', '", $whiteListActions) . "'";
+                if ( $dieIfInvalid ) {
+                    header("Cache-Control: no-cache, must-revalidate");
+                    $whiteListActions[] = $this->controller->action;
+                    $whiteListString = "'" . implode("', '", $whiteListActions) . "'";
 
-				echo <<<EOQ
-					<div align='center' style='background:lightgray'>
-					<h3 style='color:red'>Possible Cross Site Request Forgery (XSRF) Attack Detected</h3>
-					<h4>If you think this is a mistake please ask your administrator to add the following site to the acceptable referer list</h4>
-					<h3>{$http_ref['host']}</h3>
-					<h4><a href='javascript:void(0);' onclick='document.getElementById("directions").style.display="";'>Click here for directions to add this site to the acceptable referer list</a></h4>
-					</div>
-					<div id='directions' style='display:none'>
-						<h3>Directions:</h3>
-						<ol>
-							<li>On your file system go to the root of your SugarCRM instance
-							<li>Open the file config_override.php. If it does not exist, create it. (it should be at the same level as index.php and config.php)
-							<li>Make sure the file starts with <pre>&lt;?php</pre> followed by a new line
-							<li>Add the following line to your config_override.php file<br> <pre>\$sugar_config['http_referer']['list'][] = '{$http_ref['host']}';</pre>
-							<li>Save the file and it should work
-						</ol>
-						<h3>Attempted action ({$this->controller->action}):</h3>
-						If you feel this is a valid action that should be allowed from any referer, add the following to your config_override.php file
-						<ul><li><pre>\$sugar_config['http_referer']['actions'] =array( $whiteListString ); </pre></ul>
-					</div>
-
-
-EOQ;
-			sugar_cleanup(true);
+                    $ss = new Sugar_Smarty;
+                    $ss->assign('host',$http_ref['host']);
+                    $ss->assign('action',$this->controller->action);
+                    $ss->assign('whiteListString',$whiteListString);
+                    $ss->display('include/MVC/View/tpls/xsrf.tpl');
+                    sugar_cleanup(true);
+                }
+                return false;
 			}
 		}
+         return true;
 	}
 	function startSession()
 	{
@@ -623,6 +616,31 @@ EOQ;
 			header( "Location: ". $url );
 		}
 		exit();
+	}
+
+    /**
+	 * Redirect to another URL
+	 *
+	 * @access	public
+	 * @param	string	$url	The URL to redirect to
+	 */
+ 	public static function appendErrorMessage($error_message)
+	{
+        if (empty($_SESSION['user_error_message']) || !is_array($_SESSION['user_error_message'])){
+            $_SESSION['user_error_message'] = array();
+        }
+		$_SESSION['user_error_message'][] = $error_message;
+	}
+
+    public static function getErrorMessages()
+	{
+		if (isset($_SESSION['user_error_message']) && is_array($_SESSION['user_error_message']) ) {
+            $msgs = $_SESSION['user_error_message'];
+            unset($_SESSION['user_error_message']);
+            return $msgs;
+        }else{
+            return array();
+        }
 	}
 
 	/**

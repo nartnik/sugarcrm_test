@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -54,9 +54,15 @@ switch ($_REQUEST['view']) {
 		$GLOBALS['log']->info("Administration SupportPortal");
 
 		$iframe_url = add_http("www.sugarcrm.com/network/redirect.php?tmpl=network");
-        $mod_title = $mod_strings['LBL_SUPPORT_TITLE'];
-
-        echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_title, true);
+        
+        echo getClassicModuleTitle(
+            "Administration", 
+            array(
+                "<a href='index.php?module=Administration&action=index'>".translate('LBL_MODULE_NAME','Administration')."</a>",
+               $mod_strings['LBL_SUPPORT_TITLE'],
+               ), 
+            false
+            );
         
         $sugar_smarty = new Sugar_Smarty();
         $sugar_smarty->assign('iframeURL', $iframe_url);

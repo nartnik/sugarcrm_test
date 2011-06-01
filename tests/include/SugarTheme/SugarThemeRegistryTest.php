@@ -1,21 +1,64 @@
 <?php
+/*********************************************************************************
+ * SugarCRM Community Edition is a customer relationship management program developed by
+ * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
+ * 
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License version 3 as published by the
+ * Free Software Foundation with the addition of the following permission added
+ * to Section 15 as permitted in Section 7(a): FOR ANY PART OF THE COVERED WORK
+ * IN WHICH THE COPYRIGHT IS OWNED BY SUGARCRM, SUGARCRM DISCLAIMS THE WARRANTY
+ * OF NON INFRINGEMENT OF THIRD PARTY RIGHTS.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License along with
+ * this program; if not, see http://www.gnu.org/licenses or write to the Free
+ * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301 USA.
+ * 
+ * You can contact SugarCRM, Inc. headquarters at 10050 North Wolfe Road,
+ * SW2-130, Cupertino, CA 95014, USA. or at email address contact@sugarcrm.com.
+ * 
+ * The interactive user interfaces in modified source and object code versions
+ * of this program must display Appropriate Legal Notices, as required under
+ * Section 5 of the GNU Affero General Public License version 3.
+ * 
+ * In accordance with Section 7(b) of the GNU Affero General Public License version 3,
+ * these Appropriate Legal Notices must retain the display of the "Powered by
+ * SugarCRM" logo. If the display of the logo is not reasonably feasible for
+ * technical reasons, the Appropriate Legal Notices must display the words
+ * "Powered by SugarCRM".
+ ********************************************************************************/
+
+ 
 require_once 'include/SugarTheme/SugarTheme.php';
 require_once 'include/dir_inc.php';
 
 class SugarThemeRegistryTest extends Sugar_PHPUnit_Framework_TestCase
 {
     private $_themeName;
+    private $_oldDefaultTheme;
     
     public function setup()
     {
         $this->_themeName = SugarTestThemeUtilities::createAnonymousTheme();
-        
+        if ( isset($GLOBALS['sugar_config']['default_theme']) ) {
+            $this->_oldDefaultTheme = $GLOBALS['sugar_config']['default_theme'];
+        }
+        $GLOBALS['sugar_config']['default_theme'] = $this->_themeName;
         SugarThemeRegistry::buildRegistry();
     }
     
     public function tearDown()
     {
         SugarTestThemeUtilities::removeAllCreatedAnonymousThemes();
+        if ( isset($this->_oldDefaultTheme) ) {
+            $GLOBALS['sugar_config']['default_theme'] = $this->_oldDefaultTheme;
+        }
     }
     
     public function testThemesRegistered()
@@ -27,15 +70,43 @@ class SugarThemeRegistryTest extends Sugar_PHPUnit_Framework_TestCase
     {
         $object = SugarThemeRegistry::get($this->_themeName);
         
-        $this->assertType('SugarTheme',$object);
+        $this->assertInstanceOf('SugarTheme',$object);
         $this->assertEquals($object->__toString(),$this->_themeName);
+    }
+    
+    /**
+     * @ticket 41635
+     */
+    public function testGetDefaultThemeObject()
+    {
+        $GLOBALS['sugar_config']['default_theme'] = $this->_themeName;
+        
+        $object = SugarThemeRegistry::getDefault();
+        
+        $this->assertInstanceOf('SugarTheme',$object);
+        $this->assertEquals($object->__toString(),$this->_themeName);
+    }
+    
+    /**
+     * @ticket 41635
+     */
+    public function testGetDefaultThemeObjectWhenDefaultThemeIsNotSet()
+    {
+        unset($GLOBALS['sugar_config']['default_theme']);
+        
+        $themename = array_pop(array_keys(SugarThemeRegistry::availableThemes()));
+        
+        $object = SugarThemeRegistry::getDefault();
+        
+        $this->assertInstanceOf('SugarTheme',$object);
+        $this->assertEquals($object->__toString(),$themename);
     }
     
     public function testSetCurrentTheme()
     {
         SugarThemeRegistry::set($this->_themeName);
         
-        $this->assertType('SugarTheme',SugarThemeRegistry::current());
+        $this->assertInstanceOf('SugarTheme',SugarThemeRegistry::current());
         $this->assertEquals(SugarThemeRegistry::current()->__toString(),$this->_themeName);
     }
     
@@ -118,7 +189,7 @@ class SugarThemeRegistryTest extends Sugar_PHPUnit_Framework_TestCase
     }
     
     /**
-     * @group bug35307
+     * @ticket 35307
      */
     public function testOldThemeIsNotRecognized()
     {

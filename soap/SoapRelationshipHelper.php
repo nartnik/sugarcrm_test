@@ -3,7 +3,7 @@
 
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -208,7 +208,7 @@ function retrieve_modified_relationships($module_name, $related_module, $relatio
 	}
 
 	if($has_join == false){
-		$query .= " inner join $mod->table_name m2 on $table_alias.$mod2_key = m2.id ";
+		$query .= " inner join $mod->table_name m2 on $table_alias.$mod2_key = m2.id AND m2.id = '$current_user->id'";
 	}
 	else{
 		$query .= " inner join $mod->table_name m1 on rt.$mod_key = m1.id ";

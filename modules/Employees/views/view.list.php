@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -44,12 +44,14 @@ class EmployeesViewList extends ViewList
  	{
  		$this->lv = new ListViewSmarty();
  		$this->lv->delete = false;
+ 		$this->lv->email = false;
  		if (!is_admin($GLOBALS['current_user'])&& !is_admin_for_module($GLOBALS['current_user'],'Users')){
             $this->lv->multiSelect = false;
         }
  	}
  	
-	function listViewProcess(){
+	public function listViewProcess()
+	{
 		$this->processSearchForm();
 		$this->lv->searchColumns = $this->searchForm->searchColumns;
 		
@@ -66,7 +68,5 @@ class EmployeesViewList extends ViewList
 			$savedSearchName = empty($_REQUEST['saved_search_select_name']) ? '' : (' - ' . $_REQUEST['saved_search_select_name']);
 			echo $this->lv->display();
 		}
-		
-		
  	}
 }

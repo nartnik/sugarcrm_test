@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -183,8 +183,10 @@ if(!empty($focus->stored_options)) {
 // return action
 if(isset($focus->id)) {
 	$return_action = 'DetailView';
+    $validatePass = FALSE;
 } else {
 	$return_action = 'ListView';
+    $validatePass = TRUE;
 }
 
 // javascript
@@ -192,7 +194,7 @@ $javascript->setSugarBean($focus);
 $javascript->setFormName('EditView');
 $javascript->addRequiredFields();
 $javascript->addFieldGeneric('email_user', 'alpha', $mod_strings['LBL_LOGIN'], true);
-$javascript->addFieldGeneric('email_password', 'alpha', $mod_strings['LBL_PASSWORD'], false);
+$javascript->addFieldGeneric('email_password', 'alpha', $mod_strings['LBL_PASSWORD'], $validatePass);
 $javascript->addFieldRange('email_num_autoreplies_24_hours', 'int', $mod_strings['LBL_MAX_AUTO_REPLIES'], true, "", 1, $focus->maxEmailNumAutoreplies24Hours);
 
 $r = $focus->db->query('SELECT value FROM config WHERE name = \'fromname\'');
@@ -227,7 +229,7 @@ $xtpl->assign('RETURN_ACTION', $return_action);
 // module specific
 //$xtpl->assign('ROLLOVER', $email->rolloverStyle);
 $xtpl->assign("EMAIL_OPTIONS", $mod_strings['LBL_EMAIL_OPTIONS']);
-$xtpl->assign('MODULE_TITLE', get_module_title($mod_strings['LBL_MODULE_TITLE'], $mod_strings['LBL_MODULE_NAME'].": ".$focus->name, true));
+$xtpl->assign('MODULE_TITLE', getClassicModuleTitle($mod_strings['LBL_MODULE_TITLE'], array($mod_strings['LBL_MODULE_NAME'],$focus->name), true));
 $xtpl->assign('ID', $focus->id);
 $xtpl->assign('NAME', $focus->name);
 $xtpl->assign('STATUS', $status);
@@ -267,6 +269,7 @@ else
 {
 	$groupId = create_guid();
 	$is_auto_import = 'checked';
+    $xtpl->assign('EMAIL_PASS_REQ_SYMB', $app_strings['LBL_REQUIRED_SYMBOL']);
 }
 
 $xtpl->assign('GROUP_ID', $groupId);
@@ -350,7 +353,7 @@ $xtpl->assign('JAVASCRIPT', get_set_focus_js(). $javascript->getScript() . $quic
 //Overrides for bounce mailbox accounts
 if ($focus->mailbox_type == 'bounce')
 {
-    $xtpl->assign('MODULE_TITLE', get_module_title($mod_strings['LBL_MODULE_TITLE'], $mod_strings['LBL_BOUNCE_MODULE_NAME'].": ".$focus->name, true));
+    $xtpl->assign('MODULE_TITLE', getClassicModuleTitle($mod_strings['LBL_MODULE_TITLE'], array($mod_strings['LBL_BOUNCE_MODULE_NAME'],$focus->name), true));
     $xtpl->assign("EMAIL_OPTIONS", $mod_strings['LBL_EMAIL_BOUNCE_OPTIONS']);
     $xtpl->assign('MAILBOX_TYPE_STYLE', "display:none");
     $xtpl->assign('AUTO_IMPORT_STYLE', "display:none");
@@ -359,7 +362,7 @@ elseif ($focus->mailbox_type == 'createcase')
     $xtpl->assign("IS_CREATE_CASE", 'checked');
 
 else if( $focus->is_personal == '1')
-     $xtpl->assign('MODULE_TITLE', get_module_title($mod_strings['LBL_MODULE_TITLE'], $mod_strings['LBL_PERSONAL_MODULE_NAME'].": ".$focus->name, true));
+     $xtpl->assign('MODULE_TITLE', getClassicModuleTitle($mod_strings['LBL_MODULE_TITLE'], array($mod_strings['LBL_PERSONAL_MODULE_NAME'],$focus->name), true));
 
 //else
 

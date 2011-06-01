@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -138,9 +138,9 @@ class AbstractRelationship
         return $this->definition [ 'readonly' ] ;
     }
 
-    public function setReadonly ()
+    public function setReadonly ($set = true)
     {
-        $this->readonly = $this->definition [ 'readonly' ] = true ;
+        $this->readonly = $this->definition [ 'readonly' ] = $set ;
     }
 
     public function setFromStudio ()
@@ -382,8 +382,11 @@ class AbstractRelationship
             require_once 'modules/ModuleBuilder/MB/ModuleBuilder.php' ;
             $mb = new ModuleBuilder ( ) ;
             $module = $mb->getPackageModule ( $parsedModuleName['packageName'] , $parsedModuleName['moduleName'] ) ;
-            if (in_array( 'file' , array_keys ( $module->config [ 'templates' ] ) ) )
+            if (in_array( 'file' , array_keys ( $module->config [ 'templates' ] ) ) ){
                 $vardef [ 'rname' ] = 'document_name' ;
+            }elseif(in_array ( 'person' , array_keys ( $module->config [ 'templates' ] ) ) ){
+            	$vardef [ 'db_concat_fields' ] = array( 0 =>'first_name', 1 =>'last_name') ;
+            }
         }
         else
         {
@@ -410,8 +413,14 @@ class AbstractRelationship
                     $object = $GLOBALS ['beanList'] [ $sourceModule ];
                     require_once ( $GLOBALS ['beanFiles'] [ $object ] );
                     $bean = new $object();
-                    if ( isset ( $GLOBALS [ 'dictionary' ] [ $object ] [ 'templates'] ) && in_array ( 'file' , $GLOBALS [ 'dictionary' ] [ $object ] [ 'templates'] ) )
-                        $vardef [ 'rname' ] = 'document_name' ;
+                    if ( isset ( $GLOBALS [ 'dictionary' ] [ $object ] [ 'templates'] )){
+                    	if(in_array ( 'file' , $GLOBALS [ 'dictionary' ] [ $object ] [ 'templates'] )){
+                    		$vardef [ 'rname' ] = 'document_name' ;
+                    	}elseif(in_array ( 'person' , $GLOBALS [ 'dictionary' ] [ $object ] [ 'templates'] )){
+                    		 $vardef [ 'db_concat_fields' ] = array( 0 =>'first_name', 1 =>'last_name') ;
+                    	}
+                    }
+                        
             }
             
         }
@@ -547,22 +556,9 @@ class AbstractRelationship
      */
     static function getValidDBName ($name, $ensureUnique = false)
     {
+
         require_once 'modules/ModuleBuilder/parsers/constants.php' ;
-        // first strip any invalid characters - all but alphanumerics and -
-        $name = preg_replace ( '/[^\w-]+/i', '', $name ) ;
-        $len = strlen ( $name ) ;
-        $result = $name;
-        if ($ensureUnique) 
-        {        	
-    		$md5str = md5($name);
-			$tail = substr ( $name, -11) ;
-			$temp = substr($md5str , strlen($md5str)-4 );	    			
-			$result = substr ( $name, 0, 10) . $temp . $tail ;
-		}else if ($len > (MB_MAXDBIDENTIFIERLENGTH - 5))
-        {
-            $result = substr ( $name, 0, 11) . substr ( $name, 11 - MB_MAXDBIDENTIFIERLENGTH + 5); 
-        }
-        return strtolower ( $result ) ;
+        return getValidDBName($name, $ensureUnique, MB_MAXDBIDENTIFIERLENGTH);
     }
 
     /*

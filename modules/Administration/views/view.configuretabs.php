@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -52,7 +52,7 @@ class ViewConfiguretabs extends SugarView
     /**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
-	protected function _getModuleTitleParams()
+	protected function _getModuleTitleParams($browserTitle = false)
 	{
 	    global $mod_strings;
 	    
@@ -104,7 +104,7 @@ class ViewConfiguretabs extends SugarView
         $this->ss->assign('user_can_edit',  $user_can_edit);
         $this->ss->assign('enabled_tabs', json_encode($enabled));
         $this->ss->assign('disabled_tabs', json_encode($disabled));
-        $this->ss->assign('title',$this->getModuleTitle());
+        $this->ss->assign('title',$this->getModuleTitle(false));
         
         //get list of all subpanels and panels to hide 
         $mod_list_strings_key_to_lower = array_change_key_case($app_list_strings['moduleList']);

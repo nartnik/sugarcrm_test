@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -197,14 +197,24 @@ class ListLayoutMetaDataParser extends AbstractMetaDataParser implements MetaDat
         {
             if (is_array($def [ 'studio' ]))
             {
-                if (isset($def [ 'studio' ]['listview'])) {
+            	//CL - Bug 42085 - if the element is explicitly set to be removed from the view, remove it
+            	$view = !empty($_REQUEST['view']) ? $_REQUEST['view'] : '';
+                if (!empty($view) && isset($def [ 'studio' ][$view]))
+                {
+                    return $def [ 'studio' ][$view] !== false && $def [ 'studio' ][$view] != 'false' && $def [ 'studio' ][$view] != 'hidden';
+                }
+                
+                if (isset($def [ 'studio' ]['listview'])) 
+                {
                     $lv = $def [ 'studio' ]['listview'];
                     return $lv !== false && (!is_string($lv) || $lv != 'false');
                 }
+                
                 if (isset($def [ 'studio' ]['visible']))
-                   return $def [ 'studio' ]['visible'];
-            } else
-            {
+                {
+                    return $def [ 'studio' ]['visible'];
+                }
+            } else {
             	return ($def [ 'studio' ] != 'false' && $def [ 'studio' ] !== false && $def [ 'studio' ] != 'hidden') ;
             }
         }  

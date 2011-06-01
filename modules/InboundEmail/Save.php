@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -68,6 +68,10 @@ foreach($focus->required_fields as $field) {
 		$focus->$field = $value;
 	}
 }
+if(!empty($_REQUEST['email_password'])) {
+    $focus->email_password = $_REQUEST['email_password'];
+}
+
 $focus->protocol = $_REQUEST['protocol'];
 
 if( isset($_REQUEST['is_create_case']) && $_REQUEST['is_create_case'] == 'on' )

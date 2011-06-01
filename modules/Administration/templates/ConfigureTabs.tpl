@@ -1,6 +1,6 @@
 {*
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -36,24 +36,21 @@
 
 *}
 <link rel="stylesheet" type="text/css" href="{sugar_getjspath file='modules/Connectors/tpls/tabs.css'}"/>
-<script type="text/javascript" src="include/javascript/sugar_grp_yui_widgets.js"></script>
-{overlib_includes}
-<style>.yui-dt-scrollable .yui-dt-bd {ldelim}overflow-x: hidden;{rdelim}</style>
+<script type="text/javascript" src="{sugar_getjspath file='include/javascript/sugar_grp_yui_widgets.js'}"></script>
+
+<form name="ConfigureTabs" method="POST"  method="POST" action="index.php">
+<input type="hidden" name="module" value="Administration">
+<input type="hidden" name="action" value="SaveTabs">
+<input type="hidden" id="enabled_tabs" name="enabled_tabs" value="">
+<input type="hidden" id="disabled_tabs" name="disabled_tabs" value="">
+<input type="hidden" name="return_module" value="{$RETURN_MODULE}">
+<input type="hidden" name="return_action" value="{$RETURN_ACTION}">
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr><td colspan='100'><h2>{$title}</h2></td></tr>
+<tr><td colspan='100'>{$MOD.LBL_CONFIG_TABS_DESC}</td></tr>
+<tr><td><br></td></tr>
 <tr><td colspan='100'>
-{$MOD.LBL_CONFIG_TABS_DESC}
-</td></tr><tr><td><br></td></tr><tr><td colspan='100'>
-
-<form name="ConfigureTabs" method="POST"  method="POST" action="index.php">
-	<input type="hidden" name="module" value="Administration">
-	<input type="hidden" name="action" value="SaveTabs">
-	<input type="hidden" id="enabled_tabs" name="enabled_tabs" value="">
-	<input type="hidden" id="disabled_tabs" name="disabled_tabs" value="">
-	<input type="hidden" name="return_module" value="{$RETURN_MODULE}">
-	<input type="hidden" name="return_action" value="{$RETURN_ACTION}">
-
 	<table border="0" cellspacing="1" cellpadding="1" class="actionsContainer">
 		<tr>
 			<td>
@@ -106,16 +103,17 @@
 			</td>
 		</tr>
 	</table>
+</td></tr>
+</table>	
 </form>
 
-
 <script type="text/javascript">
-(function(){ldelim}
 	var enabled_modules = {$enabled_tabs};
 	var disabled_modules = {$disabled_tabs};
 	var lblEnabled = '{sugar_translate label="LBL_VISIBLE_TABS"}';
 	var lblDisabled = '{sugar_translate label="LBL_HIDDEN_TABS"}';
 	{literal}
+	
 	SUGAR.enabledTabsTable = new YAHOO.SUGAR.DragDropTable(
 		"enabled_div",
 		[{key:"label",  label: lblEnabled, width: 200, sortable: false},
@@ -126,7 +124,10 @@
 			   fields : [{key : "module"}, {key : "label"}]
 			}
 		}), 
-		{height: "300px"}
+		{
+			height: "300px",
+			group: ["enabled_div", "disabled_div"]
+		}
 	);
 	SUGAR.disabledTabsTable = new YAHOO.SUGAR.DragDropTable(
 		"disabled_div",
@@ -138,7 +139,10 @@
 			   fields : [{key : "module"}, {key : "label"}]
 			}
 		}),
-		{height: "300px"}
+		{
+			height: "300px",
+		 	group: ["enabled_div", "disabled_div"]
+		 }
 	);
 	SUGAR.enabledTabsTable.disableEmptyRows = true;
     SUGAR.disabledTabsTable.disableEmptyRows = true;
@@ -161,7 +165,10 @@
 			   fields : [{key : "module"}, {key : "label"}]
 			}
 		}),  
-		{height: "300px"}
+		{
+		 	height: "300px",
+		 	group: ["enabled_subpanels_div", "disabled_subpanels_div"]
+		}
 	);
 	SUGAR.subDisabledTable = new YAHOO.SUGAR.DragDropTable(
 		"disabled_subpanels_div",
@@ -172,7 +179,10 @@
 			   fields : [{key : "module"}, {key : "label"}]
 			}
 		}),
-		{height: "300px"}
+		{
+		 	height: "300px",
+		 	group: ["enabled_subpanels_div", "disabled_subpanels_div"]
+		}
 	);
 	SUGAR.subEnabledTable.disableEmptyRows = true;
 	SUGAR.subDisabledTable.disableEmptyRows = true;
@@ -201,6 +211,5 @@
 		}
 		YAHOO.util.Dom.get('disabled_tabs').value = YAHOO.lang.JSON.stringify(modules);
 	}
-})();
 {/literal}
 </script>

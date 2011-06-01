@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -71,7 +71,8 @@ $focus = new User();
 $focus->retrieve($_POST['record']);
 
 // Flag to determine whether to save a new password or not.
-if(empty($focus->id)) $newUser = true;
+// Bug 43241 - Changed $focus->id to $focus->user_name to make sure that a system generated password is made when converting employee to user
+if(empty($focus->user_name)) $newUser = true;
 else $newUser = false;
 	
 

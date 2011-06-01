@@ -1,6 +1,6 @@
 {*
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -35,7 +35,13 @@
  ********************************************************************************/
 
 *}
-{{if !$nolink}}<a href="index.php?module={{sugarvar objectName='fields' memberName='vardef.type_name' key='value'}}&action=DetailView&record={{sugarvar key='value' memberName='vardef.id_name'}}" class="tabDetailViewDFLink">{{/if}}{{sugarvar key='value'}}{{if !$nolink}}</a>{{/if}}
+{{if !$nolink}}
+<input type="hidden" class="sugar_field" id="{{sugarvar key='name'}}" value="{{sugarvar key='value'}}">
+<input type="hidden" class="sugar_field" id="{{$vardef.id_name}}" value="{{sugarvar key='value' memberName='vardef.id_name'}}">
+<a href="index.php?module={{sugarvar objectName='fields' memberName='vardef.type_name' key='value'}}&action=DetailView&record={{sugarvar key='value' memberName='vardef.id_name'}}" class="tabDetailViewDFLink">{{/if}}{{sugarvar key='value'}}{{if !$nolink}}</a>
+{{/if}}
 {{if !empty($displayParams.enableConnectors)}}
-{{sugarvar_connector view='DetailView'}} 
+{if !empty({{sugarvar key='value'}})}
+{{sugarvar_connector view='DetailView'}}
+{/if}
 {{/if}}

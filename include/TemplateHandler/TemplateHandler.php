@@ -1,6 +1,6 @@
 <?php
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -391,14 +391,17 @@ class TemplateHandler {
                         if($matches[0] == 'Campaigns') {
                             $sqs_objects[$name] = $qsd->getQSCampaigns();
                         } else if($matches[0] == 'Users'){
-                            if($field['name'] == 'reports_to_name')
+                            if($field['name'] == 'reports_to_name') {
                                 $sqs_objects[$name] = $qsd->getQSUser('reports_to_name','reports_to_id');
+                            }
+                            // Bug 34643 - Default what the options should be for the assigned_user_name field
+                            //             and then pass thru the fields to be used in the fielddefs.
+                            elseif($field['name'] == 'assigned_user_name') {
+                                $sqs_objects[$name] = $qsd->getQSUser('assigned_user_name','assigned_user_id');
+                            }
                             else {
-                                if ($view == "ConvertLead")
-								    $sqs_objects[$name] = $qsd->getQSUser($field['name'], $field['id_name']);
-								else
-								    $sqs_objects[$name] = $qsd->getQSUser();
-							}
+                                $sqs_objects[$name] = $qsd->getQSUser($field['name'], $field['id_name']);
+                            }
                         } else if($matches[0] == 'Campaigns') {
                             $sqs_objects[$name] = $qsd->getQSCampaigns();
                         } else if($matches[0] == 'Accounts') {

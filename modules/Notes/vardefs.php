@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -36,8 +36,10 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  ********************************************************************************/
 
 $dictionary['Note'] = array(
-    'table' => 'notes', 
-	'unified_search' => true,
+
+    'table' => 'notes',
+	'unified_search' => true, 'unified_search_default_enabled' => true,
+
 	'comment' => 'Notes and Attachments'
                                ,'fields' => array (
   'id' =>
@@ -54,14 +56,17 @@ $dictionary['Note'] = array(
     'name' => 'date_entered',
     'vname' => 'LBL_DATE_ENTERED',
     'type' => 'datetime',
-    'comment' => 'Date record created'
+    'comment' => 'Date record created',
+    'enable_range_search' => true,
+    'options' => 'date_range_search_dom',
   ),
   'date_modified' =>
   array (
     'name' => 'date_modified',
     'vname' => 'LBL_DATE_MODIFIED',
     'type' => 'datetime',
-    'comment' => 'Date record last modified'
+    'comment' => 'Date record last modified',
+    'enable_range_search' => true,  
   ),
    'modified_user_id' =>
 	  array (
@@ -77,7 +82,7 @@ $dictionary['Note'] = array(
 	    'reportable'=>true,
 	    'comment' => 'User who last modified record',
 	  ),
-	  'modified_by_name' => 
+	  'modified_by_name' =>
 	  array (
 	    'name' => 'modified_by_name',
     'vname' => 'LBL_MODIFIED_BY',
@@ -89,8 +94,8 @@ $dictionary['Note'] = array(
 	    'id_name' => 'modified_user_id',
 	    'module'=>'Users',
 	    'link'=>'modified_user_link',
-	    'duplicate_merge'=>'disabled' 
-	  ),  
+	    'duplicate_merge'=>'disabled'
+	  ),
 	  'created_by' =>
 	  array (
 	    'name' => 'created_by',
@@ -103,7 +108,7 @@ $dictionary['Note'] = array(
 	    'dbType' => 'id',
     'comment' => 'User who created record'
 	  ),
-	  	'created_by_name' => 
+	  	'created_by_name' =>
 	  array (
 	    'name' => 'created_by_name',
 		'vname' => 'LBL_CREATED_BY',
@@ -130,16 +135,6 @@ $dictionary['Note'] = array(
     'importable' => 'required',
     'required' => true,
   ),
-  'filename' =>
-  array (
-    'name' => 'filename',
-    'vname' => 'LBL_FILENAME',
-    'type' => 'varchar',
-    'len' => '255',
-    'reportable'=>true,
-    'comment' => 'File name associated with the note (attachment)',
-    'importable' => false,
-  ),
   'file_mime_type' =>
   array (
     'name' => 'file_mime_type',
@@ -163,6 +158,17 @@ $dictionary['Note'] = array(
   	'comment' => 'Path to file (can be URL)',
     'importable' => false,
   	),
+  'filename' =>
+  array (
+    'name' => 'filename',
+    'vname' => 'LBL_FILENAME',
+    'type' => 'file',
+    'dbType' => 'varchar',
+    'len' => '255',
+    'reportable'=>true,
+    'comment' => 'File name associated with the note (attachment)',
+    'importable' => false,
+  ),
   'parent_type'=>
   array(
   	'name'=>'parent_type',

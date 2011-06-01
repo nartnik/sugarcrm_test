@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
- * SugarCRM is a customer relationship management program developed by
+ * SugarCRM Community Edition is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
  * 
  * This program is free software; you can redistribute it and/or modify it under
@@ -50,7 +50,7 @@ global $app_list_strings;
 global $current_language, $current_user;
 $current_module_strings = return_module_language($current_language, 'ProjectTask');
 
-$today = date($GLOBALS['timedate']->dbDayFormat); 
+$today = $timedate->nowDbDate(); 
 $today = $timedate->handle_offset($today, $timedate->dbDayFormat, false);
 
 $ListView = new ListView();
