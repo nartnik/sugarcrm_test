@@ -1,0 +1,11 @@
+.htaccess
+config.php
+config_override.php
+include/javascript/sugar_grp1.js
+include/javascript/sugar_grp1_yui.js
+include/javascript/sugar_grp_yui_widgets.js
+include/javascript/sugar_grp_yui_widgets.css
+include/javascript/sugar_grp_yui2.js
+include/javascript/sugar_grp_overlib.js
+include/javascript/sugar_grp_emails.js
+include/javascript/sugar_grp_quickcomp.js
