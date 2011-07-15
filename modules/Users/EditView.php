@@ -60,7 +60,7 @@ $admin->retrieveSettings();
 
 $focus = new User();
 $is_current_admin=is_admin($current_user)
-                ||is_admin_for_module($GLOBALS['current_user'],'Users');
+                ||$GLOBALS['current_user']->isAdminForModule('Users');
 $is_super_admin = is_admin($current_user);
 
 if(isset($_REQUEST['record'])) {
@@ -68,7 +68,7 @@ if(isset($_REQUEST['record'])) {
     $focus->retrieve($_REQUEST['record']);
 }
 
-if(!$is_super_admin && is_admin_for_module($GLOBALS['current_user'],'Users') && $focus->is_admin == 1) sugar_die("Unauthorized access to administrator.");
+if(!$is_super_admin && $GLOBALS['current_user']->isAdminForModule('Users') && $focus->is_admin == 1) sugar_die("Unauthorized access to administrator.");
 
 if(isset($_REQUEST['isDuplicate']) && $_REQUEST['isDuplicate'] == 'true') {
 	$focus->id = "";
@@ -208,7 +208,7 @@ if($focus->getPreference('no_opps') == 'on') {
 
 
 // check if the user has access to the User Management
-$sugar_smarty->assign('USER_ADMIN',is_admin_for_module($current_user,'Users')&& !is_admin($current_user));
+$sugar_smarty->assign('USER_ADMIN',$current_user->isAdminForModule('Users')&& !is_admin($current_user));
 
 
 ///////////////////////////////////////////////////////////////////////////////

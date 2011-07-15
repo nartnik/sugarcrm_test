@@ -62,7 +62,7 @@ class EmployeesViewDetail extends ViewDetail {
  		}
  		
  		$showDeleteButton = FALSE;
- 		if(  $_REQUEST['record'] != $GLOBALS['current_user']->id && ( is_admin($GLOBALS['current_user']) || is_admin_for_module($GLOBALS['current_user'],'Users')) )
+ 		if(  $_REQUEST['record'] != $GLOBALS['current_user']->id && $GLOBALS['current_user']->isAdminForModule('Users') )
         {
             $showDeleteButton = TRUE;
  		     if( empty($this->bean->user_name) ) //Indicates just employee

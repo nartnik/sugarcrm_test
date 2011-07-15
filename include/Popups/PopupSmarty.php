@@ -194,8 +194,18 @@ class PopupSmarty extends ListViewSmarty{
 		
 		
 		$associated_row_data = array();
-		foreach($this->data['data'] as $val){
+		
+		//C.L. - Bug 44324 - Override the NAME entry to not display salutation so that the data returned from the popup can be searched on correctly
+		$searchNameOverride = !empty($this->seed) && $this->seed instanceof Person && (isset($this->data['data'][0]['FIRST_NAME']) && isset($this->data['data'][0]['LAST_NAME'])) ? true : false;
+		
+		global $locale;
+		foreach($this->data['data'] as $val)
+		{
 			$associated_row_data[$val['ID']] = $val;
+			if($searchNameOverride)
+			{
+			   $associated_row_data[$val['ID']]['NAME'] = $locale->getLocaleFormattedName($val['FIRST_NAME'], $val['LAST_NAME']);
+			}
 		}
 		$is_show_fullname = showFullName() ? 1 : 0;
 		$json = getJSONobj();

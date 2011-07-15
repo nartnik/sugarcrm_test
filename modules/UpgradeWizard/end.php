@@ -64,7 +64,11 @@ require_once("modules/Administration/QuickRepairAndRebuild.php");
 $rac = new RepairAndClear();
 $rac->clearVardefs();
 $rac->rebuildExtensions();
-$rac->clearExternalAPICache();
+//bug: 44431 - defensive check to ensure the method exists since upgrades to 6.2.0 may not have this method define yet.
+if(method_exists($rac, 'clearExternalAPICache'))
+{
+    $rac->clearExternalAPICache();
+}
 
 $repairedTables = array();
 
@@ -109,7 +113,7 @@ foreach ($dictionary as $meta) {
 
 logThis('database repaired', $path);
 
-$ce_to_pro_ent = isset($_SESSION['upgrade_from_flavor']) && ($_SESSION['upgrade_from_flavor'] == 'SugarCE to SugarPro' || $_SESSION['upgrade_from_flavor'] == 'SugarCE to SugarEnt');
+$ce_to_pro_ent = isset($_SESSION['upgrade_from_flavor']) && ($_SESSION['upgrade_from_flavor'] == 'SugarCE to SugarPro' || $_SESSION['upgrade_from_flavor'] == 'SugarCE to SugarEnt' || $_SESSION['upgrade_from_flavor'] == 'SugarCE to SugarCorp' || $_SESSION['upgrade_from_flavor'] == 'SugarCE to SugarUlt');
 
 
 logThis(" Start Rebuilding the config file again", $path);
@@ -193,6 +197,11 @@ if(file_exists('include/SugarLogger/LoggerManager.php')){
 if($_SESSION['current_db_version'] < '610' && function_exists('upgrade_connectors'))
 {
    upgrade_connectors($path);
+}
+
+// Enable the InsideView connector by default
+if($_SESSION['current_db_version'] < '621' && function_exists('upgradeEnableInsideViewConnector')) {
+    upgradeEnableInsideViewConnector();
 }
 
 if ($_SESSION['current_db_version'] < '620' && ($sugar_config['dbconfig']['db_type'] == 'mssql' || $sugar_config['dbconfig']['db_type'] == 'oci8'))

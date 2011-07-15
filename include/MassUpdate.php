@@ -1217,7 +1217,7 @@ EOQ;
         }
 	/* bug 31271: using false to not add all bean fields since some beans - like SavedReports
 	   can have fields named 'module' etc. which may break the query */
-        $searchForm->populateFromArray(unserialize(base64_decode($query)), null, false); // see bug 31271
+        $searchForm->populateFromArray(unserialize(base64_decode($query)), null, true); // see bug 31271
         $this->searchFields = $searchForm->searchFields;
         $where_clauses = $searchForm->generateSearchWhere(true, $module);
         if (count($where_clauses) > 0 ) {

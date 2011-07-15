@@ -198,7 +198,7 @@
 			 <input name='is_auto_import' style="{AUTO_IMPORT_STYLE}" id='is_auto_import' onclick="showWarningsIfChaningAutoImport();"tabindex='45' type='checkbox' {IS_AUTO_IMPORT}>
 			</td>
 			<td valign="top" scope="row" width="15%" NOWRAP>
-				<slot>{MOD.LBL_FROM_ADDR}:<span class="required">{APP.LBL_REQUIRED_SYMBOL}</span>&nbsp;</slot></td>
+				<slot>{MOD.LBL_FROM_ADDR}:<span class="required">{APP.LBL_REQUIRED_SYMBOL}</span><span valign="bottom" onmouseout="return nd();" onmouseover="return overlib('{MOD.LBL_FROM_ADDR_DESC}', FGCLASS, 'olFgClass', CGCLASS, 'olCgClass', BGCLASS, 'olBgClass', TEXTFONTCLASS, 'olFontClass', CAPTIONFONTCLASS, 'olCapFontClass', CLOSEFONTCLASS, 'olCloseFontClass' );">&nbsp;<img src="index.php?entryPoint=getImage&themeName={THEME}&imageName=helpInline.gif"></span></slot></td>
 			<td valign="top"  width="35%">
 				<slot><input tabindex="310" name="from_addr" id="from_addr" value="{FROM_ADDR}" {IE_DISABLED}></slot></td>
 		</tr>

@@ -113,7 +113,7 @@ $layout_defs['UserRoles'] = array(
 	),
 	);
 global $current_user;
-if(is_admin($current_user)|| is_admin_for_module($current_user, 'Users')){
+if($current_user->isAdminForModule('Users')){
 	$layout_defs['UserRoles']['subpanel_setup']['aclroles']['subpanel_name'] = 'admin';
 }else{
 	$layout_defs['UserRoles']['subpanel_setup']['aclroles']['top_buttons'] = array();

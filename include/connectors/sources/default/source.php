@@ -72,7 +72,12 @@ abstract class source{
 			require("modules/Connectors/connectors/sources/{$dir}/mapping.php");
 		}
 	    $this->_mapping = $mapping;	
- 	} 	
+ 	}
+    
+    public function saveMappingHook($mapping) {
+        // Most classes don't care that the mapping has changed, but this is here if they do.
+        return;
+    }
  	
  	public function loadVardefs() {
 		$class = get_class($this);
@@ -165,7 +170,13 @@ abstract class source{
 		   }
 		}
  	}
- 	
+
+    // Helper function for the settings panels
+    public function filterAllowedModules( $moduleList ) {
+        // Most modules can connect to everything, no further filtering necessary
+        return $moduleList;
+    }
+    
  	////////////// GETTERS and SETTERS ////////////////////
 	public function getMapping(){
  		return $this->_mapping;

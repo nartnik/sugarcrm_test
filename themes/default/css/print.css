@@ -39,6 +39,9 @@
 .listViewPaginationTdS1, .listViewButtons, .search_form , .tablist, .utilsLink, .button, .tabForm{
     display: none;
 }
+.doNotPrint {
+    display: none !important;
+}
 
 div #content {
     margin-left: 2em;

@@ -68,7 +68,7 @@ class StoreQuery{
 				if(!empty($value) && preg_match('/^(start_range_|end_range_|range_)?(.*?)(_advanced|_basic)$/', $key, $match))
 				{
 				   $field = $match[2];
-				   if(isset($bean->field_defs[$field]['type']))
+				   if(isset($bean->field_defs[$field]['type']) && empty($bean->field_defs[$field]['disable_num_format']))
 				   {
 				   	  $type = $bean->field_defs[$field]['type'];
 				   	  
@@ -147,7 +147,7 @@ class StoreQuery{
                 if(!empty($value) && !empty($bean) && preg_match('/^(start_range_|end_range_|range_)?(.*?)(_advanced|_basic)$/', $key, $match))
 				{
 				   $field = $match[2];
-				   if(isset($bean->field_defs[$field]['type']))
+				   if(isset($bean->field_defs[$field]['type']) && empty($bean->field_defs[$field]['disable_num_format']))
 				   {
 				   	  $type = $bean->field_defs[$field]['type'];
 				   	  

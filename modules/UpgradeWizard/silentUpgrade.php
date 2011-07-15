@@ -42,7 +42,16 @@ function build_argument_string($arguments=array()) {
    $argument_string = '';
    $count = 0;
    foreach($arguments as $arg) {
-   	   if($count != 0) {
+   	   if($count != 0) 
+   	   {
+   	   	  //If current directory or parent directory is specified, substitute with full path
+   	   	  if($arg == '.')
+   	   	  {
+   	   	  	 $arg = getcwd();
+   	   	  } else if ($arg == '..') {
+   	   	  	 $dir = getcwd();
+			 $arg = substr($dir, 0, strrpos($dir, DIRECTORY_SEPARATOR));
+   	   	  }
           $argument_string .= ' ' . escapeshellarg($arg);	 
    	   } 
    	   $count++;

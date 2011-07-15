@@ -94,6 +94,16 @@ $subpanel_layout = array(
 	 	    'vname' => 'LBL_LIST_ACTIVE_DATE',
 		    'width' => '10%',
 		),
+        'get_latest'=>array(
+			'widget_class' => 'SubPanelGetLatestButton',
+		 	'module' => 'Documents',
+			'width' => '5%',
+		),
+        'load_signed'=>array(
+            'widget_class' => 'SubPanelLoadSignedButton',
+            'module' => 'Documents',
+            'width' => '5%',
+        ),
 		'edit_button'=>array(
 			'vname' => 'LBL_EDIT_BUTTON',
 			'widget_class' => 'SubPanelEditButton',

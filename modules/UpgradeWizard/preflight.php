@@ -300,6 +300,12 @@ $diffs ='';
 			case 'SugarCE to SugarEnt':
 				$sqlFile = $current_version.'_ce_to_ent_'.$db->dbType;
 				break;
+            case 'SugarCE to SugarCorp':
+				$sqlFile = $current_version.'_ce_to_corp_'.$db->dbType;
+				break;
+            case 'SugarCE to SugarUlt':
+				$sqlFile = $current_version.'_ce_to_ult_'.$db->dbType;
+				break;
 			case 'SugarPro to SugarEnt':
 				$sqlFile = $current_version.'_pro_to_ent_'.$db->dbType;
 				break;

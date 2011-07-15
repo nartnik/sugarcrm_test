@@ -79,7 +79,7 @@
 			{counter name="colCounter"}
 		{/foreach}
 	</tr>
-		
+
 	{foreach name=rowIteration from=$data key=id item=rowData}
 		{if $smarty.foreach.rowIteration.iteration is odd}
 			{assign var='_rowColor' value=$rowColor[0]}
@@ -90,7 +90,7 @@
 			{if !empty($quickViewLinks)}
 			<td width='1%' nowrap>
 				{if $pageData.access.edit && $pageData.bean.moduleDir != "Employees"}
-					<a title='{$editLinkString}' href='index.php?action=EditView&module={$params.module|default:$pageData.bean.moduleDir}&record={$rowData[$params.id]|default:$rowData.ID}&offset={$pageData.offsets.current+$smarty.foreach.rowIteration.iteration}&stamp={$pageData.stamp}&return_module={$params.module|default:$pageData.bean.moduleDir}'><img border="0" src="{sugar_getimagepath file="edit_inline.gif"}"></a>
+					<a title='{$editLinkString}' href='index.php?action=EditView&module={$pageData.bean.moduleDir}&record={$rowData.ID}&offset={$pageData.offsets.current+$smarty.foreach.rowIteration.iteration}&stamp={$pageData.stamp}&return_module={$pageData.bean.moduleDir}'><img border="0" src="{sugar_getimagepath file="edit_inline.gif"}"></a>
 				{/if}
 			</td>
 			{/if}
@@ -101,9 +101,9 @@
 				    {if $params.link && !$params.customCode}
 						<{$pageData.tag.$id[$params.ACLTag]|default:$pageData.tag.$id.MAIN} href="#" onMouseOver="javascript:lvg_nav('{if $params.dynamic_module}{$rowData[$params.dynamic_module]}{else}{$params.module|default:$pageData.bean.moduleDir}{/if}', '{$rowData[$params.id]|default:$rowData.ID}', 'd', {$smarty.foreach.rowIteration.iteration}, this);"  onFocus="javascript:lvg_nav('{if $params.dynamic_module}{$rowData[$params.dynamic_module]}{else}{$params.module|default:$pageData.bean.moduleDir}{/if}', '{$rowData[$params.id]|default:$rowData.ID}', 'd', {$smarty.foreach.rowIteration.iteration}, this);">
 						{/if}
-					{if $params.customCode} 
+					{if $params.customCode}
 						{sugar_evalcolumn_old var=$params.customCode rowData=$rowData}
-					{else}	
+					{else}
                        {sugar_field parentFieldArray=$rowData vardef=$params displayType=ListView field=$col}
 					{/if}
 					{if empty($rowData.$col)}&nbsp;{/if}
@@ -120,13 +120,13 @@
 	    <td colspan="{$colCount}">
 	        <em>{$APP.LBL_NO_DATA}</em>
 	    </td>
-	</tr>	
+	</tr>
 	{/foreach}
 	{include file='include/ListView/ListViewPagination.tpl'}
 </table>
 <script type='text/javascript'>
 {literal}function lvg_nav(m,id,act,offset,t){if(t.href.search(/#/) < 0){return;}else{if(act=='pte'){act='ProjectTemplatesEditView';}else if(act=='d'){ act='DetailView';}else if( act =='ReportsWizard'){act = 'ReportsWizard';}else{ act='EditView';}{/literal}url = 'index.php?module='+m+'&offset=' + offset + '&stamp={$pageData.stamp}&return_module='+m+'&action='+act+'&record='+id;t.href=url;{literal}}}{/literal}
-{literal}function lvg_dtails(id){{/literal}return SUGAR.util.getAdditionalDetails( '{$params.module|default:$pageData.bean.moduleDir}',id, 'adspan_'+id);{literal}}{/literal}
+{literal}function lvg_dtails(id){{/literal}return SUGAR.util.getAdditionalDetails( '{$pageData.bean.moduleDir}',id, 'adspan_'+id);{literal}}{/literal}
 {if $contextMenus}
 	{$contextMenuScript}
 {/if}

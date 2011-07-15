@@ -50,11 +50,11 @@ global $current_user;
 global $theme;
 global $app_strings;
 global $mod_strings;
-if (!is_admin($current_user) && !is_admin_for_module($GLOBALS['current_user'],'Users')
+if (!is_admin($current_user) && !$GLOBALS['current_user']->isAdminForModule('Users')
       && ($_REQUEST['record'] != $current_user->id)) sugar_die("Unauthorized access to administration.");
 
 $is_current_admin=is_admin($current_user)
-                ||is_admin_for_module($GLOBALS['current_user'],'Users');
+                ||$GLOBALS['current_user']->isAdminForModule('Users');
                 
 $focus = new User();
 
@@ -167,7 +167,7 @@ if($reminder_time != -1){
 $user_type_label=$mod_strings['LBL_REGULAR_USER'];
 $usertype='RegularUser';
 
-if((is_admin($current_user) || $_REQUEST['record'] == $current_user->id || is_admin_for_module($current_user,'Users')) && $focus->is_admin == '1'){
+if((is_admin($current_user) || $_REQUEST['record'] == $current_user->id || $current_user->isAdminForModule('Users')) && $focus->is_admin == '1'){
 	$user_type_label=$mod_strings['LBL_ADMIN_USER'];
 	$usertype='Administrator';
 }
@@ -217,10 +217,10 @@ if ((is_admin($current_user) || $_REQUEST['record'] == $current_user->id
 		&& $sugar_config['lock_default_user_name']) {
 	$buttons .= "<input id='edit_button' title='".$app_strings['LBL_EDIT_BUTTON_TITLE']."' accessKey='".$app_strings['LBL_EDIT_BUTTON_KEY']."' class='button primary' onclick=\"this.form.return_module.value='Users'; this.form.return_action.value='DetailView'; this.form.return_id.value='$focus->id'; this.form.action.value='EditView'\" type='submit' name='Edit' value='".$app_strings['LBL_EDIT_BUTTON_LABEL']."'>  ";
 }
-elseif (is_admin($current_user)|| (is_admin_for_module($GLOBALS['current_user'],'Users')&& !$focus->is_admin)
+elseif (is_admin($current_user)|| ($GLOBALS['current_user']->isAdminForModule('Users')&& !$focus->is_admin)
      || $_REQUEST['record'] == $current_user->id) {
 	$buttons .= "<input id='edit_button' title='".$app_strings['LBL_EDIT_BUTTON_TITLE']."' accessKey='".$app_strings['LBL_EDIT_BUTTON_KEY']."' class='button primary' onclick=\"this.form.return_module.value='Users'; this.form.return_action.value='DetailView'; this.form.return_id.value='$focus->id'; this.form.action.value='EditView'\" type='submit' name='Edit' value='".$app_strings['LBL_EDIT_BUTTON_LABEL']."'>  ";
-	if ((is_admin($current_user)|| is_admin_for_module($GLOBALS['current_user'],'Users')
+	if ((is_admin($current_user)|| $GLOBALS['current_user']->isAdminForModule('Users')
         )
 	){
 		if (!$current_user->is_group){
@@ -262,7 +262,7 @@ $chooser = new TemplateGroupChooser();
 $controller = new TabController();
 
 //if(is_admin($current_user) || $controller->get_users_can_edit())
-if(is_admin($current_user)||is_admin_for_module($GLOBALS['current_user'],'Users'))
+if(is_admin($current_user)||$GLOBALS['current_user']->isAdminForModule('Users'))
 {
 	$chooser->display_third_tabs = true;
 	$chooser->args['third_name'] = 'remove_tabs';

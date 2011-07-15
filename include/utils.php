@@ -657,12 +657,11 @@ function showFullName() {
 	static $showFullName = null;
 
 	if (is_null($showFullName)) {
-		$sysPref = (isset($sugar_config['use_real_names']) && $sugar_config['use_real_names'] == true) ? true : false;
+		$sysPref = !empty($sugar_config['use_real_names']);
 		$userPref = (is_object($current_user)) ? $current_user->getPreference('use_real_names') : null;
 
 		if($userPref != null) {
-			$bool = ($userPref == 'on') ? true : false;
-			$showFullName = $bool;
+			$showFullName = ($userPref == 'on');
 		} else {
 			$showFullName = $sysPref;
 		}
@@ -1247,7 +1246,8 @@ function microtime_diff($a, $b) {
 // check if Studio is displayed.
 function displayStudioForCurrentUser()
 {
-    if ( is_admin($GLOBALS['current_user']) ) {
+    global $current_user;
+    if ( $current_user->isAdmin() ) {
         return true;
     }
 
@@ -1265,10 +1265,15 @@ function displayWorkflowForCurrentUser()
 
 // return an array with all modules where the user is an admin.
 function get_admin_modules_for_user($user) {
-    global $beanList;
-    $admin_modules = array();
+    $GLOBALS['log']->deprecated("get_admin_modules_for_user() is deprecated as of 6.2.2 and may disappear in the future, use Users->getDeveloperModules() instead");
 
-    return ($admin_modules);
+    if(!isset($user)){
+        $modules = array();
+        return $modules;
+    }
+
+    return($user->getDeveloperModules());
+    
 }
 
  function get_workflow_admin_modules_for_user($user){
@@ -1305,7 +1310,7 @@ function get_admin_modules_for_user($user) {
     foreach ($workflow_mod_list as $key=>$val) {
         if(!in_array($val, $workflow_admin_modules) && ($val!='iFrames' && $val!='Feeds' && $val!='Home' && $val!='Dashboard'
             && $val!='Calendar' && $val!='Activities' && $val!='Reports') &&
-            (is_admin_for_module($user,$key))) {
+           ($user->isDeveloperForModule($key))) {
                 $workflow_admin_modules[$key] = $val;
         }
     }
@@ -1315,12 +1320,24 @@ function get_admin_modules_for_user($user) {
 
 // Check if user is admin for at least one module.
 function is_admin_for_any_module($user) {
+    if (!isset($user)){
+        return false;
+    }
+    if($user->isAdmin()) {
+        return true;
+    }
     return false;
 }
 
 
 // Check if user is admin for a specific module.
 function is_admin_for_module($user,$module) {
+    if (!isset($user)) {
+        return false;
+    }
+    if ($user->isAdmin()) {
+        return true;
+    }
     return false;
 }
 
@@ -1332,11 +1349,11 @@ function is_admin_for_module($user,$module) {
  * Contributor(s): ______________________________________..
  */
 function is_admin($user) {
-	if(!empty($user) && ($user->is_admin == '1' || $user->is_admin === 'on')){
-		return true;
-	}
-
-	return false;
+    if(empty($user)) {
+        return false;
+    }
+    
+	return $user->isAdmin();
 }
 
 /**
@@ -2699,7 +2716,12 @@ function check_logic_hook_file($module_name, $event, $action_array){
 		} else {
 			$add_logic = true;
 
-			$logic_count = count($hook_array[$event]);
+            $logic_count = 0;
+            if(!empty($hook_array[$event]))
+            {
+			    $logic_count = count($hook_array[$event]);
+            }
+            
 			if($action_array[0]==""){
 				$action_array[0] = $logic_count  + 1;
 			}

@@ -560,7 +560,7 @@ if($upgradeType == constant('DCE_INSTANCE')){
 		exit(1);
 	}
 
-    $ce_to_pro_ent = isset($manifest['name']) && ($manifest['name'] == 'SugarCE to SugarPro' || $manifest['name'] == 'SugarCE to SugarEnt');
+    $ce_to_pro_ent = isset($manifest['name']) && ($manifest['name'] == 'SugarCE to SugarPro' || $manifest['name'] == 'SugarCE to SugarEnt' || $manifest['name'] == 'SugarCE to SugarCorp' || $manifest['name'] == 'SugarCE to SugarUlt');
 	$_SESSION['upgrade_from_flavor'] = $manifest['name'];
 	
 	//get the latest uw_utils.php

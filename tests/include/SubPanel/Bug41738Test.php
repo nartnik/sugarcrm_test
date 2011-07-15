@@ -107,7 +107,7 @@ function subpanelCollectionWithSpecificQueryMeetings($params)
 		$query = "SELECT meetings.id , meetings.name , meetings.status , 0 reply_to_status , ' ' contact_name , ' ' contact_id , ' ' contact_name_owner , ' ' contact_name_mod , meetings.parent_id , meetings.parent_type , meetings.date_modified , jt1.user_name assigned_user_name , jt1.created_by assigned_user_name_owner , 'Users' assigned_user_name_mod, ' ' filename , meetings.assigned_user_id , 'meetings' panel_name 
 			FROM meetings 
 			LEFT JOIN users jt1 ON jt1.id= meetings.assigned_user_id AND jt1.deleted=0 AND jt1.deleted=0 
-			WHERE ( meetings.parent_type = \"Opportunities\" 
+			WHERE ( meetings.parent_type = 'Opportunities'
 				AND meetings.deleted=0 
 				AND (meetings.status='Held' OR meetings.status='Not Held') 
 				AND meetings.parent_id IN(
@@ -125,7 +125,7 @@ function subpanelCollectionWithSpecificQueryTasks($params)
 		$query = "SELECT tasks.id , tasks.name , tasks.status , 0 reply_to_status , ' ' contact_name , ' ' contact_id , ' ' contact_name_owner , ' ' contact_name_mod , tasks.parent_id , tasks.parent_type , tasks.date_modified , jt1.user_name assigned_user_name , jt1.created_by assigned_user_name_owner , 'Users' assigned_user_name_mod, ' ' filename , tasks.assigned_user_id , 'tasks' panel_name 
 			FROM tasks 
 			LEFT JOIN users jt1 ON jt1.id= tasks.assigned_user_id AND jt1.deleted=0 AND jt1.deleted=0 
-			WHERE ( tasks.parent_type = \"Opportunities\" 
+			WHERE ( tasks.parent_type = 'Opportunities'
 				AND tasks.deleted=0 
 				AND (tasks.status='Completed' OR tasks.status='Deferred') 
 				AND tasks.parent_id IN(

@@ -610,7 +610,14 @@ if(typeof(SUGAR.collection) == "undefined") {
 		var newNode = document.createElement(e.tagName);
 		if (!newNode) return false;
 		
-		var properties = ['class', 'style', 'name', 'type', 'valign', 'border', 'width', 'height', 'top', 'bottom', 'left', 'right', 'scope', 'row', 'columns', 'src', 'href', 'className', 'align', 'nowrap'];
+        //clee. - Bug: 44976 - IE7 just does not calculate height properties correctly for input elements
+		if(SUGAR.isIE7 && e.tagName.toLowerCase() == 'input')
+		{
+			var properties = ['class', 'style', 'name', 'type', 'valign', 'border', 'width', 'top', 'bottom', 'left', 'right', 'scope', 'row', 'columns', 'src', 'href', 'className', 'align', 'nowrap'];
+		} else {
+			var properties = ['class', 'style', 'name', 'type', 'valign', 'border', 'width', 'height', 'top', 'bottom', 'left', 'right', 'scope', 'row', 'columns', 'src', 'href', 'className', 'align', 'nowrap'];
+		}
+		
 		for (var i in properties)
 		{
 			if (e[properties[i]])

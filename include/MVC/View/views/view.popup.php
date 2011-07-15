@@ -46,7 +46,7 @@ class ViewPopup extends SugarView{
         if(($this->bean instanceOf SugarBean) && !$this->bean->ACLAccess('list')){
             ACLController::displayNoAccess();
             sugar_cleanup(true);
-        }
+        }  
         
 		if(isset($_REQUEST['metadata']) && strpos($_REQUEST['metadata'], "..") !== false)
 			die("Directory navigation attack denied.");

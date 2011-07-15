@@ -81,6 +81,11 @@ function setUp()
 
 function tearDown() {
 	global $db, $current_user;
+
+    if($db->dbType != 'mysql') return; // No need to clean up if we skipped the test to begin with
+
+
+
     SugarTestMeetingUtilities::removeAllCreatedMeetings();	
 	SugarTestCallUtilities::removeAllCreatedCalls();	
     

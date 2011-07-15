@@ -210,6 +210,10 @@ class ImportViewStep2 extends SugarView
                         "INSTRUCTION_STEP" => $mod_strings["LBL_{$lang_key}_NUM_$i"],
                     );
                 }
+                if(!isset($mod_strings["LBL_IMPORT_{$lang_key}_TITLE"])){
+                    $lang_key = 'CUSTOM';
+                }
+
                 $this->ss->assign("INSTRUCTIONS_TITLE",$mod_strings["LBL_IMPORT_{$lang_key}_TITLE"]);
                 $this->ss->assign("instructions",$instructions);
             }

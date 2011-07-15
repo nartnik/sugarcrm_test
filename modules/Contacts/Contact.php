@@ -361,10 +361,14 @@ class Contact extends Person {
 		left join contacts con_reports_to on con_reports_to.id = contacts.reports_to_id
 		where contacts.id = '".$this->id."'";
 		// Bug 43196 - If a contact is related to multiple accounts, make sure we pull the one we are looking for
-		if ( !empty($this->account_id) ) {
+		// Bug 44730  was introduced due to this, fix is to simply clear any whitespaces around the account_id first
+
+        $clean_account_id = trim($this->account_id);
+
+        if ( !empty($clean_account_id) ) {
 		    $query .= " and acc.id = '{$this->account_id}'";
 		}
-		
+
 		$result = $this->db->query($query,true," Error filling in additional detail fields: ");
 
 		// Get the id and the name.

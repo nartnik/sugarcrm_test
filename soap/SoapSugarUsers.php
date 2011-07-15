@@ -350,6 +350,10 @@ function get_entry_list($session, $module_name, $query, $order_by,$offset, $sele
 
 	$output_list = array();
 
+    $isEmailModule = false;
+    if($module_name == 'Emails'){
+        $isEmailModule = true;
+    }
 	// retrieve the vardef information on the bean's fields.
 	$field_list = array();
 	foreach($list as $value)
@@ -357,6 +361,9 @@ function get_entry_list($session, $module_name, $query, $order_by,$offset, $sele
 		if(isset($value->emailAddress)){
 			$value->emailAddress->handleLegacyRetrieve($value);
 		}
+        if($isEmailModule){
+            $value->retrieveEmailText();
+        }
 		$value->fill_in_additional_detail_fields();
 		$output_list[] = get_return_value($value, $module_name);
 		if(empty($field_list)){
@@ -519,9 +526,19 @@ function set_entry($session,$module_name, $name_value_list){
 	$seed = new $class_name();
 
 	foreach($name_value_list as $value){
-		if($value['name'] == 'id'){
-			$seed->retrieve($value['value']);
-			break;
+        if($value['name'] == 'id' && isset($value['value']) && strlen($value['value']) > 0){
+			$result = $seed->retrieve($value['value']);
+            //bug: 44680 - check to ensure the user has access before proceeding.
+            if(is_null($result))
+            {
+                $error->set_error('no_access');
+		        return array('id'=>-1, 'error'=>$error->get_soap_array());
+            }
+            else
+            {
+                break;
+            }
+
 		}
 	}
 	foreach($name_value_list as $value){

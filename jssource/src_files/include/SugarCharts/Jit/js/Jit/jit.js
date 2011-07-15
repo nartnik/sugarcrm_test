@@ -3095,6 +3095,9 @@ var Canvas;
     
     */
     scale: function(x, y, disablePlot) {
+    	if(!disablePlot) {
+    		disablePlot = false;
+    		}
       var px = this.scaleOffsetX * x,
           py = this.scaleOffsetY * y;
       var dx = this.translateOffsetX * (x -1) / px,
@@ -3104,7 +3107,7 @@ var Canvas;
       for(var i=0, l=this.canvases.length; i<l; i++) {
         this.canvases[i].scale(x, y, true);
       }
-      this.translate(dx, dy, false);
+      this.translate(dx, dy, disablePlot);
     },
     /*
       Method: getPos
@@ -3241,11 +3244,11 @@ var Canvas;
       styles.width = width + "px";
       styles.height = height + "px";
       //small ExCanvas fix
-      if(!supportsCanvas) {
-        this.translateToCenter(size);
-      } else {
+      //if(!supportsCanvas) {
+        //this.translateToCenter(size);
+      //} else {
         this.translateToCenter();
-      }
+      //}
       this.translateOffsetX =
         this.translateOffsetY = 0;
       this.scaleOffsetX = 
@@ -10381,8 +10384,36 @@ $jit.LineChart = new Class({
 	    ctx.fillStyle = backgroundColor;
    	    ctx.fillRect(-size.width/2,-size.height/2,size.width,size.height);  	
   },
-  
-  
+  clear: function() {
+  	var canvas = this.canvas;
+  	var ctx = canvas.getCtx(),
+  	size = canvas.getSize();
+  	ctx.fillStyle = "rgba(255,255,255,0)";
+  	ctx.fillRect(-size.width/2,-size.height/2,size.width,size.height);
+  	ctx.clearRect(-size.width/2,-size.height/2,size.width,size.height);
+ },
+  resizeGraph: function(json,orgWindowWidth,orgContainerDivWidth,cols) {
+  	var canvas = this.canvas,
+  	size = canvas.getSize(),
+    	config = this.config,
+        orgHeight = size.height,
+        margin = config.Margin,
+        st = this.st,
+        horz = config.orientation == 'horizontal';
+        
+
+	var newWindowWidth = document.body.offsetWidth;
+	var diff = newWindowWidth - orgWindowWidth;	
+	var newWidth = orgContainerDivWidth + (diff/cols);
+  	canvas.resize(newWidth,orgHeight);
+  	if(typeof FlashCanvas == "undefined") {
+		canvas.clear();
+  	} else {
+  		this.clear();// hack for flashcanvas bug not properly clearing rectangle
+  	}
+  	this.loadJSON(json);
+
+  	},
  /*
   Method: loadJSON
  
@@ -12633,6 +12664,8 @@ $jit.BarChart = new Class({
     this.canvas = this.st.canvas;
   },
   
+ 
+  
   renderTitle: function() {
   	var canvas = this.canvas,
 	size = canvas.getSize(),
@@ -12795,6 +12828,44 @@ $jit.BarChart = new Class({
 	    ctx.fillStyle = backgroundColor;
    	    ctx.fillRect(-size.width/2,-size.height/2,size.width,size.height);  	
   },
+  
+  clear: function() {
+  	var canvas = this.canvas;
+  	var ctx = canvas.getCtx(),
+  	size = canvas.getSize();
+  	ctx.fillStyle = "rgba(255,255,255,0)";
+  	ctx.fillRect(-size.width/2,-size.height/2,size.width,size.height);
+  	ctx.clearRect(-size.width/2,-size.height/2,size.width,size.height);
+ },
+  resizeGraph: function(json,orgWindowWidth,orgContainerDivWidth,cols) {
+  	var canvas = this.canvas,
+  	size = canvas.getSize(),
+    	config = this.config,
+        orgHeight = size.height,
+        margin = config.Margin,
+        st = this.st,
+        grouped = config.type.split(':')[0] == 'grouped',
+        horz = config.orientation == 'horizontal',
+        	ctx = canvas.getCtx();
+        
+	var newWindowWidth = document.body.offsetWidth;
+	var diff = newWindowWidth - orgWindowWidth;	
+	var newWidth = orgContainerDivWidth + (diff/cols);
+	var scale = newWidth/orgContainerDivWidth;
+  	canvas.resize(newWidth,orgHeight);
+  	if(typeof FlashCanvas == "undefined") {
+		canvas.clear();
+  	} else {
+  		this.clear();// hack for flashcanvas bug not properly clearing rectangle
+  	}
+  	if(horz) {
+  		st.config.offsetX = size.width/2 - margin.left - (grouped && config.Label ? config.labelOffset + config.Label.size : 0);
+  	}
+  	
+  	this.loadJSON(json);
+
+	
+  	},
   /*
     Method: loadJSON
    
@@ -12835,7 +12906,7 @@ $jit.BarChart = new Class({
     for(var i=0, values=json.values, l=values.length; i<l; i++) {
     	var val = values[i];
       	var valArray = $.splat(val.values);
-      	groupTotalValue += parseInt(valArray.sum());
+      	groupTotalValue += parseFloat(valArray.sum());
     }
 
     for(var i=0, values=json.values, l=values.length; i<l; i++) {
@@ -12899,6 +12970,7 @@ $jit.BarChart = new Class({
 	if(!animate && subtitle.text) {
 		this.renderSubtitle();
 	}
+
     st.compute();
     st.select(st.root);
     if(animate) {
@@ -13687,8 +13759,40 @@ $jit.FunnelChart = new Class({
 	    ctx.fillStyle = backgroundColor;
    	    ctx.fillRect(-size.width/2,-size.height/2,size.width,size.height);  	
   },
-  
-  
+  clear: function() {
+  	var canvas = this.canvas;
+  	var ctx = canvas.getCtx(),
+  	size = canvas.getSize();
+  	ctx.fillStyle = "rgba(255,255,255,0)";
+  	ctx.fillRect(-size.width/2,-size.height/2,size.width,size.height);
+  	ctx.clearRect(-size.width/2,-size.height/2,size.width,size.height);
+  },
+   resizeGraph: function(json,orgWindowWidth,orgContainerDivWidth,cols) {
+  	var canvas = this.canvas,
+  	size = canvas.getSize(),
+    	config = this.config,
+        orgHeight = size.height,
+        margin = config.Margin,
+        st = this.st,
+        label = config.Label,
+        horz = config.orientation == 'horizontal',
+        ctx = canvas.getCtx();
+        
+
+	var newWindowWidth = document.body.offsetWidth;
+	var diff = newWindowWidth - orgWindowWidth;	
+	var newWidth = orgContainerDivWidth + (diff/cols);
+  	canvas.resize(newWidth,orgHeight);
+
+  	if(typeof FlashCanvas == "undefined") {
+		canvas.clear();
+  	} else {
+  		this.clear();// hack for flashcanvas bug not properly clearing rectangle
+  	}
+  	this.loadJSON(json);
+
+  	},
+  	
   loadJSON: function(json) {
     if(this.busy) return;
     this.busy = true;
@@ -13709,14 +13813,14 @@ $jit.FunnelChart = new Class({
 		colorLength = color.length,
 		nameLength = name.length,
 		totalValue = 0;
-
     for(var i=0, values=json.values, l=values.length; i<l; i++) {
     	var val = values[i];
       	var valArray = $.splat(val.values);
-      	totalValue += parseInt(valArray.sum());
+      	totalValue += parseFloat(valArray.sum());
     }
     
     
+    var nameArray = new Array();
     var idArray = new Array();
     var valArray = new Array();
     var valuelabelArray = new Array();
@@ -13726,6 +13830,7 @@ $jit.FunnelChart = new Class({
     
     for(var i=0, values=json.values, l=values.length; i<l; i++) {
       var val = values[i];
+      nameArray[i] = $.splat(val.label);
       idArray[i] = $.splat(prefix + val.label);
       valArray[i] = $.splat(val.values);
       valuelabelArray[i] = $.splat(val.valuelabels);
@@ -13735,16 +13840,14 @@ $jit.FunnelChart = new Class({
       var acum = 0;
     }
     
-    
 
+    nameArray.reverse();
     valArray.reverse();
     valuelabelArray.reverse();
     linkArray.reverse();
     titleArray.reverse();
     percentageArray.reverse();
     
-     
-     
       ch.push({
         'id': prefix + val.label,
         'name': val.label,
@@ -13758,7 +13861,7 @@ $jit.FunnelChart = new Class({
           '$valuelabelArray': valuelabelArray,
           '$colorArray': color,
           '$colorMono': $.splat(color[i % colorLength]),
-          '$stringArray': name.reverse(),
+          '$stringArray': (typeof FlashCanvas == "undefined") ? nameArray: name.reverse(),
           '$gradient': gradient,
           '$config': config,
           '$percentageArray' : percentageArray,
@@ -15528,6 +15631,37 @@ $jit.PieChart = new Class({
 		ctx.fillText(subtitle.text, -size.width/2 + margin.left, size.height/2 - margin.bottom); 
 	} 	
   },
+  clear: function() {
+  	var canvas = this.canvas;
+  	var ctx = canvas.getCtx(),
+  	size = canvas.getSize();
+  	ctx.fillStyle = "rgba(255,255,255,0)";
+  	ctx.fillRect(-size.width/2,-size.height/2,size.width,size.height);
+  	ctx.clearRect(-size.width/2,-size.height/2,size.width,size.height);
+  },
+  resizeGraph: function(json,orgWindowWidth,orgContainerDivWidth,cols) {
+  	var canvas = this.canvas,
+  	size = canvas.getSize(),
+    	config = this.config,
+        orgHeight = size.height,
+        margin = config.Margin,
+        st = this.st,
+        horz = config.orientation == 'horizontal';
+        
+
+	var newWindowWidth = document.body.offsetWidth;
+	var diff = newWindowWidth - orgWindowWidth;	
+	var newWidth = orgContainerDivWidth + (diff/cols);
+	var scale = newWidth/orgContainerDivWidth;
+  	canvas.resize(newWidth,orgHeight);
+  	if(typeof FlashCanvas == "undefined") {
+		canvas.clear();
+  	} else {
+  		this.clear();// hack for flashcanvas bug not properly clearing rectangle
+  	}
+  	this.loadJSON(json);
+
+  	},
   /*
     Method: loadJSON
    
@@ -15562,7 +15696,7 @@ $jit.PieChart = new Class({
     for(var i=0, values=json.values, l=values.length; i<l; i++) {
     	var val = values[i];
       	var valArray = $.splat(val.values);
-      	totalValue += parseInt(valArray.sum());
+      	totalValue += parseFloat(valArray.sum());
     }
 
     for(var i=0, values=json.values, l=values.length; i<l; i++) {
@@ -16398,7 +16532,36 @@ $jit.GaugeChart = new Class({
 	    ctx.fillStyle = backgroundColor;
    	    ctx.fillRect(-size.width/2,-size.height/2,size.width,size.height);  	
   },
-  
+  clear: function() {
+  	var canvas = this.canvas;
+  	var ctx = canvas.getCtx(),
+  	size = canvas.getSize();
+  	ctx.fillStyle = "rgba(255,255,255,0)";
+  	ctx.fillRect(-size.width/2,-size.height/2,size.width,size.height);
+  	ctx.clearRect(-size.width/2,-size.height/2,size.width,size.height);
+ },
+  resizeGraph: function(json,orgWindowWidth,orgContainerDivWidth,cols) {
+  	var canvas = this.canvas,
+  	size = canvas.getSize(),
+    	config = this.config,
+        orgHeight = size.height,
+        margin = config.Margin,
+        st = this.st,
+        horz = config.orientation == 'horizontal';
+        
+
+	var newWindowWidth = document.body.offsetWidth;
+	var diff = newWindowWidth - orgWindowWidth;	
+	var newWidth = orgContainerDivWidth + (diff/cols);
+  	canvas.resize(newWidth,orgHeight);
+  	if(typeof FlashCanvas == "undefined") {
+		canvas.clear();
+  	} else {
+  		this.clear();// hack for flashcanvas bug not properly clearing rectangle
+  	}
+  	this.loadJSON(json);
+
+  	},
   loadJSON: function(json) {
   
      var prefix = $.time(), 

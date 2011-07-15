@@ -368,7 +368,7 @@ FRA;
         $qsd->setFormName($this->form_name);
         for($i=0; $i<$this->numFields; $i++){
             $name1 = "{$this->form_name}_{$this->name}_collection_{$i}";
-            if(!$this->skipModuleQuickSearch && preg_match('/(Campaigns|Teams|Users|Contacts|Accounts)/si', $this->related_module, $matches)) {
+            if(!$this->skipModuleQuickSearch && preg_match('/(Campaigns|Teams|Users|Accounts)/si', $this->related_module, $matches)) {
                 if($matches[0] == 'Users'){
                     $sqs_objects[$name1] = $qsd->getQSUser();
                 } else if($matches[0] == 'Campaigns') {
@@ -390,9 +390,8 @@ FRA;
                     $shippingKey = isset($this->displayParams['shippingKey']) ? $this->displayParams['shippingKey'] : null;
                     $additionalFields = isset($this->displayParams['additionalFields']) ? $this->displayParams['additionalFields'] : null;
                     $sqs_objects[$name1] = $qsd->getQSAccount($nameKey, $idKey, $billingKey, $shippingKey, $additionalFields);
-                } else if($matches[0] == 'Contacts'){
-                    $sqs_objects[$name1] = $qsd->getQSContact($name1, "id_".$name1);
-                }
+                } 
+                
                 $temp_array = array('field_list'=>array(),'populate_list'=>array());
                 foreach($sqs_objects[$name1]['field_list'] as $k=>$v){
                     if(!in_array($v, array('name','id'))){

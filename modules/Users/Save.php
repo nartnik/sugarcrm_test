@@ -61,11 +61,11 @@ parse_str($remove_tabs_def,$REMOVE_ARR);
 if (isset($_POST['id']))
 	sugar_die("Unauthorized access to administration.");
 if (isset($_POST['record']) && !is_admin($current_user)
-     && !is_admin_for_module($GLOBALS['current_user'],'Users')
+     && !$GLOBALS['current_user']->isAdminForModule('Users')
      && $_POST['record'] != $current_user->id)
 sugar_die("Unauthorized access to administration.");
 elseif (!isset($_POST['record']) && !is_admin($current_user)
-     && !is_admin_for_module($GLOBALS['current_user'],'Users'))
+     && !$GLOBALS['current_user']->isAdminForModule('Users'))
 sugar_die ("Unauthorized access to user administration.");
 $focus = new User();
 $focus->retrieve($_POST['record']);
@@ -76,13 +76,13 @@ if(empty($focus->user_name)) $newUser = true;
 else $newUser = false;
 	
 
-if(!$current_user->is_admin && !is_admin_for_module($GLOBALS['current_user'],'Users')
+if(!$current_user->is_admin && !$GLOBALS['current_user']->isAdminForModule('Users')
     && $current_user->id != $focus->id) {
 	$GLOBALS['log']->fatal("SECURITY:Non-Admin ". $current_user->id . " attempted to change settings for user:". $focus->id);
 	header("Location: index.php?module=Users&action=Logout");
 	exit;
 }
-if(!$current_user->is_admin  && !is_admin_for_module($GLOBALS['current_user'],'Users')
+if(!$current_user->is_admin  && !$GLOBALS['current_user']->isAdminForModule('Users')
     && !empty($_POST['is_admin'])) {
 	$GLOBALS['log']->fatal("SECURITY:Non-Admin ". $current_user->id . " attempted to change is_admin settings for user:". $focus->id);
 	header("Location: index.php?module=Users&action=Logout");

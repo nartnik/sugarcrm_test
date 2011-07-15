@@ -2307,3 +2307,23 @@ function enableSugarFeeds()
 
     check_logic_hook_file('Users','after_login', array(1, 'SugarFeed old feed entry remover', 'modules/SugarFeed/SugarFeedFlush.php', 'SugarFeedFlush', 'flushStaleEntries'));
 }
+
+/**
+ * Enable the InsideView connector for the four default modules.
+ */
+function enableInsideViewConnector()
+{
+    // Load up the existing mapping and hand it to the InsideView connector to have it setup the correct logic hooks
+    $mapFile = 'modules/Connectors/connectors/sources/ext/rest/insideview/mapping.php';
+    if ( file_exists('custom/'.$mapFile) ) {
+        require('custom/'.$mapFile);
+    } else {
+        require($mapFile);
+    }
+ 
+    require_once('modules/Connectors/connectors/sources/ext/rest/insideview/insideview.php');
+    $source = new ext_rest_insideview();
+
+    // $mapping is brought in from the mapping.php file above
+    $source->saveMappingHook($mapping);
+}

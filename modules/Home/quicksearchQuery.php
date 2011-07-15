@@ -132,7 +132,7 @@ class quicksearchQuery {
         
         foreach($args['modules'] as $module) {
             require_once($beanFiles[$beanList[$module]]);
-            $focus = new $beanList[$module];
+            $focus = new $beanList[$module];        
             
             $query_orderby = '';
             if (!empty($args['order'])) {
@@ -167,6 +167,13 @@ class quicksearchQuery {
         for($i = 0; $i < count($list_return); $i++) {
             $list_arr['fields'][$i]= array();
             $list_arr['fields'][$i]['module']= $list_return[$i]->object_name;
+            
+            //C.L.: Bug 43395 - For Quicksearch, do not return values with salutation and title formatting
+            if($list_return[$i] instanceof Person)
+            {
+               $list_return[$i]->createLocaleFormattedName = false;
+            }
+            
             $listData = $list_return[$i]->get_list_view_data();
                 
             foreach($args['field_list'] as $field) {
@@ -217,64 +224,6 @@ class quicksearchQuery {
         return $list_arr;
     }
     
-    /**
-     * get_contact_array
-     * 
-     */
-    function get_contact_array($args) {
-        $json = getJSONobj();
-        global $sugar_config, $beanFiles, $beanList, $locale;
-        
-        if($sugar_config['list_max_entries_per_page'] < ($args['limit'] + 1)) // override query limits
-            $sugar_config['list_max_entries_per_page'] = ($args['limit'] + 1);
-        
-        $list_return = array();
-        
-        foreach($args['modules'] as $module) {
-            require_once($beanFiles[$beanList[$module]]);
-            $focus = new $beanList[$module];
-            
-            $query_orderby = '';
-            if (!empty($args['order'])) {
-                $query_orderby = $args['order'];
-            }
-            $query_limit = '';
-            if (!empty($args['limit'])) {
-                $query_limit = $args['limit'];
-            }
-            $query_where = $this->constructWhere($args, $focus);
-            $list_arr = array();
-            if($focus->ACLAccess('ListView', true)) {
-                $curlist = $focus->get_list($query_orderby, $query_where, 0, $query_limit, -1, 0);
-                $list_return = array_merge($list_return,$curlist['list']);
-            }
-        }
-        $list_arr['totalCount']=count($list_return);
-        $list_arr['fields']= array();
-        for($i = 0; $i < count($list_return); $i++) {
-            $list_arr['fields'][$i]= array();
-            $list_arr['fields'][$i]['module']= $list_return[$i]->object_name;
-            $contactName = "";
-            foreach($args['field_list'] as $field) {
-                // We are overriding the contact_id param and the reports_to_id param to change to 'id'
-                if(preg_match('/reports_to_id$/s',$field) || preg_match('/contact_id$/s',$field)) {  // We are overriding the reports_to_id param to change to 'id'
-                    $list_arr['fields'][$i][$field] = $list_return[$i]->id;
-                }
-                else {
-                    $list_arr['fields'][$i][$field] = $list_return[$i]->$field;
-                }
-            } //foreach
-            
-            $contactName = $locale->getLocaleFormattedName($list_arr['fields'][$i]['first_name'], 
-                                                           $list_arr['fields'][$i]['last_name'],
-                                                           $list_arr['fields'][$i]['salutation']);
-                                                         
-            $list_arr['fields'][$i][$args['field_list'][0]] = $contactName;
-        } //for
-       	
-        $str = $json->encodeReal($list_arr); 
-        return $str;    
-    }
     
     /**
      * Returns the list of users, faster than using query method for Users module

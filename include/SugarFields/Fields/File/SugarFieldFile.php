@@ -88,8 +88,7 @@ class SugarFieldFile extends SugarFieldBase {
 		$upload_file = new UploadFile($prefix . $field . '_file');
 
 		//remove file
-		if (isset($_REQUEST['remove_file_' . $field]) && $params['remove_file_' . $field] == 1)
-		{
+		if (isset($_REQUEST['remove_file_' . $field]) && $params['remove_file_' . $field] == 1) {
 			$upload_file->unlink_file($bean->$field);
 			$bean->$field="";
 		}
@@ -103,10 +102,30 @@ class SugarFieldFile extends SugarFieldBase {
 			$move=true;
 		}
 
-        if (isset($params['isDuplicate']) && $params['isDuplicate'] == true && $params['isDuplicate'] != 'false' ) {
-            // It's a duplicate
+        if (!empty($params['isDuplicate']) && $params['isDuplicate'] == 'true' ) {
+            // This way of detecting duplicates is used in Notes
             $old_id = $params['relate_id'];
         }
+        if (!empty($params['duplicateSave']) && !empty($params['duplicateId']) ) {
+            // It's a duplicate
+            $old_id = $params['duplicateId'];
+        }
+
+        // Backwards compatibility for fields that still use customCode to handle the file uploads
+        if ( !$move && empty($old_id) && isset($_FILES['uploadfile']) ) {
+            $upload_file = new UploadFile('uploadfile');
+            if ( $upload_file->confirm_upload() ) {
+                $bean->$field = $upload_file->get_stored_file_name();
+                $bean->file_mime_type = $upload_file->mime_type;
+                $bean->file_ext = $upload_file->file_ext;
+                $move=true;
+                
+            }
+        } else if ( !$move && !empty($old_id) && isset($_REQUEST['uploadfile']) && !isset($_REQUEST[$prefix . $field . '_file']) ) {
+            // I think we are duplicating a backwards compatibility module.
+            $upload_file = new UploadFile('uploadfile');
+        }
+
 
         if (empty($bean->id)) { 
             $bean->id = create_guid();

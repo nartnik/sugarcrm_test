@@ -592,17 +592,12 @@ function deleteCache(){
 	//Clean modules from cache
 	if(is_dir($GLOBALS['sugar_config']['cache_dir'].'modules')){
 		$allModFiles = array();
-		$allModFiles = findAllFiles($GLOBALS['sugar_config']['cache_dir'].'modules',$allModFiles,true);
+		$allModFiles = findAllFiles($GLOBALS['sugar_config']['cache_dir'].'modules',$allModFiles);
 		foreach($allModFiles as $file)
 		{
 	       	if(file_exists($file))
 	       	{
-	       		if(is_dir($file))
-	       		{
-				  rmdir_recursive($file);
-	       		} else {
-	       		  unlink($file);
-	       		}
+	       	   unlink($file);
 	       	}
 		}
 	}
@@ -4194,7 +4189,7 @@ function upgradeModulesForTeam() {
     } //while
 
     //Update the team_set_id and default_team columns
-    $ce_to_pro_or_ent = (isset($_SESSION['upgrade_from_flavor']) && ($_SESSION['upgrade_from_flavor'] == 'SugarCE to SugarPro' || $_SESSION['upgrade_from_flavor'] == 'SugarCE to SugarEnt'));
+    $ce_to_pro_or_ent = (isset($_SESSION['upgrade_from_flavor']) && ($_SESSION['upgrade_from_flavor'] == 'SugarCE to SugarPro' || $_SESSION['upgrade_from_flavor'] == 'SugarCE to SugarEnt' || $_SESSION['upgrade_from_flavor'] == 'SugarCE to SugarCorp' || $_SESSION['upgrade_from_flavor'] == 'SugarCE to SugarUlt'));
 
     //Update team_set_id
 	if($ce_to_pro_or_ent) {
@@ -4842,6 +4837,47 @@ function upgrade_connectors($path='') {
     logThis('End upgrade_connectors', $path);
 }
 
+/**
+ * Enable the InsideView connector for the four default modules.
+ */
+function upgradeEnableInsideViewConnector($path='')
+{
+    logThis('Begin upgradeEnableInsideViewConnector', $path);
+
+    // Load up the existing mapping and hand it to the InsideView connector to have it setup the correct logic hooks
+    $mapFile = 'modules/Connectors/connectors/sources/ext/rest/insideview/mapping.php';
+    if ( file_exists('custom/'.$mapFile) ) {
+        logThis('Found CUSTOM mappings', $path);
+        require('custom/'.$mapFile);
+    } else {
+        logThis('Used default mapping', $path);
+        require($mapFile);
+    }
+ 
+    require_once('include/connectors/sources/SourceFactory.php');
+    $source = SourceFactory::getSource('ext_rest_insideview');
+
+    // $mapping is brought in from the mapping.php file above
+    $source->saveMappingHook($mapping);
+
+    require_once('include/connectors/utils/ConnectorUtils.php');
+    ConnectorUtils::installSource('ext_rest_insideview');
+
+    // Now time to set the various modules to active, because this part ignores the default config
+    require(CONNECTOR_DISPLAY_CONFIG_FILE);
+    // $modules_sources come from that config file
+    foreach ( $source->allowedModuleList as $module ) {
+        $modules_sources[$module]['ext_rest_insideview'] = 'ext_rest_insideview';
+    }
+    if(!write_array_to_file('modules_sources', $modules_sources, CONNECTOR_DISPLAY_CONFIG_FILE)) {
+        //Log error and return empty array
+        logThis("Cannot write \$modules_sources to " . CONNECTOR_DISPLAY_CONFIG_FILE,$path);
+    }
+
+    logThis('End upgradeEnableInsideViewConnector', $path);
+
+}
+
 function repair_long_relationship_names($path='')
 {
     logThis("Begin repair_long_relationship_names", $path);
@@ -5087,7 +5123,7 @@ function unlinkUpgradeFiles($version)
 	
 	if($version < '620')
 	{
-		logThis('start upgrade for DocumentRevisions classic files (EditView.html, EditView.php, DetailView.html, DetailView.php)');
+		logThis('start upgrade for DocumentRevisions classic files (EditView.html, EditView.php, DetailView.html, DetailView.php, Save.php)');
 
 		//Use a md5 comparison check to see if we can just remove the file where an exact match is found
 		if($version < '610')
@@ -5097,6 +5133,7 @@ function unlinkUpgradeFiles($version)
 			 'modules/DocumentRevisions/DetailView.php' => 'd8606cdcd0281ae9443b2580a43eb5b3',
 	         'modules/DocumentRevisions/EditView.php' => 'c7a1c3ef2bb30e3f5a11d122b3c55ff1',
 	         'modules/DocumentRevisions/EditView.html' => '7d360ca703863c957f40b3719babe8c8',
+			 'modules/DocumentRevisions/Save.php' => 'd7e39293a5fb4d605ca2046e7d1fcf28',
 	        );		
 		} else {
 			$dr_files = array(
@@ -5104,6 +5141,7 @@ function unlinkUpgradeFiles($version)
 			 'modules/DocumentRevisions/DetailView.php' => '20edf45dd785469c484fbddff1a3f8f2',
 	         'modules/DocumentRevisions/EditView.php' => 'fb31958496f04031b2851dcb4ce87d50',
 	         'modules/DocumentRevisions/EditView.html' => 'b8cada4fa6fada2b4e4928226d8b81ee',
+			 'modules/DocumentRevisions/Save.php' => '7fb62e4ebff879bafc07a08da62902aa',
 	        );
 		}
 	

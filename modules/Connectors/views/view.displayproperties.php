@@ -82,7 +82,7 @@ class ViewDisplayProperties extends ViewList
     	//Do filtering here?
     	$count = 0;
    		global $current_user;
-		$access = get_admin_modules_for_user($current_user);
+		$access = $current_user->getDeveloperModules();
 	    $d = dir('modules');
 		while($e = $d->read()){
 			if(substr($e, 0, 1) == '.' || !is_dir('modules/' . $e))continue;
@@ -91,6 +91,12 @@ class ViewDisplayProperties extends ViewList
 				$disabled_modules[$e] = $e;
 			}
 		}
+
+        $s = SourceFactory::getSource($source);
+        
+        // Not all sources can be connected to all modules
+        $enabled_modules = $s->filterAllowedModules($enabled_modules);
+        $disabled_modules = $s->filterAllowedModules($disabled_modules);
 
 		asort($enabled_modules);
     	asort($disabled_modules);
@@ -111,7 +117,6 @@ class ViewDisplayProperties extends ViewList
    	    $this->ss->assign('externalOnly', !empty($sources[$source]['eapm']['only']));
 
         // We don't want to tell the user to set the properties of the connector if there aren't any
-        $s = SourceFactory::getSource($source);
         $fields = $s->getRequiredConfigFields();
    	    $this->ss->assign('externalHasProperties', !empty($fields));
 

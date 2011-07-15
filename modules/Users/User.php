@@ -702,7 +702,7 @@ EOQ;
 
 		$old_user_hash = strtolower(md5($user_password));
 
-		if (!is_admin($current_user) && !is_admin_for_module($current_user,'Users')) {
+		if (!$current_user->isAdminForModule('Users')) {
 			//check old password first
 			$query = "SELECT user_name FROM $this->table_name WHERE user_hash='$old_user_hash' AND id='$this->id'";
 			$result = $this->db->query($query, true);
@@ -1275,6 +1275,164 @@ EOQ;
 	}
 
 
+    /*
+     *
+     * Here are the multi level admin access check functions.
+     *
+     */
+    /**
+     * Helper function to remap some modules around ACL wise
+     *
+     * @return string
+     */
+    protected function _fixupModuleForACL($module) {
+        if($module=='ContractTypes') { 
+            $module = 'Contracts';
+        }
+        if(preg_match('/Product[a-zA-Z]*/',$module)) {
+            $module = 'Products';
+        }
+        
+        return $module;
+    }
+    /**
+     * Helper function that enumerates the list of modules and checks if they are an admin/dev.
+     * The code was just too similar to copy and paste.
+     *
+     * @return array
+     */
+    protected function _getModulesForACL($type='dev'){
+        $isDev = $type=='dev';
+        $isAdmin = $type=='admin';
+
+        global $beanList;
+        $myModules = array();
+
+        if (!is_array($beanList) ) {
+            return $myModules;
+        }
+
+        // These modules don't take kindly to the studio trying to play about with them.
+        static $ignoredModuleList = array('iFrames','Feeds','Home','Dashboard','Calendar','Activities','Reports');
+
+        
+        $actions = ACLAction::getUserActions($this->id);
+        
+        foreach ($beanList as $module=>$val) {
+            // Remap the module name
+            $module = $this->_fixupModuleForACL($module);
+            if (in_array($module,$myModules)) {
+                // Already have the module in the list
+                continue;
+            }
+            if (in_array($module,$ignoredModuleList)) {
+                // You can't develop on these modules.
+                continue;
+            }
+
+            $focus = SugarModule::get($module)->loadBean();
+            if ( $focus instanceOf SugarBean ) {
+                $key = $focus->acltype;
+            } else {
+                $key = 'module';
+            }
+            
+            if (($this->isAdmin() && isset($actions[$module][$key]))
+                ) {
+                $myModules[] = $module;
+            }
+        }
+
+        return $myModules;        
+    }
+    /**
+     * Is this user a system wide admin
+     *
+     * @return bool
+     */
+    public function isAdmin() {
+        if(isset($this->is_admin)
+           &&($this->is_admin == '1' || $this->is_admin === 'on')){
+            return true;
+        }
+        return false;
+    }
+    /**
+     * Is this user a developer for any module
+     *
+     * @return bool
+     */
+    public function isDeveloperForAnyModule() {
+        if ($this->isAdmin()) {
+            return true;
+        }
+        return false;
+    }
+    /**
+     * List the modules a user has developer access to
+     *
+     * @return array
+     */
+    public function getDeveloperModules() {
+        static $developerModules;
+        if (!isset($_SESSION[$this->user_name.'_get_developer_modules_for_user']) ) {
+            $_SESSION[$this->user_name.'_get_developer_modules_for_user'] = $this->_getModulesForACL('dev');
+        }
+
+        return $_SESSION[$this->user_name.'_get_developer_modules_for_user'];
+    }
+    /**
+     * Is this user a developer for the specified module
+     *
+     * @return bool
+     */
+    public function isDeveloperForModule($module) {
+        if ($this->isAdmin()) {
+            return true;
+        }
+        
+        $devModules = $this->getDeveloperModules();
+        
+        $module = $this->_fixupModuleForACL($module);
+
+        if (in_array($module,$devModules) ) {
+            return true;
+        }
+
+        return false;
+    }
+    /**
+     * List the modules a user has admin access to
+     *
+     * @return array
+     */
+    public function getAdminModules() {
+        if (!isset($_SESSION[$this->user_name.'_get_admin_modules_for_user']) ) {
+            $_SESSION[$this->user_name.'_get_admin_modules_for_user'] = $this->_getModulesForACL('admin');
+        }
+
+        return $_SESSION[$this->user_name.'_get_admin_modules_for_user'];
+    }
+    /**
+     * Is this user an admin for the specified module
+     *
+     * @return bool
+     */
+    public function isAdminForModule($module) {
+        if ($this->isAdmin()) {
+            return true;
+        }
+        
+        $adminModules = $this->getAdminModules();
+        
+        $module = $this->_fixupModuleForACL($module);
+
+        if (in_array($module,$adminModules) ) {
+            return true;
+        }
+
+        return false;
+    }
 	/**
 	 * Whether or not based on the user's locale if we should show the last name first.
 	 *
@@ -1294,18 +1452,41 @@ EOQ;
 
    function create_new_list_query($order_by, $where,$filter=array(),$params=array(), $show_deleted = 0,$join_type='', $return_array = false,$parentbean=null, $singleSelect = false)
    {	//call parent method, specifying for array to be returned
-   		$ret_array = parent::create_new_list_query($order_by, $where,$filter,$params, $show_deleted,$join_type, true,$parentbean, $singleSelect);
+   	$ret_array = parent::create_new_list_query($order_by, $where,$filter,$params, $show_deleted,$join_type, true,$parentbean, $singleSelect);
 
-   		//if this is being called from webservices, then run additional code
-   		if(!empty($GLOBALS['soap_server_object'])){
+   	//if this is being called from webservices, then run additional code
+   	if(!empty($GLOBALS['soap_server_object'])){
 
-	   		//if this is a single select, then secondary queries are being run that may result in duplicate rows being returned through the
-	   		//left joins with meetings/tasks/call.  Add a group by to return one user record (bug 40250)
-	       	if($singleSelect)
+		//if this is a single select, then secondary queries are being run that may result in duplicate rows being returned through the
+		//left joins with meetings/tasks/call.  We need to change the left joins to include a null check (bug 40250)
+	   	if($singleSelect)
 	    	{
-	    		$ret_array['order_by'] = ' Group By '.$this->table_name.'.id '.$ret_array['order_by'];
+			//retrieve the 'from' string and make lowercase for easier manipulation
+		        $left_str = strtolower($ret_array['from']);
+		        $lefts = explode('left join', $left_str);
+		        $new_left_str = '';
+
+        		//explode on the left joins and process each one
+		        foreach($lefts as $ljVal){
+		        	//grab the join alias
+	        	        $onPos = strpos( $ljVal, ' on');
+	                	if($onPos === false){
+		                	$new_left_str .=' '.$ljVal.' ';
+		                        continue;
+		                }
+		                $spacePos = strrpos(substr($ljVal, 0, $onPos),' ');
+		                $alias = substr($ljVal,$spacePos,$onPos-$spacePos);
+
+		                //add null check to end of the Join statement
+		                $ljVal ='  LEFT JOIN '.$ljVal.' and '.$alias.'.id is null ';
+
+		                //add statement into new string
+		                $new_left_str .= $ljVal;
+		         }
+	        	 //replace the old string with the new one
+        		 $ret_array['from'] = $new_left_str;
 	    	}
-   		}
+   	}
 
    		//return array or query string
    		if($return_array)

@@ -111,6 +111,29 @@ function get_field_list($value, $translate=true){
 			$list['release_name']['options'] = $options_ret;
 		}
 	}
+    if($value->module_dir == 'Emails'){
+        $fields = array('from_addr_name', 'reply_to_addr', 'to_addrs_names', 'cc_addrs_names', 'bcc_addrs_names');
+        foreach($fields as $field){
+            $var = $value->field_defs[$field];
+
+            $required = 0;
+            $entry = array();
+            $entry['name'] = $var['name'];
+            $entry['type'] = $var['type'];
+            if($translate) {
+            $entry['label'] = isset($var['vname']) ? translate($var['vname'], $value->module_dir) : $var['name'];
+            } else {
+            $entry['label'] = isset($var['vname']) ? $var['vname'] : $var['name'];
+            }
+            $entry['required'] = $required;
+            $entry['options'] = array();
+			if(isset($var['default'])) {
+			   $entry['default_value'] = $var['default'];
+			}
+
+			$list[$var['name']] = $entry;
+        }
+    }
 
 	if(isset($value->assigned_user_name) && isset($list['assigned_user_id'])) {
 		$list['assigned_user_name'] = $list['assigned_user_id'];

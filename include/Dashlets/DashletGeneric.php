@@ -203,7 +203,11 @@ class DashletGeneric extends Dashlet {
                 $currentSearchFields[$name] = array();
                 $widgetDef = $this->seedBean->field_defs[$name];
                 if($widgetDef['type'] == 'enum') $widgetDef['remove_blank'] = true; // remove the blank option for the dropdown
-				if($widgetDef['name'] == 'assigned_user_name') $widgetDef['name'] = 'assigned_user_id';
+                if($widgetDef['name'] == 'assigned_user_name') $widgetDef['name'] = 'assigned_user_id';
+                //bug 39170 - begin
+                if($widgetDef['name'] == 'created_by_name') $name = $widgetDef['name'] = 'created_by';
+                if($widgetDef['name'] == 'modified_by_name') $name = $widgetDef['name'] = 'modified_user_id';
+                //bug 39170 - end
                 $widgetDef['input_name0'] = empty($this->filters[$name]) ? '' : $this->filters[$name];
                 $currentSearchFields[$name]['label'] = !empty($params['label']) ? translate($params['label'], $this->seedBean->module_dir) : translate($widgetDef['vname'], $this->seedBean->module_dir);
                 $currentSearchFields[$name]['input'] = $this->layoutManager->widgetDisplayInput($widgetDef, true, (empty($this->filters[$name]) ? '' : $this->filters[$name]));
@@ -235,7 +239,7 @@ class DashletGeneric extends Dashlet {
         $displayRowOptions = $GLOBALS['sugar_config']['dashlet_display_row_options'];
         $this->configureSS->assign('displayRowOptions', $displayRowOptions);
         $this->configureSS->assign('displayRowSelect', $this->displayRows);
-        
+
         if($this->isAutoRefreshable()) {
        		$this->configureSS->assign('isRefreshable', true);
 			$this->configureSS->assign('autoRefreshOptions', $this->getAutoRefreshOptions());
@@ -329,11 +333,11 @@ class DashletGeneric extends Dashlet {
 					break;
 				}
 			}
-			
+
 	        $this->columns = $dashletData[$this->seedBean->module_dir.'Dashlet']['columns'];
     	}
 	}
-	
+
     /**
      * Does all dashlet processing, here's your chance to modify the rows being displayed!
      */
@@ -350,7 +354,7 @@ class DashletGeneric extends Dashlet {
         if(isset($this->filters) || $this->myItemsOnly) {
             $whereArray = $this->buildWhere();
         }
-	
+
         $this->lvs->export = false;
         $this->lvs->multiSelect = false;
         // columns
@@ -359,9 +363,9 @@ class DashletGeneric extends Dashlet {
         	foreach($this->displayColumns as $name => $val) {
                 $displayColumns[strtoupper($val)] = $this->columns[$val];
                 $displayColumns[strtoupper($val)]['label'] = trim($displayColumns[strtoupper($val)]['label'], ':');// strip : at the end of headers
-            } 
+            }
         }
-        else if (isset($this->columns)){ 
+        else if (isset($this->columns)){
            // use the default
             foreach($this->columns as $name => $val) {
                 if(!empty($val['default']) && $val['default']) {
@@ -377,18 +381,27 @@ class DashletGeneric extends Dashlet {
         $lvdOrderBy = $this->lvs->lvd->getOrderBy(); // has this list been ordered, if not use default
 
         $nameRelatedFields = array();
-        if(empty($lvdOrderBy['orderBy'])) {
-            foreach($displayColumns as $colName => $colParams) {
-                if(!empty($colParams['defaultOrderColumn'])) {
-                    $lvsParams['overrideOrder'] = true;
-                    $lvsParams['orderBy'] = $colName;
-                    $lvsParams['sortOrder'] = $colParams['defaultOrderColumn']['sortOrder'];
+
+        //bug: 44592 - dashlet sort order was not being preserved between logins
+        if(!empty($lvsParams['orderBy']) && !empty($lvsParams['sortOrder']))
+        {
+            $lvsParams['overrideOrder'] = true;
+        }
+        else
+        {
+            if(empty($lvdOrderBy['orderBy'])) {
+                foreach($displayColumns as $colName => $colParams) {
+                    if(!empty($colParams['defaultOrderColumn'])) {
+                        $lvsParams['overrideOrder'] = true;
+                        $lvsParams['orderBy'] = $colName;
+                        $lvsParams['sortOrder'] = $colParams['defaultOrderColumn']['sortOrder'];
+                    }
                 }
             }
         }
 		// Check for 'last_name' column sorting with related fields (last_name, first_name)
 		// See ListViewData.php for actual sorting change.
-		if ($lvdOrderBy['orderBy'] == 'last_name' && !empty($displayColumns['NAME']) && !empty($displayColumns['NAME']['related_fields']) && 
+		if ($lvdOrderBy['orderBy'] == 'last_name' && !empty($displayColumns['NAME']) && !empty($displayColumns['NAME']['related_fields']) &&
 			in_array('last_name', $displayColumns['NAME']['related_fields']) &&
 			in_array('first_name', $displayColumns['NAME']['related_fields'])) {
 				$lvsParams['overrideLastNameOrder'] = true;
@@ -445,6 +458,10 @@ class DashletGeneric extends Dashlet {
         $options['filters'] = array();
         foreach($this->searchFields as $name=>$params) {
             $widgetDef = $this->seedBean->field_defs[$name];
+            //bug39170 - begin
+            if($widgetDef['name']=='created_by_name' && $req['created_by']) $widgetDef['name'] = 'created_by';
+            if($widgetDef['name']=='modified_by_name' && $req['modified_user_id']) $widgetDef['name'] = 'modified_user_id';
+            //bug39170 - end
             if($widgetDef['type'] == 'datetimecombo' || $widgetDef['type'] == 'datetime' || $widgetDef['type'] == 'date') { // special case datetime types
                 $options['filters'][$widgetDef['name']] = array();
                 if(!empty($req['type_' . $widgetDef['name']])) { // save the type of date filter
@@ -497,7 +514,7 @@ class DashletGeneric extends Dashlet {
                     $this->columns[$fieldName] = array('width' => '10',
                                                        'label' => $translated);
                 	}
-                    
+
                 }
             }
         }

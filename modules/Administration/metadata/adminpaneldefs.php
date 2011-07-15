@@ -154,7 +154,7 @@ if(file_exists('custom/modules/Administration/Ext/Administration/administration.
 
 //For users with MLA access we need to find which entries need to be shown.
 //lets process the $admin_group_header and apply all the access control rules.
-$access = get_admin_modules_for_user($current_user);
+$access = $current_user->getDeveloperModules();
 foreach ($admin_group_header as $key=>$values) {
 	$module_index = array_keys($values[3]);  //get the actual links..
 	foreach ($module_index as $mod_key=>$mod_val) {

@@ -91,6 +91,15 @@ $viewdefs['Contacts']['DetailView'] = array(
           array (
             'name' => 'account_name',
             'label' => 'LBL_ACCOUNT_NAME',
+            'displayParams' =>
+              array (
+                'enableConnectors' => true,
+                'module' => 'Contacts',
+                'connectors' => 
+                array (
+                  0 => 'ext_rest_linkedin',
+                ),
+            ),
           ),
           array (
             'name' => 'phone_fax',

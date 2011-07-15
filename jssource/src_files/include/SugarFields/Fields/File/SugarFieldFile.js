@@ -41,10 +41,19 @@ if ( typeof(SUGAR.field) == 'undefined' ) {
 if ( typeof(SUGAR.field.file) == 'undefined' ) {
     SUGAR.field.file = {
         deleteAttachment: function(elemBaseName,docTypeName,elem) {
-            ajaxStatus.showStatus(SUGAR.language.get("Notes", "LBL_REMOVING_ATTACHMENT"));
+            ajaxStatus.showStatus(SUGAR.language.get("app_strings", "LBL_REMOVING_ATTACHMENT"));
             elem.form.deleteAttachment.value=1;
             elem.form.action.value="EditView";
-            SUGAR.dashlets.postForm(elem.form, SUGAR.field.file.deleteAttachmentCallbackGen(elemBaseName,docTypeName));
+
+            var callback =  SUGAR.field.file.deleteAttachmentCallbackGen(elemBaseName,docTypeName);
+            var success = function(data) {
+                if(data) {
+                    callback(data.responseText);
+                }
+            }
+            YAHOO.util.Connect.setForm(elem.form); 
+            var cObj = YAHOO.util.Connect.asyncRequest('POST', 'index.php', {success: success, failure: success});
+            
             elem.form.deleteAttachment.value=0;
             elem.form.action.value="";
         },
@@ -54,11 +63,13 @@ if ( typeof(SUGAR.field.file) == 'undefined' ) {
 		            document.getElementById(elemBaseName+'_new').style.display = '';
 		            ajaxStatus.hideStatus();
 		            document.getElementById(elemBaseName+'_old').innerHTML = '';
-                    document.getElementById(docTypeName).disabled = false;
+                    if(docTypeName){
+                        document.getElementById(docTypeName).disabled = false;
+                    }
                     document.getElementById(elemBaseName).value = '';
 	            } else {
 		            document.getElementById(elemBaseName+'_new').style.display = 'none';
-		            ajaxStatus.flashStatus(SUGAR.language.get('Notes', 'ERR_REMOVING_ATTACHMENT'), 2000);
+		            ajaxStatus.flashStatus(SUGAR.language.get('app_strings', 'ERR_REMOVING_ATTACHMENT'), 2000);
 	            }
             }
         },

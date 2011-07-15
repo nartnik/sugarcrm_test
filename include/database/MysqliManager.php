@@ -244,6 +244,7 @@ class MysqliManager extends MysqlManager
         if ($encode && $this->encode && is_array($row))
             return array_map('to_html', $row);
 
+        if($row == null) $row = false; //Make sure MySQLi driver results are consistent with other database drivers
         return $row;
     }
 

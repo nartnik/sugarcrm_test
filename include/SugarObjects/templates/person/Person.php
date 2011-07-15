@@ -42,6 +42,7 @@ require_once('include/SugarObjects/templates/basic/Basic.php');
 class Person extends Basic
 {	
     var $picture;
+    var $createLocaleFormattedName = true;
     
 	function Person(){
 		parent::Basic();
@@ -62,14 +63,19 @@ class Person extends Basic
 	function _create_proper_name_field() 
 	{
 		global $locale, $app_list_strings;
-		    // Bug 38648 - If the given saluation doesn't exist in the dropdown, don't display it as part of the full name
-		    $salutation = '';
-		    if(isset($this->field_defs['salutation']['options']) 
-		            && isset($app_list_strings[$this->field_defs['salutation']['options']])
-		            && isset($app_list_strings[$this->field_defs['salutation']['options']][$this->salutation]) ) {
-		        $salutation = $app_list_strings[$this->field_defs['salutation']['options']][$this->salutation];
-		    }
-			$full_name = $locale->getLocaleFormattedName($this->first_name, $this->last_name, $salutation, $this->title);
+			if($this->createLocaleFormattedName)
+			{
+			    // Bug 38648 - If the given saluation doesn't exist in the dropdown, don't display it as part of the full name
+				$salutation = '';
+			    if(isset($this->field_defs['salutation']['options']) 
+			            && isset($app_list_strings[$this->field_defs['salutation']['options']])
+			            && isset($app_list_strings[$this->field_defs['salutation']['options']][$this->salutation]) ) {
+			        $salutation = $app_list_strings[$this->field_defs['salutation']['options']][$this->salutation];
+			    }
+				$full_name = $locale->getLocaleFormattedName($this->first_name, $this->last_name, $salutation, $this->title);
+			} else {
+				$full_name = $locale->getLocaleFormattedName($this->first_name, $this->last_name);
+			}
 		$this->name = $full_name;
 		$this->full_name = $full_name; //used by campaigns
 	}

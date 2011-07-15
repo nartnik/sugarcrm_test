@@ -824,7 +824,7 @@ class ImportFieldSanitizeTest extends Sugar_PHPUnit_Framework_TestCase
         $relaterow = $focus->db->fetchByAssoc($result);
 
         $this->assertTrue(empty($focus->account_id),'Category ID should not be set');
-        $this->assertNull($relaterow,'Record should not be added to the related table');
+        $this->assertFalse($relaterow,'Record should not be added to the related table');
         
         $GLOBALS['db']->query("DELETE FROM accounts where id = '{$relaterow['id']}'");
     }
@@ -866,7 +866,7 @@ class ImportFieldSanitizeTest extends Sugar_PHPUnit_Framework_TestCase
         $relaterow = $focus->db->fetchByAssoc($result);
 
         $this->assertTrue(empty($focus->account_id),'Category ID should not be set');
-        $this->assertNull($relaterow,'Record should not be added to the related table');
+        $this->assertFalse($relaterow,'Record should not be added to the related table');
         
         $GLOBALS['db']->query("DELETE FROM accounts where id = '{$relaterow['id']}'");
     }
@@ -1006,7 +1006,7 @@ class ImportFieldSanitizeTest extends Sugar_PHPUnit_Framework_TestCase
         $result = $GLOBALS['db']->query(
             "SELECT id FROM accounts where name = '$account_name'");
         $relaterow = $focus->db->fetchByAssoc($result);
-        $this->assertNull($relaterow,'Record should not have been created');
+        $this->assertFalse($relaterow,'Record should not have been created');
         if ( $relaterow )
             $GLOBALS['db']->query("DELETE FROM accounts where id = '{$relaterow['id']}'");
     }
@@ -1064,7 +1064,7 @@ class ImportFieldSanitizeTest extends Sugar_PHPUnit_Framework_TestCase
         $result = $GLOBALS['db']->query(
             "SELECT id FROM accounts where name = '$account_name'");
         $relaterow = $focus->db->fetchByAssoc($result);
-        $this->assertNull($relaterow,'Record should not have been created');
+        $this->assertFalse($relaterow,'Record should not have been created');
         if ( $relaterow )
             $GLOBALS['db']->query("DELETE FROM accounts where id = '{$relaterow['id']}'");
     }

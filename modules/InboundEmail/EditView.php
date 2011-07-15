@@ -79,7 +79,8 @@ if($focus->mailbox_type == 'bounce')
 else
     unset($domMailBoxType['bounce']);
 
-if(isset($_REQUEST['isDuplicate']) && $_REQUEST['isDuplicate'] == 'true') {
+$isDuplicate = isset($_REQUEST['isDuplicate']) && $_REQUEST['isDuplicate'] == 'true';
+if($isDuplicate) {
 	$GLOBALS['log']->debug("isDuplicate found - duplicating record of id: ".$focus->id);
 	$origin_id = $focus->id;
 	$focus->id = "";
@@ -192,6 +193,14 @@ if(isset($focus->id)) {
 // javascript
 $javascript->setSugarBean($focus);
 $javascript->setFormName('EditView');
+
+//If we are creating a duplicate, remove the email_password from being required since this
+//can be derived from the InboundEmail we are duplicating from
+if($isDuplicate && isset($focus->required_fields['email_password']))
+{
+   unset($focus->required_fields['email_password']);
+}
+
 $javascript->addRequiredFields();
 $javascript->addFieldGeneric('email_user', 'alpha', $mod_strings['LBL_LOGIN'], true);
 $javascript->addFieldGeneric('email_password', 'alpha', $mod_strings['LBL_PASSWORD'], $validatePass);

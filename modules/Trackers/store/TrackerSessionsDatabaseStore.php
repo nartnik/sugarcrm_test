@@ -48,6 +48,12 @@ class TrackerSessionsDatabaseStore implements Store {
     public function flush($monitor) {
 
        $metrics = $monitor->getMetrics();
+       
+       if(isset($monitor->client_ip) && strlen($monitor->client_ip) > 20)
+       {
+          $monitor->client_ip = substr($monitor->client_ip, 0, 20);	  
+       }
+       
        $columns = array();
        $values = array();
        foreach($metrics as $name=>$metric) {

@@ -100,6 +100,12 @@ function zip_dir( $zip_dir, $zip_archive )
     $dir = new RecursiveDirectoryIterator($path);
     $it = new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::SELF_FIRST);
     foreach ($it as $k => $fileinfo) {
+        // Bug # 45143
+        // ensure that . and .. are not zipped up, otherwise, the
+        // CENT OS and others will fail when deploying module
+        $fileName = $fileinfo->getFilename();
+        if ($fileName == "." || $fileName == "..")
+            continue; 
         $localname = substr($fileinfo->getPathname(), $chop);
         if($fileinfo->isDir()) {
             $zip->addEmptyDir($localname);

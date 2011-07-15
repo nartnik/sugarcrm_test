@@ -544,12 +544,27 @@ class DynamicField {
         $this->buildCache($this->module);
         if($field){
             if(!$is_update){
+                //Do two SQL calls here in this case
+            	//The first is to create the column in the custom table without the default value
+            	//The second is to modify the column created in the custom table to set the default value
+            	//We do this so that the existing entries in the custom table don't have the default value set
+            	$field->default = '';
+            	$field->default_value = '';
                 $query = $field->get_db_add_alter_table($this->bean->table_name . '_cstm');
+                if(!empty($query)){
+                	$GLOBALS['db']->query($query);
+	                $field->default = $fmd->default_value;
+	                $field->default_value = $fmd->default_value;
+	                $query = $field->get_db_modify_alter_table($this->bean->table_name . '_cstm');
+	                if(!empty($query)){
+	                	$GLOBALS['db']->query($query);
+	            	}                   
+                }
             }else{
                 $query = $field->get_db_modify_alter_table($this->bean->table_name . '_cstm');
-            }
-            if(!empty($query)){
-                $GLOBALS['db']->query($query);
+                if(!empty($query)){
+                	$GLOBALS['db']->query($query);
+            	}                
             }
             $this->saveExtendedAttributes($field, array_keys($fmd->field_defs));
         }

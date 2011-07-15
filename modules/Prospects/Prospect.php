@@ -147,33 +147,25 @@ class Prospect extends Person {
         }
 
     
-	function fill_in_additional_list_fields() {
-		global $locale;
-
-		$full_name = $locale->getLocaleFormattedName($this->first_name, $this->last_name, $this->salutation, $this->title);
-		$this->name = $full_name;
-		$this->full_name = $full_name;
-		$this->email_and_name1 = $full_name." &lt;".$this->email1."&gt;";
+	function fill_in_additional_list_fields() 
+	{
+		parent::fill_in_additional_list_fields();
+		$this->_create_proper_name_field();		
+		$this->email_and_name1 = $this->full_name." &lt;".$this->email1."&gt;";
 	}
 
-	function fill_in_additional_detail_fields() {
-		global $locale;
-        parent::fill_in_additional_detail_fields();
-		$full_name = $locale->getLocaleFormattedName($this->first_name, $this->last_name, $this->salutation, $this->title);
-		$this->name = $full_name;
-		$this->full_name = $full_name;
+	function fill_in_additional_detail_fields() 
+	{
+		parent::fill_in_additional_list_fields();
+		$this->_create_proper_name_field();
    	}
 
 	function get_list_view_data() {
-		global $locale, $current_user;
-
-		$full_name = $locale->getLocaleFormattedName($this->first_name, $this->last_name, $this->salutation, $this->title);
-		$this->name = $full_name;
-		$this->full_name = $full_name;
-
+		global $current_user;
+		$this->_create_proper_name_field();
 		$temp_array = $this->get_list_view_array();
-		$temp_array["ENCODED_NAME"] = $full_name;
-		$temp_array["FULL_NAME"] = $full_name;
+		$temp_array["ENCODED_NAME"] = $this->full_name;
+		$temp_array["FULL_NAME"] = $this->full_name;
 		$temp_array["EMAIL1"] = $this->emailAddress->getPrimaryAddress($this);
 		$this->email1 = $temp_array['EMAIL1'];
 		$temp_array["EMAIL1_LINK"] = $current_user->getEmailLink('email1', $this, '', '', 'ListView');

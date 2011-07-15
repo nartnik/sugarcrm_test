@@ -35,7 +35,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  * "Powered by SugarCRM".
  ********************************************************************************/
 
-if(!is_admin($current_user)&&!is_admin_for_module($GLOBALS['current_user'],'Users')){
+if(!$GLOBALS['current_user']->isAdminForModule('Users')){
 	sugar_die('No Access');
 }
 $record = '';

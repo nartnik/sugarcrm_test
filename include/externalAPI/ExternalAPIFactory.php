@@ -154,7 +154,7 @@ class ExternalAPIFactory
         rename('cache/include/externalAPI.cache-tmp.js','cache/include/externalAPI.cache.js');
 
 
-        if (is_array($GLOBALS['app_list_strings']['extapi_meeting_password']) && count(array_diff($meetingPasswordList,$GLOBALS['app_list_strings']['extapi_meeting_password'])) != 0 ) {
+        if (!isset($GLOBALS['app_list_strings']['extapi_meeting_password']) || (is_array($GLOBALS['app_list_strings']['extapi_meeting_password']) && count(array_diff($meetingPasswordList,$GLOBALS['app_list_strings']['extapi_meeting_password'])) != 0 )) {
             // Our meeting password list is different... we need to do something about this.
             require_once('modules/Administration/Common.php');
             $languages = get_languages();

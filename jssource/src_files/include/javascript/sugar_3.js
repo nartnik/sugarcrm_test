@@ -107,7 +107,7 @@ function isSupportedIE() {
 	// IE Check supports ActiveX controls
 	if (userAgent.indexOf("msie") != -1 && userAgent.indexOf("mac") == -1 && userAgent.indexOf("opera") == -1) {
 		var version = navigator.appVersion.match(/MSIE (.\..)/)[1] ;
-		if(version >= 5.5) {
+		if(version >= 5.5 && version < 9) {
 			return true;
 		} else {
 			return false;
@@ -116,6 +116,7 @@ function isSupportedIE() {
 }
 
 SUGAR.isIE = isSupportedIE();
+SUGAR.isIE7 = (navigator.userAgent.toLowerCase().indexOf('msie 7')!=-1);
 var isSafari = (navigator.userAgent.toLowerCase().indexOf('safari')!=-1);
 
 // escapes regular expression characters

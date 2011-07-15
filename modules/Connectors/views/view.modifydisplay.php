@@ -76,7 +76,7 @@ class ViewModifyDisplay extends SugarView
     	$this->ss->assign('APP', $GLOBALS['app_strings']);
     	$this->ss->assign('theme', $GLOBALS['theme']);
 
-  		echo $this->getModuleTitle();  	
+  		echo $this->getModuleTitle(false);
     	$this->ss->display('modules/Connectors/tpls/modify_display.tpl');
     }
 }

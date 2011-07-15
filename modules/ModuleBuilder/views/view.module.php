@@ -38,6 +38,8 @@ require_once('modules/ModuleBuilder/MB/AjaxCompose.php');
 
 class ViewModule extends SugarView
 {
+	var $mbModule;
+	
  	/**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
@@ -62,11 +64,11 @@ class ViewModule extends SugarView
 		$package = $mb->packages[$_REQUEST['view_package']];
 		$module_name = (!empty($_REQUEST['view_module']))?$_REQUEST['view_module']:'';
 		$package->getModule($module_name);
-		$this->module = $package->modules[$module_name];
+		$this->mbModule = $package->modules[$module_name];
 		$this->loadPackageHelp($module_name);
 		
 		// set up the list of either available types for a new module, or implemented types for an existing one
-        $types = (empty($module_name)) ? MBModule::getTypes() : $this->module->mbvardefs->templates ;
+        $types = (empty($module_name)) ? MBModule::getTypes() : $this->mbModule->mbvardefs->templates ;
         
         foreach( $types as $type=>$definition)
         {
@@ -76,7 +78,7 @@ class ViewModule extends SugarView
         $smarty->assign('types',$translated_type);
 		
 		$smarty->assign('package', $package);
-		$smarty->assign('module', $this->module);
+		$smarty->assign('module', $this->mbModule);
 		$smarty->assign('mod_strings', $mod_strings);
 
 		$ajax = new AjaxCompose();
@@ -96,7 +98,7 @@ class ViewModule extends SugarView
  	    $name
  	    )
  	{
-        $this->module->help['default'] = (empty($name))?'create':'modify';
-        $this->module->help['group'] = 'module';
+        $this->mbModule->help['default'] = (empty($name))?'create':'modify';
+        $this->mbModule->help['group'] = 'module';
  	}
 }

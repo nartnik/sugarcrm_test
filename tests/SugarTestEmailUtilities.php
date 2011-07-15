@@ -82,8 +82,8 @@ class SugarTestEmailUtilities
     private static function createEmailsBeansRelationship($email_id, $parent_type, $parent_id)
     {
         $unique_id = create_guid();
-        $GLOBALS['db']->query("INSERT INTO emails_beans SET id = '{$unique_id}', email_id = '{$email_id}', bean_id = '{$parent_id}', ".
-        					  "bean_module = '{$parent_type}', date_modified = '".gmdate('Y-m-d H:i:s')."', deleted = 0");
+        $GLOBALS['db']->query("INSERT INTO emails_beans ( id, email_id, bean_id, bean_module, date_modified, deleted ) ".
+							  "VALUES ( '{$unique_id}', '{$email_id}', '{$parent_id}', '{$parent_type}', '".gmdate('Y-m-d H:i:s')."', 0)");
     }
     
     private static function removeCreatedEmailBeansRelationships(){
